@@ -46,5 +46,4 @@ class PropertyListViewModel(
                 _propertiesState.value = PropertyListUiState.Success(it)
             }
     }
-
 }

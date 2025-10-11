@@ -13,8 +13,6 @@ import kotlinx.coroutines.tasks.await
 class PropertyRepositoryImpl(
     private val firebaseFirestore: FirebaseFirestore
 ): PropertyRepository {
-
-
     private val Property = "PROPERTY"//this is the name of collection at firebase
 
     //here basically creating a collection at firebase and this property collection is
@@ -26,7 +24,7 @@ class PropertyRepositoryImpl(
     override suspend fun getAllProperty(): Flow<List<Property>> {
         return callbackFlow {
 
-            propertyCollection.addSnapshotListener { snapshot, error ->
+           val registration = propertyCollection.addSnapshotListener { snapshot, error ->
 
                 if (error != null) {
                     close(error)
@@ -36,7 +34,7 @@ class PropertyRepositoryImpl(
                     .orEmpty()//it is converting data from firebase to our property class
                 trySend(list)//this line is basically sending the list
             }
-            awaitClose {}
+            awaitClose {registration.remove()}
         }
     }
 

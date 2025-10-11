@@ -3,29 +3,26 @@ package com.reyaz.feature.rent.presentation.property_list_screen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reyaz.feature.rent.domain.model.Property
-import org.koin.androidx.compose.koinViewModel
+import com.reyaz.feature.rent.presentation.property_post_screen.components.PropertyCard
 
 @Composable
 fun PropertyListScreen(
     modifier: Modifier,
-    viewModel: PropertyListViewModel
+    viewModel: PropertyListViewModel,
+    onPostClick:()->Unit,
+    onDetailViewClick:()->Unit
 ){
-    val uiState by viewModel.propertiesState.collectAsStateWithLifecycle()
+      val uiState by viewModel.propertiesState.collectAsStateWithLifecycle()
+
         Column (modifier=Modifier
             .fillMaxSize()){
             Text("ye Property List screen hi hai, uistate me kch problem hai wo tum dekho. property list screen launch hone lagi hai" +
@@ -55,23 +52,10 @@ fun PropertyListScreen(
                     ){
                         items(list.size){i->
                             val property = list[i]
-                            PropertyListItem(property = property)
+                            PropertyCard(property)
                         }
                     }
                 }
             }
         }
     }
-
-
-@Composable
-fun PropertyListItem(property: Property){
-    Card(
-        modifier=Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    ){
-        Text(text=property.name)
-        Text(text=property.age)
-    }
-}

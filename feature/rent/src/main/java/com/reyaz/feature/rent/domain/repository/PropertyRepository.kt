@@ -4,9 +4,9 @@ import com.reyaz.feature.rent.domain.model.Property
 import kotlinx.coroutines.flow.Flow
 
 interface PropertyRepository {
+    //this will fetch all property
     suspend fun getAllProperty(): Flow<List<Property>>
     suspend fun postProperty(property: Property): Result<Unit>
-
     suspend fun getPropertyById(id: String):Flow<Property?>
 }
 //it is an interface containing the only abstract code not actual implementation,
