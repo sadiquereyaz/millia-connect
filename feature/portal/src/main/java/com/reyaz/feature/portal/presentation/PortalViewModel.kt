@@ -3,6 +3,7 @@ package com.reyaz.feature.portal.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.Resource
 import com.reyaz.feature.portal.data.local.PortalDataStore
@@ -24,7 +25,8 @@ private const val LOGGING = true
 class PortalViewModel(
     private val repository: PortalRepository,
     private val networkObserver: NetworkManager,
-    private val userPreferences: PortalDataStore
+    private val userPreferences: PortalDataStore,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PortalUiState())
@@ -38,6 +40,10 @@ class PortalViewModel(
 
     private fun log(message: String) {
         if (LOGGING) Log.d(TAG, message)
+    }
+
+    fun sendOnDeveloperClickEvent(){
+        analyticsTracker.logEvent("developer_click")
     }
 
     private fun observeNetworkAndInitialize() {
@@ -136,6 +142,20 @@ class PortalViewModel(
                         isWifiPrimary = result.message.isNullOrBlank()
                     )
 //                    saveCredentials()
+
+                    // Analytics event for successful login
+                    analyticsTracker.logEvent(
+                        eventName = "portal_login_success",
+                        mapOf(
+                            "username" to _uiState.value.username,
+                            "wifi_primary" to _uiState.value.isWifiPrimary.toString(),
+                            "auto_connect" to _uiState.value.autoConnect.toString(),
+                            "is_jamia_wifi" to _uiState.value.isJamiaWifi.toString(),
+                            "is_logged_in" to _uiState.value.isLoggedIn.toString(),
+                            "error_msg" to result.message.toString(),
+                            "loading_msg" to _uiState.value.loadingMessage.toString()
+                        )
+                    )
                 }
 
                 is Resource.Error -> {
@@ -148,6 +168,14 @@ class PortalViewModel(
                     }
                     Log.e(TAG, "Error in performLogin(): ${result.message}")
 //                    saveCredentials()
+                    // Analytics event for failed login
+                    analyticsTracker.logEvent(
+                        "portal_login_failed",
+                        mapOf(
+                            "username" to _uiState.value.username,
+                            "error_message" to (result.message ?: "unknown")
+                        )
+                    )
                 }
             }
         }
@@ -165,6 +193,13 @@ class PortalViewModel(
                 }
                 .onFailure {
                     Log.e(TAG, "Logout failed", it)
+                    analyticsTracker.logEvent(
+                        "portal_logout_failed",
+                        mapOf(
+                            "username" to _uiState.value.username,
+                            "error_message" to (it.message ?: "unknown")
+                        )
+                    )
                     handleError(it)
                 }
         }
@@ -173,6 +208,10 @@ class PortalViewModel(
     fun retry() {
         viewModelScope.launch {
             updateState(loadingMessage = "Retrying...", errorMsg = null)
+            analyticsTracker.logEvent(
+                "portal_retry",
+                mapOf("username" to _uiState.value.username)
+            )
             checkConnectionAndLogin()
         }
     }

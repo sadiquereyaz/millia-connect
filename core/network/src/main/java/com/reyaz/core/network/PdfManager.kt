@@ -2,6 +2,7 @@ package com.reyaz.core.network
 
 import android.content.Context
 import android.util.Log
+import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.network.model.DownloadResult
 import com.reyaz.core.network.utils.SSLTrustUtils
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +20,18 @@ import java.net.URL
 private const val TAG = "PDF_MANAGER"
 
 class PdfManager(
-    private val context: Context
+    private val context: Context,
+    private val analyticsTracker: AnalyticsTracker
 ) {
 
     fun downloadPdf(url: String, fileName: String): Flow<DownloadResult> = flow {
+        analyticsTracker.logEvent(
+            "pdf_download_started",
+            mapOf(
+                "url" to url,
+                "file_name" to fileName
+            )
+        )
 //        Log.d(TAG, "connection opening...")
         SSLTrustUtils.trustAllHosts()
         var connection: HttpURLConnection? = null
@@ -45,6 +54,14 @@ class PdfManager(
             val file = File(context.filesDir, sanitizeFileName(fileName))
 
             if (file.exists()) {
+                analyticsTracker.logEvent(
+                    "pdf_download_skipped",
+                    mapOf(
+                        "url" to url,
+                        "file_name" to fileName,
+                        "message" to "File already exists. Skipping download."
+                    )
+                )
                 Log.d(TAG, "File '$fileName' already exists. Attempting to replace.")
                 if (!file.delete()) {
                     // If deletion fails, it's a critical error as we can't replace the file.
@@ -80,9 +97,26 @@ class PdfManager(
 //            Log.d(TAG, "File '$fileName' downloaded successfully.")
 //            Log.d(TAG, "Downloaded file size: $total bytes")
             emit(DownloadResult.Success(file.absolutePath))
+            analyticsTracker.logEvent(
+                "pdf_download_success",
+                mapOf(
+                    "url" to url,
+                    "file_name" to fileName,
+                    "file_path" to file.absolutePath,
+                    "file_size" to total
+                )
+            )
         } catch (e: Exception) {
             Log.d(TAG, "Error: $e")
             emit(DownloadResult.Error(e))
+            analyticsTracker.logEvent(
+                "pdf_download_failed",
+                mapOf(
+                    "url" to url,
+                    "file_name" to fileName,
+                    "error_message" to (e.message ?: "unknown")
+                )
+            )
         } finally {
             connection?.disconnect()
         }
@@ -119,9 +153,20 @@ class PdfManager(
         if (file.exists()) {
             file.delete()
             Log.d(TAG, "File deleted")
-        } else
+
+            analyticsTracker.logEvent(
+                "pdf_file_deleted",
+                mapOf("file_path" to path)
+            )
+        } else {
             Log.d(TAG, "File not found")
+            analyticsTracker.logEvent(
+                "pdf_file_delete_failed",
+                mapOf("file_path" to path, "error_message" to "file not found")
+            )
+        }
     }
+
 
     private fun sanitizeFileName(name: String): String {
         // Remove illegal characters: anything other than a-zA-Z0-9, dot, hyphen, underscore

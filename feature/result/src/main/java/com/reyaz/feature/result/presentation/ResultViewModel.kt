@@ -3,6 +3,7 @@ package com.reyaz.feature.result.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.feature.result.domain.repository.ResultRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ private const val TAG = "RESULT_VIEW_MODEL"
 
 class ResultViewModel(
     private val resultRepository: ResultRepository,
-    private val networkManager: NetworkManager
+    private val networkManager: NetworkManager,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ResultUiState())
     val uiState: StateFlow<ResultUiState> = _uiState.asStateFlow()
@@ -26,7 +28,7 @@ class ResultViewModel(
             onEvent(ResultEvent.LoadSavedResults)
 //            networkManager.observeInternetConnectivity().collect { isNetworkAvailable ->
 //                if (isNetworkAvailable){
-                    onEvent(ResultEvent.Initialize)
+            onEvent(ResultEvent.Initialize)
 //                } else {
 //                    updateState { it.copy(error = "No Internet Connection") }
 //                }
@@ -126,6 +128,10 @@ class ResultViewModel(
     private fun onDeleteCourse(courseId: String) {
         viewModelScope.launch {
             resultRepository.deleteCourse(courseId)
+            analyticsTracker.logEvent(
+                "course_deleted",
+                mapOf("course_id" to courseId)
+            )
         }
     }
 
@@ -161,6 +167,10 @@ class ResultViewModel(
                         typeLoading = false
                     )
                 }
+                analyticsTracker.logEvent(
+                    "course_type_fetch_failed",
+                    mapOf("error_message" to (typeList.exceptionOrNull()?.message ?: "unknown"))
+                )
             }
         }
     }
@@ -186,6 +196,13 @@ class ResultViewModel(
                         courseLoading = false
                     )
                 }
+                analyticsTracker.logEvent(
+                    "course_for_type_fetch_failed",
+                    mapOf(
+                        "course_type" to uiState.value.selectedCourse,
+                        "error_message" to (typeList.exceptionOrNull()?.message ?: "unknown")
+                    )
+                )
             }
         }
     }
@@ -201,6 +218,12 @@ class ResultViewModel(
 //            Log.d(TAG, "course id: ${ uiState.value.selectedTypeId}")
             if (result.isSuccess) {
                 updateState { it.copy(isLoading = false) }
+                analyticsTracker.logEvent(
+                    "result_fetched",
+                    mapOf(
+                        "course_name" to uiState.value.selectedCourse
+                    )
+                )
             } else {
                 updateState {
                     it.copy(
@@ -208,6 +231,14 @@ class ResultViewModel(
                         courseLoading = false
                     )
                 }
+                analyticsTracker.logEvent(
+                    "result_fetch_failed",
+                    mapOf(
+                        "course_type" to uiState.value.selectedType,
+                        "course_name" to uiState.value.selectedCourse,
+                        "error_message" to (result.exceptionOrNull()?.message ?: "unknown")
+                    )
+                )
             }
         }
     }
@@ -230,12 +261,20 @@ class ResultViewModel(
 
     private fun downloadPdf(url: String, listId: String, listTitle: String) {
 //        Log.d(TAG, "Download url: $url")
+        // Analytics event for PDF download
+        analyticsTracker.logEvent(
+            "pdf_download_click",
+            mapOf(
+                "url" to url,
+                "list_id" to listId,
+                "file_name" to listTitle
+            )
+        )
         viewModelScope.launch {
             if (networkManager.observeInternetConnectivity().first()) {
                 updateState { it.copy(error = null) }
                 resultRepository.downloadPdf(url = url, listId = listId, fileName = listTitle)
-            }
-            else
+            } else
                 updateState { it.copy(error = "No Internet Connection") }
         }
     }

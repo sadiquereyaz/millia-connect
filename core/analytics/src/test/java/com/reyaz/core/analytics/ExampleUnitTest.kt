@@ -1,4 +1,4 @@
-package com.reyaz.core.auth
+package com.reyaz.core.analytics
 
 import org.junit.Test
 
