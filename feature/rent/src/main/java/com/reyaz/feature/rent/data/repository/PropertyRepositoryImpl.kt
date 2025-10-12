@@ -43,7 +43,8 @@ class PropertyRepositoryImpl(
         return try {
             val docRef = propertyCollection.document()
             val propertyWithId = property.copy(
-                id = docRef.id.toIntOrNull() ?: 0)
+                id = docRef.id
+            )
             docRef.set(propertyWithId).await()
             Result.success(Unit)
         } catch (e: Exception) {

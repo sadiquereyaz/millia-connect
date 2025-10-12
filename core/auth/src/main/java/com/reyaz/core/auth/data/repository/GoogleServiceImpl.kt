@@ -25,53 +25,42 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class GoogleServiceImpl(private val firebaseAuth: FirebaseAuth): GoogleService {
-    override fun googleSignIn(
+class GoogleServiceImpl(private val firebaseAuth: FirebaseAuth) : GoogleService {
+    override suspend fun googleSignIn(
         context: Context,
-        scope: CoroutineScope,
         launcher: ManagedActivityResultLauncher<Intent, ActivityResult>?,
-        login: () -> Unit
-    ) {
+//        login: () -> Unit
+    ): Result<Unit> {
+        return try {
+            val credentialManager = CredentialManager.create(context)
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(getCredentialOption())
+                .build()
 
-        val credentialManager = CredentialManager.create(context)//credential manager it holds the credential
-
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(getCredentialOption())
-            .build()
-
-        scope.launch {   //scope is passed from ui
-            try {
-                val result = credentialManager.getCredential(context, request)
-                when (result.credential) {
-                    is CustomCredential -> {
-                        if (result.credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                            val googleIdTokenCredential =
-                                GoogleIdTokenCredential.createFrom(result.credential.data)
-                            val googleTokenId = googleIdTokenCredential.idToken
-                            val authCredential =
-                                GoogleAuthProvider.getCredential(googleTokenId, null)
-                            val user =
-                                firebaseAuth.signInWithCredential(authCredential).await().user
-                            user?.let {
-                                if (it.isAnonymous.not()) {
-                                    login.invoke()
-                                    Log.d("login","logged in ")
-                                }
-                            }
-                        }
-                    }
-                    else -> {
-
+            val result = credentialManager.getCredential(context, request)
+            when (val credential = result.credential) {
+                is CustomCredential -> {
+                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                        val googleIdTokenCredential =
+                            GoogleIdTokenCredential.createFrom(credential.data)
+                        val googleTokenId = googleIdTokenCredential.idToken
+                        val authCredential =
+                            GoogleAuthProvider.getCredential(googleTokenId, null)
+                        firebaseAuth.signInWithCredential(authCredential).await()
+                        return Result.success(Unit)
                     }
                 }
-            } catch (e: NoCredentialException) {
-                launcher?.launch(getIntent())
-            } catch (e: GetCredentialException) {
-                e.printStackTrace()
             }
+            Result.failure(Exception("Invalid credential type"))
+        } catch (e: NoCredentialException) {
+            launcher?.launch(getIntent())
+            Result.failure(e)
+        } catch (e: GetCredentialException) {
+            e.printStackTrace()
+            Result.failure(e)
         }
-
     }
+
 
     private fun getIntent(): Intent {
         return Intent(Settings.ACTION_ADD_ACCOUNT).apply {

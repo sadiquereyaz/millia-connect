@@ -6,14 +6,15 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import kotlinx.coroutines.CoroutineScope
 
-interface GoogleService{
+interface GoogleService {
     //for signing function
-    fun googleSignIn(
+    suspend fun googleSignIn(
         context: Context,
-        scope: CoroutineScope,
+//        scope: CoroutineScope,
         launcher: ManagedActivityResultLauncher<Intent, ActivityResult>?,
-        login:()->Unit
-    )
+//        login: () -> Unit
+    ): Result<Unit>
+
     //for signout from google
     fun googleSignOut(context: Context)
 }

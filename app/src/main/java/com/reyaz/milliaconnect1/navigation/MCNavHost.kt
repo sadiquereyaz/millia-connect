@@ -1,7 +1,6 @@
 package com.reyaz.milliaconnect1.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import constants.NavigationRoute
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -81,14 +80,14 @@ fun MCNavHost(
         // Property Graph
         navigation(
             route = constants.NavigationRoute.PropertyGraph.route,
-            startDestination = constants.NavigationRoute.PropertyFeed.route
+            startDestination = constants.NavigationRoute.CreatePost.route
         ) {
             propertyNavGraph(navController, snackbarHostState)
         }
 
         // Notice
         composable(
-            route = constants.NavigationRoute.Notice.route
+            route = constants.NavigationRoute.NoticeGraph.route
         ) {
             val noticeViewModel: NoticeViewModel = koinViewModel()
             val uiState by noticeViewModel.uiState.collectAsStateWithLifecycle()

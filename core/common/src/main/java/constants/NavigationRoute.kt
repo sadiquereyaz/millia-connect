@@ -10,13 +10,21 @@ sealed class NavigationRoute(val route: String) {
     // Nested Graph Routes
     data object AttendanceGraph : NavigationRoute("attendance_graph")
     data object ResultGraph : NavigationRoute("result_graph")
-    data object Notice : NavigationRoute("notice_graph")
+    data object NoticeGraph : NavigationRoute("notice_graph")
     data object PropertyGraph : NavigationRoute("property_graph")
 
 
     // Attendance Feature Routes
     data object Schedule : NavigationRoute("attendance/schedule")
     data object AttendanceHistory : NavigationRoute("attendance/history")
+
+    // Property Feature Routes
+    data object PropertyFeed : NavigationRoute("property/feed")
+    data class PropertyDetails(val propertyId: String) : NavigationRoute("property/details"){
+        fun createRoute(propertyId: String) = "property/details/$propertyId"
+    }
+    data object CreatePost : NavigationRoute("property/create_post")
+
 
     // miscellaneous
     data object PdfViewer : NavigationRoute("pdf_viewer?path={path}") {
@@ -31,20 +39,6 @@ sealed class NavigationRoute(val route: String) {
     }
 
 
-//    data object AttendanceDetails : NavigationRoute("attendance/details/{attendanceId}") {
-//        fun createRoute(attendanceId: String) = "attendance/details/$attendanceId"
-//    }
-//    data object MarkAttendance : NavigationRoute("attendance/mark")
-
-
-    // Authentication Routes
-//    data object Login : NavigationRoute("login")
-//    data object Register : NavigationRoute("register")
-//    data object ForgotPassword : NavigationRoute("forgot_password")
-
-
-    // Academic Feature Routes
-//    data object Courses : NavigationRoute("academics/courses")
 //    data object CourseDetails : NavigationRoute("academics/courses/{courseId}") {
 //        fun createRoute(courseId: String) = "academics/courses/$courseId"
 //    }
@@ -60,11 +54,6 @@ sealed class NavigationRoute(val route: String) {
 //    data object Notifications : NavigationRoute("profile/notifications")
 //    data object About : NavigationRoute("profile/about")
 
-    // Property Feature Routes
-    data object PropertyFeed : NavigationRoute("property/feed")
-    data class PropertyDetails(val propertyId: String) : NavigationRoute("property/details"){
-        fun createRoute(propertyId: String) = "property/details/$propertyId"
-    }
     companion object {
 
         const val DEEPLINK_BASE = "reyaz://milliaconnect"

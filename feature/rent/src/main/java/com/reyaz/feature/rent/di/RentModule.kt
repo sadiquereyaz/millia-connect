@@ -4,7 +4,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.reyaz.feature.rent.data.repository.PropertyRepositoryImpl
 import com.reyaz.feature.rent.domain.repository.PropertyRepository
 import com.reyaz.feature.rent.presentation.property_list_screen.PropertyListViewModel
-import com.reyaz.feature.rent.presentation.property_post_screen.PropertyPostViewModel
+import com.reyaz.feature.rent.presentation.property_post_screen.CreatePostViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -18,7 +18,7 @@ val rentModule = module{
 
     //providing dependency to viewmodel
     viewModel { PropertyListViewModel(get()) }
-    viewModel { PropertyPostViewModel(get(),get()) }
+    viewModel { CreatePostViewModel(get(),get()) }
 }
 
 //It doesn’t use code generation or annotations (like Dagger/Hilt).
