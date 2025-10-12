@@ -10,7 +10,6 @@ import com.reyaz.feature.rent.domain.model.Property
 @Composable
 fun PropertyDetailScreen(property: Property){
     Column(modifier = Modifier.fillMaxSize()){
-        Text(text=property.name)
-        Text(text=property.age)
+
     }
 }

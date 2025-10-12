@@ -12,14 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reyaz.feature.rent.domain.model.Property
-import com.reyaz.feature.rent.presentation.property_post_screen.components.PropertyCard
+
 
 @Composable
 fun PropertyListScreen(
     modifier: Modifier,
     viewModel: PropertyListViewModel,
-    onPostClick:()->Unit,
-    onDetailViewClick:()->Unit
+    onDetailClick:(property: Property)->Unit
 ){
       val uiState by viewModel.propertiesState.collectAsStateWithLifecycle()
 
@@ -52,7 +51,6 @@ fun PropertyListScreen(
                     ){
                         items(list.size){i->
                             val property = list[i]
-                            PropertyCard(property)
                         }
                     }
                 }

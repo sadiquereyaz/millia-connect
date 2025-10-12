@@ -15,6 +15,7 @@ import com.reyaz.feature.rent.domain.repository.PropertyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PropertyPostViewModel(
@@ -24,6 +25,10 @@ class PropertyPostViewModel(
 //this variable is for keeping the track whether use is logged in or not
     private val _user = MutableStateFlow(Firebase.auth.currentUser)
     val user = _user.asStateFlow()
+
+    //ui state for property
+    private val _uiState = MutableStateFlow(Property())
+    val uiState = _uiState.asStateFlow()
 
     //this viewmodel will be responsible for only posting the property
     fun postProperty(property: Property) {
@@ -51,5 +56,58 @@ class PropertyPostViewModel(
             launcher = launcher,
             login = login
         )
+    }
+
+
+    //all function related to ui changes
+    fun onPropertyTitleChange(newTitle:String){
+        _uiState.update {
+            it.copy(propertyTitle = newTitle)
+        }
+    }
+    fun onPropertyTypeChange(newType:String){
+        _uiState.update {
+            it.copy(propertyType = newType)
+        }
+    }
+    fun onBhkChange(newBHK:String) {
+        _uiState.update {
+            it.copy(propertyBHK = newBHK)
+        }
+    }
+    fun onFloorNumberChange(newFloor:String){
+        _uiState.update {
+            it.copy(propertyFloorNumber = newFloor)
+        }
+    }
+    fun onTotalFloorChange(newTotalFloor:String){
+        _uiState.update {
+            it.copy(totalFloor = newTotalFloor)
+        }
+    }
+    fun onRentChange(newRent:String){
+        _uiState.update {
+            it.copy(propertyRent = newRent)
+        }
+    }
+    fun onSecurityDepositChange(newSecurityDeposit:String){
+        _uiState.update {
+            it.copy(securityDeposit = newSecurityDeposit)
+        }
+    }
+    fun onDescriptionChange(newDescription:String){
+        _uiState.update {
+            it.copy(propertyDescription = newDescription)
+        }
+    }
+    fun onAmenityChange(amenity: List<String>) {
+        _uiState.update {
+            it.copy(amenities = amenity)
+        }
+    }
+    fun onLocationChange(newLocation:String){
+        _uiState.update {
+            it.copy(propertyLocation = newLocation)
+        }
     }
 }

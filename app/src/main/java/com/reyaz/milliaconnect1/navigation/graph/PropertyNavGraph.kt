@@ -33,13 +33,13 @@ fun NavGraphBuilder.propertyNavGraph(
         PropertyListScreen(
             modifier = Modifier,
             viewModel = viewModel,
-            onPostClick ={
-                //on clicking it will take to the post screen where u are allowed to post
-                navController.navigate("route i dont know because my mind is fucked in understanding naviagation")
-            },
-            onDetailViewClick={
+//            onPostClick ={
+//                //on clicking it will take to the post screen where u are allowed to post
+//                navController.navigate("route i dont know because my mind is fucked in understanding naviagation")
+//            },
+            onDetailClick={it->
                 //on clicking this u can see the details on the new screen
-                navController.navigate("same here ,will be managed by sadique bhai ")
+//                navController.navigate(Navi)
             }
             // sare navigation wale lambda jisme navcontroller use hoga wo yhi se pass krna
             // aur jo function viewmodel me hai like button click pe execute krna h wo bhi yhi se pass krna
@@ -59,7 +59,7 @@ fun NavGraphBuilder.propertyNavGraph(
         )
     }
     composable (
-        route ="" //filhall nhi pataa hai baad m daal dunga route
+        route = NavigationRoute.PropertyFeed.route //filhall nhi pataa hai baad m daal dunga route
     ){
         val viewModel: PropertyPostViewModel = koinViewModel()
         PropertyPostScreen(

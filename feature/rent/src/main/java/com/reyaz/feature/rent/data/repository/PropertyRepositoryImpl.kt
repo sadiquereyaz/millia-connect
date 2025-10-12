@@ -42,7 +42,8 @@ class PropertyRepositoryImpl(
     override suspend fun postProperty(property: Property): Result<Unit> {
         return try {
             val docRef = propertyCollection.document()
-            val propertyWithId = property.copy(id = docRef.id)
+            val propertyWithId = property.copy(
+                id = docRef.id.toIntOrNull() ?: 0)
             docRef.set(propertyWithId).await()
             Result.success(Unit)
         } catch (e: Exception) {
