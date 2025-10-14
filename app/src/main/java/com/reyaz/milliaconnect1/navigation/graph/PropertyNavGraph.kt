@@ -1,10 +1,16 @@
 package com.reyaz.milliaconnect1.navigation.graph
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.reyaz.feature.rent.domain.model.Property
@@ -19,6 +25,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NavGraphBuilder.propertyNavGraph(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
+    showSearchComponents: Boolean,
 ) {
     composable(
         route = NavigationRoute.PropertyFeed.route,
@@ -27,6 +34,7 @@ fun NavGraphBuilder.propertyNavGraph(
         )
     ) {
         val viewModel: PropertyListViewModel = koinViewModel()
+
         PropertyListScreen(
             modifier = Modifier,
             viewModel = viewModel,
@@ -37,7 +45,12 @@ fun NavGraphBuilder.propertyNavGraph(
             onDetailClick={it->
                 //on clicking this u can see the details on the new screen
 //                navController.navigate(Navi)
-            }
+            },
+
+            onAddClick={
+                navController.navigate(NavigationRoute.CreatePost.route)
+            },
+            showSearchComponents = showSearchComponents
             // sare navigation wale lambda jisme navcontroller use hoga wo yhi se pass krna
             // aur jo function viewmodel me hai like button click pe execute krna h wo bhi yhi se pass krna
             /*
@@ -65,8 +78,8 @@ fun NavGraphBuilder.propertyNavGraph(
             },
             viewModel = viewModel,
             navigateToPostScreen = {
-                //navController.popBackStack() //todo: uncomment and delete below line
-                navController.navigate(NavigationRoute.PropertyFeed.route)
+                navController.popBackStack() //todo: uncomment and delete below line
+//                navController.navigate(NavigationRoute.PropertyFeed.route)
             },
             createPostUiState = viewModel.createPostUiState.collectAsStateWithLifecycle().value
         )

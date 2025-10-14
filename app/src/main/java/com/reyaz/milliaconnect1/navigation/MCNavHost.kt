@@ -33,6 +33,7 @@ fun MCNavHost(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     portalViewModel: PortalViewModel,
+    showSearchComponents: Boolean
 ) {
     NavHost(
         navController = navController,
@@ -80,9 +81,9 @@ fun MCNavHost(
         // Property Graph
         navigation(
             route = constants.NavigationRoute.PropertyGraph.route,
-            startDestination = constants.NavigationRoute.CreatePost.route
+            startDestination = constants.NavigationRoute.PropertyFeed.route//changes mad by me
         ) {
-            propertyNavGraph(navController, snackbarHostState)
+            propertyNavGraph(navController, snackbarHostState, showSearchComponents)
         }
 
         // Notice
