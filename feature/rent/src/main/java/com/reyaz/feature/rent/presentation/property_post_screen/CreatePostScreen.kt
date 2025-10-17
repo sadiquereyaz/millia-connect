@@ -175,9 +175,9 @@ fun CreatePostScreen(
 
             Button(
                 onClick = {
-                    if (isImageUploaded) {
+                    if (/*isImageUploaded*/true) {
                         //if true means upload the image
-                        if (viewModel.hasEmptyField()) {
+                        if (/*viewModel.hasEmptyField()*/false) {
                             Toast.makeText(
                                 context,
                                 "Please fill all the fields",

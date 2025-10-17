@@ -91,4 +91,6 @@ dependencies {
     // For Jetpack Compose integration
     implementation("io.coil-kt:coil-compose:2.7.0")
 
+    implementation(libs.androidx.material.icons.extended)
+
 }
