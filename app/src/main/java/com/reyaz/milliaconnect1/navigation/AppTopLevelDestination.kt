@@ -1,9 +1,11 @@
 package com.reyaz.milliaconnect1.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HomeWork
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Timer
@@ -51,14 +53,22 @@ object TopLevelDestinations {
         titleResourceId = "Result",
         iconContentDescription = "Result tab"
     )
+    val PROPERTY = AppTopLevelDestination(
+        route = constants.NavigationRoute.PropertyGraph,
+        selectedIcon = Icons.Filled.HomeWork,
+        unselectedIcon = Icons.Outlined.HomeWork,
+        titleResourceId = "Property",
+        iconContentDescription = "Property tab"
+    )
 
     /**
      * List of all top-level destinations in the order they should appear
      */
     val ALL = listOf(
-        SCHEDULE,
+//        SCHEDULE,
         RESULT,
         NOTICE,
+        PROPERTY
     )
 }
 
