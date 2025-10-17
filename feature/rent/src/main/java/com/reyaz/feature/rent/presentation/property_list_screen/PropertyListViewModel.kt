@@ -16,6 +16,10 @@ class PropertyListViewModel(
 ) : ViewModel() {
     //this class will handle the fetching property list from firebase
 
+    private val _searchState = MutableStateFlow("")
+    val searchState = _searchState.asStateFlow()
+
+
     private val _propertiesState =
         MutableStateFlow<PropertyListUiState<List<Property>>>(PropertyListUiState.Loading)
 
@@ -45,5 +49,15 @@ class PropertyListViewModel(
             .collect {
                 _propertiesState.value = PropertyListUiState.Success(it)
             }
+    }
+
+    fun search(){
+        viewModelScope.launch {
+
+        }
+    }
+
+    fun onSearchChange(value:String){
+        _searchState.value = value
     }
 }

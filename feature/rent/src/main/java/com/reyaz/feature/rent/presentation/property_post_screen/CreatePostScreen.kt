@@ -2,6 +2,8 @@ package com.reyaz.feature.rent.presentation.property_post_screen
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -50,13 +52,23 @@ fun CreatePostScreen(
 ) {
 
     val propertyState by viewModel.propertyState.collectAsStateWithLifecycle()
+    val isImageUploaded by viewModel.isImageUploaded.collectAsStateWithLifecycle()
+    val isImageUploading by viewModel.isImageUploading.collectAsStateWithLifecycle()
+    val isPostDone = viewModel.postSuccess.collectAsStateWithLifecycle().value
 
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {}
 
-    val isPostDone = viewModel.postSuccess.collectAsStateWithLifecycle().value
+    val imageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            Log.d("CreatePostScreen", "CreatePostScreen:picked ")
+            viewModel.convertAndUploadImage(uris, context)
+        }
+    }
 
     LaunchedEffect(isPostDone) {
         if (isPostDone) {
@@ -163,11 +175,21 @@ fun CreatePostScreen(
 
             Button(
                 onClick = {
-                    if (viewModel.hasEmptyField()) {
-                        Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT)
-                            .show()
+                    if (isImageUploaded) {
+                        //if true means upload the image
+                        if (viewModel.hasEmptyField()) {
+                            Toast.makeText(
+                                context,
+                                "Please fill all the fields",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        } else {
+                            onPostClick(context, launcher)
+                        }
                     } else {
-                        onPostClick(context, launcher)
+                        //pick image first
+                        imageLauncher.launch("image/*")
                     }
                 },
                 modifier = Modifier
@@ -175,11 +197,16 @@ fun CreatePostScreen(
                     .padding(top = 12.dp, start = 12.dp, end = 12.dp)
             ) {
                 Text(
-                    text = "Post",
+                    text = if (isImageUploaded) {
+                        "post"
+                    } else {
+                        "upload images"
+                    },
                 )
             }
         }
-        if (createPostUiState.isLoading) {
+//when i am uploading image and uploading entire data object then it will show circular progress indiacator
+        if (createPostUiState.isLoading || isImageUploading) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -189,9 +216,4 @@ fun CreatePostScreen(
             ) { CircularProgressIndicator() }
         }
     }
-}
-
-@Composable
-fun TopBar(title: String, onSearchClick: () -> Unit) {
-
 }

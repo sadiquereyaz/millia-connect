@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.reyaz.milliaconnect1.app-mergeDebugResources-87:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.reyaz.milliaconnect1.app-mergeDebugResources-88:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\1776b44bc77bb51ec395304ff935d01d\\transformed\\core-splashscreen-1.0.1\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\6d61fbec993f5fae79e8ad4bb8488ff9\\transformed\\core-splashscreen-1.0.1\\res\\values-watch-v20\\values-watch-v20.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,24 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\4de12621d0dcfe34c7d18a4b85a3aa91\\transformed\\play-services-auth-21.1.1\\res\\values-watch-v20\\values.xml",
-                    "from": {
-                        "startLines": "4,5,6,7,8,9,10,11",
-                        "startColumns": "0,0,0,0,0,0,0,0",
-                        "startOffsets": "173,248,324,399,474,561,638,725",
-                        "endColumns": "74,75,74,74,86,76,86,75",
-                        "endOffsets": "247,323,398,473,560,637,724,800"
-                    },
-                    "to": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,134,214,293,372,463,544,635",
-                        "endColumns": "78,79,78,78,90,80,90,79",
-                        "endOffsets": "129,209,288,367,458,539,630,710"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\156f2e7280b5288910fc1cbc1d13a94e\\transformed\\appcompat-1.7.0\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\2a813742e541ae2675ca80bdee0e59b0\\transformed\\appcompat-1.7.0\\res\\values-watch-v20\\values-watch-v20.xml",
                     "from": {
                         "startLines": "2,5,8",
                         "startColumns": "4,4,4",
@@ -54,6 +37,23 @@
                         "endLines": "20,23,26",
                         "endColumns": "12,12,12",
                         "endOffsets": "1448,1619,1792"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\arman\\.gradle\\caches\\8.10.2\\transforms\\ca4751255fc65e509c6efa8132c05d42\\transformed\\play-services-auth-21.1.1\\res\\values-watch-v20\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11",
+                        "startColumns": "0,0,0,0,0,0,0,0",
+                        "startOffsets": "173,248,324,399,474,561,638,725",
+                        "endColumns": "74,75,74,74,86,76,86,75",
+                        "endOffsets": "247,323,398,473,560,637,724,800"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,134,214,293,372,463,544,635",
+                        "endColumns": "78,79,78,78,90,80,90,79",
+                        "endOffsets": "129,209,288,367,458,539,630,710"
                     }
                 }
             ]

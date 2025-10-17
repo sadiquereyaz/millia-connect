@@ -43,8 +43,10 @@ fun NavGraphBuilder.propertyNavGraph(
 //                navController.navigate("route i dont know because my mind is fucked in understanding naviagation")
 //            },
             onDetailClick={it->
-                //on clicking this u can see the details on the new screen
-//                navController.navigate(Navi)
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("property",it)
+                navController.navigate( NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route)
             },
 
             onAddClick={
@@ -88,9 +90,12 @@ fun NavGraphBuilder.propertyNavGraph(
         composable(
             route = NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route,
         ){
+            backStackEntry->
+            val property = navController.previousBackStackEntry
+            ?.savedStateHandle
+            ?.get<Property>("property")
             /// detail screeen ka composle rhega
             //backstack entry m store krke object ko pass kr denge but for now lets hardcode it
-            val property = Property()
-            PropertyDetailScreen(property)
+            PropertyDetailScreen(property = property?:Property())
         }
 }
