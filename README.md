@@ -72,6 +72,10 @@ milia-connect/
 │   │   │   └── ui/       # App-level UI components
 │
 ├── core/                 # Shared modules
+│   ├── auth/             # Authentication system
+│   │   ├── data/         # Repositories, data sources (Firebase/Auth APIs)
+│   │   └── domain/       # Auth models, use cases
+│   │
 │   ├── common/           # Utilities, extensions, constants
 │   ├── data/             # Base data models
 │   ├── network/          # Retrofit, API clients
@@ -94,10 +98,19 @@ milia-connect/
 │   │   ├── domain/      # Login logic
 │   │   └── presentation/ # Connection UI
 │   │
-│   └── result/          # Entrance results
-│       ├── data/        # Scrapers, DB
-│       ├── domain/      # Result models
-│       └── presentation/ # Result screens
+│   ├── result/           # Entrance results
+│   │   ├── data/        # Scrapers, DB
+│   │   ├── domain/      # Result models
+│   │   └── presentation/ # Result screens
+│   │
+│   └── rent/             # Rent feature
+│       ├── data/        # Room entities, repositories
+│       ├── domain/      # Use cases, domain models
+│       └── presentation/ # Rent feature UI screens
+│
+├── gradle/              # Version catalog
+└── build-logic/         # Custom Gradle conventions
+
 │
 ├── gradle/              # Version catalog
 └── build-logic/         # Custom Gradle conventions
@@ -122,6 +135,8 @@ milia-connect/
 * **WorkManager** (Background tasks)
 * **Retrofit** (Network operations)
 * **Material 3** (Design system)
+* **firebase storage**
+* **google signin with credential manager** 
 
 ---
 
@@ -546,9 +561,16 @@ millia-connect/
             └── gradle-wrapper.properties
 
 ```
+## My Role
+#Integrated Firebase (Firestore, Storage) for backend services and real-time data sync.
+#integrated google signin with credential manager
+#implemented koin dependency injection
+#integrated rent listing
 
 
 ## ✉️ Contact
+**Md Arman**
+📧 [armanjmi2022@gmail.com]
 
 **Md Sadique**  
 📧 [mdsadique47@gmail.com](mailto:mdsadique47@gmail.com)  
