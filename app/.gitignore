@@ -1,5 +1,12 @@
-/build
-/extraFiles/
-extraFiles/structureTree.md
-**/structureTree.md
+# Android / Gradle / IntelliJ
+*.iml
+.gradle/
+local.properties
+/.idea/
+.DS_Store
+/build/
+captures/
+.cxx/
+app/build/
+**/build/
 google-services.json
