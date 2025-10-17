@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
+import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.common.utils.safeSuspendCall
 import com.reyaz.core.network.PdfManager
 import com.reyaz.core.network.model.DownloadResult
@@ -41,6 +42,7 @@ class ResultRepositoryImpl(
     private val resultDao: ResultDao,
     private val pdfDownloadResult: PdfManager,
     private val notificationManager: AppNotificationManager,
+    private val analyticsTracker: AnalyticsTracker
 ) : ResultRepository {
 
     override fun observeResults(): Flow<List<ResultHistory>> {
@@ -263,6 +265,15 @@ class ResultRepositoryImpl(
                         listId = listId,
                         progress = null
                     )
+                    analyticsTracker.logEvent(
+                        "pdf_download_failed",
+                        mapOf(
+                            "url" to url,
+                            "list_id" to listId,
+                            "file_name" to fileName,
+                            "error_message" to downloadStatus.exception.message.toString()
+                        )
+                    )
                     //emit(DownloadResult.Error(downloadStatus.exception))
                 }
 
@@ -281,6 +292,15 @@ class ResultRepositoryImpl(
                         path = downloadStatus.filePath,
                         listId = listId,
                         progress = 100
+                    )
+                    // Analytics event for PDF download
+                    analyticsTracker.logEvent(
+                        "pdf_downloaded",
+                        mapOf(
+                            "url" to url,
+                            "list_id" to listId,
+                            "file_name" to fileName
+                        )
                     )
                     // Log.d(TAG, "Download path: ${downloadStatus.filePath}")
                     //emit(DownloadResult.Success(filePath = downloadStatus.filePath))

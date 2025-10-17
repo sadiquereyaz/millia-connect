@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.reyaz.core.network"
-    compileSdk = 35
+    namespace = "com.reyaz.core.analytics"
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -34,22 +35,19 @@ android {
 
 dependencies {
 
-    implementation(project(":core:analytics"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
+    // koin
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
-    implementation(libs.koin.android)
-    implementation(libs.koin.core.coroutines)
 
-    // screen scraping
-    implementation(libs.htmlunit.android)
-
-    // datastore
-    implementation(libs.androidx.datastore.preferences)
 }

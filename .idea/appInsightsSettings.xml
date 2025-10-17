@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.reyaz.milliaconnect1" />
-                  <option name="mobileSdkAppId" value="1:759891781981:android:b1daadaeaa47b2a8f220b4" />
-                  <option name="projectId" value="millia-connect" />
-                  <option name="projectNumber" value="759891781981" />
+                  <option name="appId" value="com.reyaz.milliaconnect1.debug" />
+                  <option name="mobileSdkAppId" value="1:1069475573121:android:4d24a6135f70eb7e654c80" />
+                  <option name="projectId" value="millia-connect-f5828" />
+                  <option name="projectNumber" value="1069475573121" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
