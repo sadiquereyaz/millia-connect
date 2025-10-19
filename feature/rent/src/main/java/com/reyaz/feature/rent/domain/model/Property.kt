@@ -10,6 +10,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Property(
   val id: String = "1",
+  val ownerName: String? = "Sadique Reyaz Android Inter",
+  val ownerPicUrl: String? = "https://avatars.githubusercontent.com/u/118601913?s=400&u=752ca858776d252fabc6126797f6aaa3f5e9912a&v=4",
   val urlList: List<String> = emptyList(),
   val propertyTitle: String = "Spacious 2BHK Apartment",
   val propertyType: String = "Apartment",
@@ -21,14 +23,13 @@ data class Property(
   val totalFloor: String = "5",
   val propertyDescription: String = "A beautiful and spacious apartment located in the heart of the city. Comes with all modern amenities.",
   val amenities: List<String> = listOf("Lift", "Security", "Parking", "Power Backup"),
-  val ownerName: String? = "Sadique Reyaz Android Inter",
-  val ownerPicUrl: String? = "https://avatars.githubusercontent.com/u/118601913?s=400&u=752ca858776d252fabc6126797f6aaa3f5e9912a&v=4",
   val securityAmount: Int? = 10000,
   val securityDeposit: String = "50000",    // todo: remove
   val gender: Gender = Gender.MALE,
   val requiredHeadCount: Int = 5,
   val furnishType : FurnishType? = FurnishType.NOT_FURNISHED,
   val postDate: Long? = System.currentTimeMillis(),
+  val reportCount: Int = 0,
 ) : Parcelable {
   val postedDateText: String? = postDate?.let {
     val date = java.util.Date(it)

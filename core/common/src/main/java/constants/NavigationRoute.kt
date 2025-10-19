@@ -20,8 +20,10 @@ sealed class NavigationRoute(val route: String) {
 
     // Property Feature Routes
     data object PropertyFeed : NavigationRoute("property/feed")
-    data class PropertyDetails(val propertyId: String) : NavigationRoute("property/details"){
+    data class PropertyDetails(val propertyId: String) : NavigationRoute(route = "property/details"){
         fun createRoute(propertyId: String) = "property/details/$propertyId"
+        fun getDeepLink() = "$DEEPLINK_DOMAIN_NETLIFY/post"
+
     }
     data object CreatePost : NavigationRoute("property/create_post")
 
@@ -57,6 +59,7 @@ sealed class NavigationRoute(val route: String) {
     companion object {
 
         const val DEEPLINK_BASE = "reyaz://milliaconnect"
+        const val DEEPLINK_DOMAIN_NETLIFY = "https://milliaconnect.netlify.app"
         /**
          * Returns all main bottom navigation routes
          */

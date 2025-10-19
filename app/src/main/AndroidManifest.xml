@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -27,22 +27,59 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.SplashScreen.Splash">
 
-            <intent-filter>
-                <action android:name="android.net.conn.CAPTIVE_PORTAL"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
+            <!-- Launcher -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter>
+            <!-- App Links -->
+            <!--  <intent-filter android:autoVerify="true">
+                  <action android:name="android.intent.action.VIEW" />
+                  <category android:name="android.intent.category.DEFAULT" />
+                  <category android:name="android.intent.category.BROWSABLE" />
+
+                  &lt;!&ndash; Make sure pathPrefix matches the URL path &ndash;&gt;
+                  <data
+                      android:scheme="https"
+                      android:host="milliaconnect.netlify.app"
+                      android:pathPrefix="/post" />
+              </intent-filter>-->
+
+
+            <!-- App Links -->
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- supports format reyaz://milliaconnect -->
-                <data android:scheme="reyaz" android:host="milliaconnect" />
+
+                <!-- Make sure pathPrefix matches the URL path -->
+                <data android:scheme="https" />
+                <data android:host="milliaconnect.netlify.app" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Make sure pathPrefix matches the URL path -->
+                <data
+                    android:host="milliaconnect.netlify.app"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="post"
+                    android:scheme="milliaconnect" />
             </intent-filter>
 
         </activity>

@@ -44,7 +44,7 @@ val rentModule = module{
     single<ImageRepository> { ImageRepositoryImpl(get()) }
 
     //providing dependency to viewmodel
-    viewModel { PropertyListViewModel(get()) }
+    viewModel { PropertyListViewModel(get(), get()) }
     viewModel { CreatePostViewModel(
         get(), get(),get()
     ) }

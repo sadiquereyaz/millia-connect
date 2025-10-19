@@ -47,12 +47,12 @@ import com.reyaz.feature.rent.domain.model.GenderChip
 import com.reyaz.feature.rent.domain.model.Property
 
 @Composable
-fun PropertyCard(property: Property, onDetailClick: (property: Property) -> Unit) {
+fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onDetailClick(property)
+                onDetailClick()
             },
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),

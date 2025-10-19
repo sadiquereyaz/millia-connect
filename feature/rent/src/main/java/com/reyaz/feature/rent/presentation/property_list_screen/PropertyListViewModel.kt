@@ -3,61 +3,103 @@ package com.reyaz.feature.rent.presentation.property_list_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.reyaz.feature.rent.domain.model.Property
 import com.reyaz.feature.rent.domain.repository.PropertyRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PropertyListViewModel(
-    private val propertyRepository: PropertyRepository
+    private val propertyRepository: PropertyRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
-    //this class will handle the fetching property list from firebase
 
-    private val _searchState = MutableStateFlow("")
-    val searchState = _searchState.asStateFlow()
-
-
-    private val _propertiesState =
-        MutableStateFlow<PropertyListUiState<List<Property>>>(PropertyListUiState.Loading)
-
-    //this is private variable ,ensuring data flow from up to down
-    val propertiesState = _propertiesState.asStateFlow()
+    private val _screenData = MutableStateFlow(PropertyListScreenData())
+    val screenData = _screenData.asStateFlow()
 
     init {
-        //fetch the data when object of viewmodel is created
-        viewModelScope.launch {
-            getAllProperty()
+        getCurrentUser()
+        getAllProperty()
+    }
+
+    private fun getAllProperty() {
+        viewModelScope.launch(Dispatchers.IO) {
+            propertyRepository
+                .getAllProperty()
+                .catch { e ->
+                    Log.d("error", e.message.toString())
+                    _screenData.update {
+                        it.copy(
+                            isLoading = false,
+                            error = e.message
+                        )
+                    }
+                }
+                .collect { properties ->
+                    _screenData.update {
+                        it.copy(
+                            isLoading = false,
+                            propertyList = properties,
+                            filteredList = properties
+                        )
+                    }
+                }
         }
     }
 
-    //once this function is private set it will not be called from outside this class
-    private suspend fun getAllProperty() {
-        propertyRepository
-            .getAllProperty()
-            .onStart {
-                _propertiesState.value = PropertyListUiState.Loading
-                //on starting setting value loading
-            }
-            .catch { e ->//will catch if there is any error // _
-                //here in future implement event by channeling to ui
-                _propertiesState.value = PropertyListUiState.Error(e.message ?: "empty list")
-                Log.d("error", e.message.toString())
-            }
-            .collect {
-                _propertiesState.value = PropertyListUiState.Success(it)
-            }
-    }
-
-    fun search(){
+    private fun getCurrentUser() {
         viewModelScope.launch {
-
+            try {
+                firebaseAuth.currentUser?.let {
+                    val user = User(
+                        id = it.uid,
+                        name = it.displayName,
+                        imageUrl = it.photoUrl.toString()
+                    )
+                    _screenData.update {
+                        it.copy(user = user)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("error", e.message.toString())
+            }
         }
     }
 
-    fun onSearchChange(value:String){
-        _searchState.value = value
+    fun onSearchChange(query: String) {
+        viewModelScope.launch (Dispatchers.Default){
+            val filteredProperty = screenData.value.propertyList.filter { property ->
+                property.propertyTitle.contains(query, true) ||
+                        property.propertyBHK.contains(query, true) ||
+                        property.propertyLocation.contains(query, true)
+            }
+            _screenData.update {
+                it.copy(
+                    filteredList = filteredProperty
+                )
+            }
+        }
+    }
+
+    fun onTabSelect(tab: PropertyListScreenTab){
+        viewModelScope.launch (Dispatchers.Default){
+            val filteredProperty = screenData.value.propertyList.filter { property ->
+                when(tab){
+                    PropertyListScreenTab.ALL -> true
+                    PropertyListScreenTab.MY_PROPERTY -> property.ownerName == screenData.value.user.name
+                    PropertyListScreenTab.MANAGE_PROPERTY -> property.reportCount > 0
+                }
+            }
+            _screenData.update {
+                it.copy(
+                    selectedTab = tab,
+                    filteredList = filteredProperty
+                )
+            }
+        }
     }
 }

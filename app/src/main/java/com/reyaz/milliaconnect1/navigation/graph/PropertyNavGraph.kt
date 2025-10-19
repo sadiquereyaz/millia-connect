@@ -34,6 +34,13 @@ fun NavGraphBuilder.propertyNavGraph(
         )
     ) {
         val viewModel: PropertyListViewModel = koinViewModel()
+        LaunchedEffect(Unit) {
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("property", Property())
+            navController.navigate(NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route)
+
+        }
 
         PropertyListScreen(
             modifier = Modifier,
@@ -42,14 +49,14 @@ fun NavGraphBuilder.propertyNavGraph(
 //                //on clicking it will take to the post screen where u are allowed to post
 //                navController.navigate("route i dont know because my mind is fucked in understanding naviagation")
 //            },
-            onDetailClick={it->
+            onDetailClick = { it ->
                 navController.currentBackStackEntry
                     ?.savedStateHandle
-                    ?.set("property",it)
-                navController.navigate( NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route)
+                    ?.set("property", it)
+                navController.navigate(NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route)
             },
 
-            onAddClick={
+            onAddClick = {
                 navController.navigate(NavigationRoute.CreatePost.route)
             },
             showSearchComponents = showSearchComponents
@@ -70,12 +77,12 @@ fun NavGraphBuilder.propertyNavGraph(
              */
         )
     }
-    composable (
-        route = NavigationRoute.CreatePost.route
-    ){
+    composable(
+        route = NavigationRoute.CreatePost.route,
+    ) {
         val viewModel: CreatePostViewModel = koinViewModel()
         CreatePostScreen(
-            onPostClick = {context, launcher->
+            onPostClick = { context, launcher ->
                 viewModel.checkSignInAndPost(context, launcher)
             },
             viewModel = viewModel,
@@ -87,15 +94,17 @@ fun NavGraphBuilder.propertyNavGraph(
         )
     }
 
-        composable(
-            route = NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route,
-        ){
-            backStackEntry->
-            val property = navController.previousBackStackEntry
+    composable(
+        route = NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route,
+        deepLinks = listOf(
+            navDeepLink { uriPattern = constants.NavigationRoute.PropertyDetails("0").getDeepLink() }
+        )
+    ) { backStackEntry ->
+        val property = navController.previousBackStackEntry
             ?.savedStateHandle
             ?.get<Property>("property")
-            /// detail screeen ka composle rhega
-            //backstack entry m store krke object ko pass kr denge but for now lets hardcode it
-            PropertyDetailScreen(property = property?:Property())
-        }
+        /// detail screeen ka composle rhega
+        //backstack entry m store krke object ko pass kr denge but for now lets hardcode it
+        PropertyDetailScreen(property = property ?: Property())
+    }
 }
