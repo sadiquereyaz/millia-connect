@@ -40,8 +40,8 @@ fun MCNavHost(
         startDestination =
 //            NavigationRoute.AttendanceGraph.route,
 //            NavigationRoute.Portal.route,
-//            constants.NavigationRoute.ResultGraph.route,
-            constants.NavigationRoute.PropertyGraph.route,
+            constants.NavigationRoute.ResultGraph.route,
+//            constants.NavigationRoute.PropertyGraph.route,
 //        NavigationRoute.Notice.route,
         modifier = modifier.fillMaxSize()
     ) {
