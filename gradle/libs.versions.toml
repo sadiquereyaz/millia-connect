@@ -352,3 +352,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinJvm" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+#google services plugin---
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

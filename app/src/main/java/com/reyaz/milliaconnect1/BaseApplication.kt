@@ -37,8 +37,7 @@ class BaseApplication : Application() {
             androidLogger()
             androidContext(this@BaseApplication)
 //            workManagerFactory()
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule,rentModule,authModule)
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, analyticsModule)
+            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule)
         }
 
         if (BuildConfig.DEBUG) {
