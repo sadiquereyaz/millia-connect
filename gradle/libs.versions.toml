@@ -129,9 +129,10 @@ credentials = "1.5.0-beta01"
 googleid = "1.1.1"
 firebaseStorageKtx = "22.0.1"
 
+timber = "5.0.1"
+
 
 [libraries]
-
 # splash
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
@@ -312,6 +313,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 pdf-viewer = { module = "io.github.afreakyelf:Pdf-Viewer", version.ref = "pdfViewer" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 
 #firebase authorisation
@@ -350,6 +352,3 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinJvm" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
-#google services plugin---
-google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

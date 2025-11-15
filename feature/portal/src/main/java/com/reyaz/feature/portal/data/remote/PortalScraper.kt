@@ -20,6 +20,22 @@ class PortalScraper(
     private val webClient: WebClient
 ) {
 
+    companion object {
+        private const val TAG = "PORTAL_SCRAPER"
+        private const val ENABLE_LOGGING = true
+
+        private const val LOGIN_URL = "http://10.2.0.10:8090/login?dummy"
+        private const val LOGOUT_URL = "http://10.2.0.10:8090/logout?dummy"
+        //private const val URL_204 = "http://www.gstatic.com/generate_204"
+        private const val URL_204 = "http://clients3.google.com/generate_204"
+
+        private const val USERNAME_XPATH = "//input[@type='text']"
+        private const val PASSWORD_XPATH = "//input[@type='password']"
+        private const val LOGIN_BUTTON_XPATH = "/html/body/div[1]/form/div[3]/button"
+        private const val INVALID_CREDENTIALS_TEXT = "Note: Please enter your valid credentials."
+        private const val WIFI_NOT_PRIMARY_MSG = "But you may not enjoy it because your internet is on!"
+    }
+
     fun performLogin(username: String, password: String): Flow<Resource<String>> = flow {
         emit(Resource.Loading("Logging In"))
 
@@ -129,19 +145,4 @@ class PortalScraper(
     }
 
 }
-
-
-private const val TAG = "PORTAL_SCRAPER"
-private const val ENABLE_LOGGING = true
-
-private const val LOGIN_URL = "http://10.2.0.10:8090/login?dummy"
-private const val LOGOUT_URL = "http://10.2.0.10:8090/logout?dummy"
-//private const val URL_204 = "http://www.gstatic.com/generate_204"
-private const val URL_204 = "http://clients3.google.com/generate_204"
-
-private const val USERNAME_XPATH = "//input[@type='text']"
-private const val PASSWORD_XPATH = "//input[@type='password']"
-private const val LOGIN_BUTTON_XPATH = "/html/body/div[1]/form/div[3]/button"
-private const val INVALID_CREDENTIALS_TEXT = "Note: Please enter your valid credentials."
-private const val WIFI_NOT_PRIMARY_MSG = "But you may not enjoy it because your internet is on!"
 

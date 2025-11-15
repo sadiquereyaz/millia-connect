@@ -2,7 +2,9 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="Millia_Connect.core.analytics" target="21" />
       <module name="Millia_Connect.core.auth" target="21" />
+      <module name="Millia_Connect.feature.rent" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
