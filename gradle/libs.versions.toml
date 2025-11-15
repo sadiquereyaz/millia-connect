@@ -122,6 +122,8 @@ annotationJvm = "1.9.1"
 
 coreSplashscreen = "1.0.1"
 
+timber = "5.0.1"
+
 
 [libraries]
 # splash
@@ -304,6 +306,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 pdf-viewer = { module = "io.github.afreakyelf:Pdf-Viewer", version.ref = "pdfViewer" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 
 [plugins]

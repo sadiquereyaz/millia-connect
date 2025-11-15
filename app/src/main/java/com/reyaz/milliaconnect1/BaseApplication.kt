@@ -13,6 +13,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import timber.log.Timber
 
 /**
  * The Application class is the first component of your app to be instantiated when the process starts.
@@ -36,6 +37,9 @@ class BaseApplication : Application() {
             modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule)
         }
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }
 
