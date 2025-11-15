@@ -10,4 +10,25 @@ captures/
 app/build/
 **/build/
 google-services.json
+# Java class files
+*.class
+github.properties
+profile-out*/
+.kotlin/
+.gradle
+/local.properties
+/.idea/*
+/.idea/codeStyles
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+WebClientId.kt
 extraFiles/
