@@ -1,4 +1,4 @@
-package com.reyaz.feature.portal.presentation.components
+package com.reyaz.core.ui.components.text_field
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CustomTextField(
+fun CustomSlimTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,

@@ -5,10 +5,12 @@ import androidx.compose.material.icons.filled.HomeWork
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -46,6 +48,14 @@ object TopLevelDestinations {
         iconContentDescription = "Notice tab"
     )
 
+    val PORTAL = AppTopLevelDestination(
+        route = constants.NavigationRoute.Portal,
+        selectedIcon = Icons.Filled.Wifi,
+        unselectedIcon = Icons.Outlined.Wifi,
+        titleResourceId = "Captive Portal",
+        iconContentDescription = "Wifi tab"
+    )
+
     val RESULT = AppTopLevelDestination(
         route = constants.NavigationRoute.Result,
         selectedIcon = Icons.Filled.School,
@@ -66,6 +76,7 @@ object TopLevelDestinations {
      */
     val ALL = listOf(
 //        SCHEDULE,
+        PORTAL,
         RESULT,
         NOTICE,
         PROPERTY

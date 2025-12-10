@@ -103,6 +103,7 @@ fun MilliaConnectApp() {
             topBar = {
                 CustomCenterAlignedTopAppBar(
                     title = when (currentRoute) {
+                        NavigationRoute.Portal.route -> "Captive Portal"
                         NavigationRoute.Result.route -> "Entrance Result"
                         NavigationRoute.Schedule.route -> "Class Schedule"
 //                        NavigationRoute.Notice.route -> "Millia Connect"

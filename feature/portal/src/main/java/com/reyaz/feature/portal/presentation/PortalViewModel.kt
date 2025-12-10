@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val TAG = "PORTAL_VM"
 private const val LOGGING = true
@@ -38,11 +39,7 @@ class PortalViewModel(
         observeNetworkAndInitialize()
     }
 
-    private fun log(message: String) {
-        if (LOGGING) Log.d(TAG, message)
-    }
-
-    fun sendOnDeveloperClickEvent(){
+    fun sendOnDeveloperClickEvent() {
         analyticsTracker.logEvent("developer_click")
     }
 
@@ -66,11 +63,11 @@ class PortalViewModel(
                     _uiState.update { it.copy(loadingMessage = "Loading...") }
                     fetchStoredCredentials()
                     if (isWifiConnected) {
-                        log("wifi connected")
+                        Timber.d("wifi connected")
                         checkConnectionAndLogin()
 
                         if (!uiState.value.isWifiPrimary) {
-                            log("Observing mobile data since Wifi not primary")
+                            Timber.d("Observing mobile data since Wifi not primary")
                             // Cancel any previous observer to avoid duplicates
                             mobileDataJob?.cancel()
 
@@ -78,7 +75,7 @@ class PortalViewModel(
                                 networkObserver.observeMobileDataConnectivity()
                                     .collect { isMobileData ->
                                         if (!isMobileData) {
-                                            log("mobile data off, stopping observation and handling login")
+                                            Timber.d("mobile data off, stopping observation and handling login")
                                             updateState(
                                                 loadingMessage = null,
                                                 isWifiPrimary = true,
@@ -88,15 +85,15 @@ class PortalViewModel(
                                             performLogin()
                                             // Stop observing since mobile data is off
                                             this.cancel()
-                                            log("Mobile observation stopped")
+                                            Timber.d("Mobile observation stopped")
                                         } else {
-                                            log("mobile on")
+                                            Timber.d("mobile on")
                                         }
                                     }
                             }
                         }
                     } else {
-                        log("Wifi not connected")
+                        Timber.d("Wifi not connected")
                         updateState(
                             isJamiaWifi = false,
                             isLoggedIn = false,
@@ -105,7 +102,7 @@ class PortalViewModel(
                         // Cancel mobile data observation if wifi is off
                         mobileDataJob?.cancel()
                         mobileDataJob = null
-                        log("Mobile observation stopped: end")
+                        Timber.d("Mobile observation stopped: end")
                     }
                 }
             }
@@ -187,7 +184,7 @@ class PortalViewModel(
             updateState(loadingMessage = "Logging Out...")
             repository.disconnect()
                 .onSuccess {
-                    log("Logout successful")
+                    Timber.d("Logout successful")
                     updateState(isLoggedIn = false, loadingMessage = null, errorMsg = it)
 //                    saveCredentials()
                 }
@@ -217,13 +214,20 @@ class PortalViewModel(
     }
 
     private suspend fun checkConnectionAndLogin() {
-        if (!uiState.value.loginBtnEnabled) {
-            _uiState.update { it.copy(isJamiaWifi = true, isLoggedIn = false, loadingMessage = null, errorMsg = "One time credential needed to login automatically.") }
+        if (!uiState.value.loginBtnEnabled) {   // todo: remove this condition check as btn is not enabled
+            _uiState.update {
+                it.copy(
+                    isJamiaWifi = true,
+                    isLoggedIn = false,
+                    loadingMessage = null,
+                    errorMsg = "One time credential needed to login automatically."
+                )
+            }
         } else {
-            log("checking connection state")
+            Timber.d("checking connection state")
             when (repository.checkConnectionState()) {
                 JmiWifiState.NOT_CONNECTED -> {
-                    log("Not connected")
+                    Timber.d("Not connected")
                     updateState(
                         isJamiaWifi = false,
                         isLoggedIn = false,
@@ -233,18 +237,18 @@ class PortalViewModel(
                 }
 
                 JmiWifiState.NOT_LOGGED_IN -> {
-                    log("Not logged in")
+                    Timber.d("Not logged in")
                     updateState(
                         isJamiaWifi = true,
                         isLoggedIn = false,
                         loadingMessage = null,
                         errorMsg = null
                     )
-                   performLogin()
+                    performLogin()
                 }
 
                 JmiWifiState.LOGGED_IN -> {
-                    log("Already Logged in")
+                    Timber.d("Already Logged in")
                     updateState(
                         isJamiaWifi = true,
                         isLoggedIn = true,
