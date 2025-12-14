@@ -1,6 +1,5 @@
 package com.reyaz.feature.portal.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reyaz.core.analytics.AnalyticsTracker
@@ -11,7 +10,6 @@ import com.reyaz.feature.portal.data.repository.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +23,7 @@ private const val LOGGING = true
 
 class PortalViewModel(
     private val repository: PortalRepository,
-    private val networkObserver: NetworkManager,
+    private val networkManager: NetworkManager,
     private val userPreferences: PortalDataStore,
     private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
@@ -39,50 +37,35 @@ class PortalViewModel(
         observeNetworkAndInitialize()
     }
 
-    fun sendOnDeveloperClickEvent() {
-        analyticsTracker.logEvent("developer_click")
-    }
-
     private fun observeNetworkAndInitialize() {
         try {
-            /*viewModelScope.launch {
-                userPreferences.isLoggedIn.collect {isLoggedIn->
-//                    if (!it)
-                        _uiState.update {
-                            it.copy(
-                                isLoggedIn = isLoggedIn,
-                                loadingMessage = null,
-                                errorMsg = null
-                            )
-                        }
-                }
-            }*/
+            // todo: Replace viewModelScope by globalScope
             viewModelScope.launch {
-                Log.d(TAG, "observeNetworkAndInitialize: $uiState")
-                networkObserver.observeWifiConnectivity().collect { isWifiConnected ->
-                    _uiState.update { it.copy(loadingMessage = "Loading...") }
-                    fetchStoredCredentials()
+                fetchStoredCredentials()
+                Timber.tag(TAG).d("observeNetworkAndInitialize: $uiState")
+                networkManager.observeWifiConnectivity().collect { isWifiConnected ->
                     if (isWifiConnected) {
                         Timber.d("wifi connected")
-                        checkConnectionAndLogin()
-
+//                        checkJmiWifiConnectionAndLogin()
+                        attemptLoginAndCheckJmiWifiConnectionState()
                         if (!uiState.value.isWifiPrimary) {
+                            // Wifi is not primary, observe mobile data
                             Timber.d("Observing mobile data since Wifi not primary")
                             // Cancel any previous observer to avoid duplicates
                             mobileDataJob?.cancel()
 
                             mobileDataJob = launch {
-                                networkObserver.observeMobileDataConnectivity()
+                                networkManager.observeMobileDataConnectivity()
                                     .collect { isMobileData ->
                                         if (!isMobileData) {
                                             Timber.d("mobile data off, stopping observation and handling login")
-                                            updateState(
-                                                loadingMessage = null,
-                                                isWifiPrimary = true,
-                                                errorMsg = null
-                                            )
-                                            delay(3000)
-                                            performLogin()
+                                            _uiState.update {
+                                                it.copy(
+                                                    isWifiPrimary = true,
+                                                    supportingText = JmiWifiState.LOGGED_IN.supportingMsg,
+                                                    isError = false
+                                                )
+                                            }
                                             // Stop observing since mobile data is off
                                             this.cancel()
                                             Timber.d("Mobile observation stopped")
@@ -94,11 +77,19 @@ class PortalViewModel(
                         }
                     } else {
                         Timber.d("Wifi not connected")
+                        _uiState.update {
+                            it.copy(
+                                loadingMessage = null,
+                                isError = true,
+                                supportingText = "You're not connected to Jamia Wifi.\nPlease connect and try again.",
+                            )
+                        }
                         updateState(
                             isJamiaWifi = false,
                             isLoggedIn = false,
-                            loadingMessage = null
-                        )
+                            loadingMessage = null,
+
+                            )
                         // Cancel mobile data observation if wifi is off
                         mobileDataJob?.cancel()
                         mobileDataJob = null
@@ -107,7 +98,7 @@ class PortalViewModel(
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error in observeNetworkAndInitialize", e)
+            Timber.tag(TAG).e(e, "Error in observeNetworkAndInitialize")
         }
     }
 
@@ -121,75 +112,21 @@ class PortalViewModel(
         }
     }
 
-    private suspend fun performLogin() {
-
-        repository.connect(shouldNotify = false).collect { result ->
-            Log.d(TAG, "performLogin Result: $result")
-            when (result) {
-                is Resource.Loading -> updateState(
-                    errorMsg = null,
-                    loadingMessage = "Loading..."
-                )
-
-                is Resource.Success -> {
-                    updateState(
-                        isLoggedIn = true,
-                        loadingMessage = null,
-                        errorMsg = result.message,
-                        isWifiPrimary = result.message.isNullOrBlank()
-                    )
-//                    saveCredentials()
-
-                    // Analytics event for successful login
-                    analyticsTracker.logEvent(
-                        eventName = "portal_login_success",
-                        mapOf(
-                            "username" to _uiState.value.username,
-                            "wifi_primary" to _uiState.value.isWifiPrimary.toString(),
-                            "auto_connect" to _uiState.value.autoConnect.toString(),
-                            "is_jamia_wifi" to _uiState.value.isJamiaWifi.toString(),
-                            "is_logged_in" to _uiState.value.isLoggedIn.toString(),
-                            "error_msg" to result.message.toString(),
-                            "loading_msg" to _uiState.value.loadingMessage.toString()
-                        )
-                    )
-                }
-
-                is Resource.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            isLoggedIn = false,
-                            loadingMessage = null,
-                            errorMsg = result.message
-                        )
-                    }
-                    Log.e(TAG, "Error in performLogin(): ${result.message}")
-//                    saveCredentials()
-                    // Analytics event for failed login
-                    analyticsTracker.logEvent(
-                        "portal_login_failed",
-                        mapOf(
-                            "username" to _uiState.value.username,
-                            "error_message" to (result.message ?: "unknown")
-                        )
-                    )
-                }
-            }
-        }
-//        }
-    }
-
     fun logout() {
         viewModelScope.launch {
-            updateState(loadingMessage = "Logging Out...")
+            _uiState.update {
+                it.copy(
+                    loadingMessage = null,
+                    isError = false,
+                    supportingText = "Successfully Logged Out!"
+                )
+            }
             repository.disconnect()
                 .onSuccess {
                     Timber.d("Logout successful")
-                    updateState(isLoggedIn = false, loadingMessage = null, errorMsg = it)
-//                    saveCredentials()
                 }
                 .onFailure {
-                    Log.e(TAG, "Logout failed", it)
+                    Timber.tag(TAG).e(it, "Logout failed")
                     analyticsTracker.logEvent(
                         "portal_logout_failed",
                         mapOf(
@@ -197,103 +134,114 @@ class PortalViewModel(
                             "error_message" to (it.message ?: "unknown")
                         )
                     )
-                    handleError(it)
                 }
         }
     }
 
-    fun retry() {
+    fun onLoginClick() {
         viewModelScope.launch {
-            updateState(loadingMessage = "Retrying...", errorMsg = null)
             analyticsTracker.logEvent(
                 "portal_retry",
                 mapOf("username" to _uiState.value.username)
             )
-            checkConnectionAndLogin()
+            saveLoginStateToLocal()
+            attemptLoginAndCheckJmiWifiConnectionState()
         }
     }
 
-    private suspend fun checkConnectionAndLogin() {
-        if (!uiState.value.loginBtnEnabled) {   // todo: remove this condition check as btn is not enabled
-            _uiState.update {
-                it.copy(
-                    isJamiaWifi = true,
-                    isLoggedIn = false,
-                    loadingMessage = null,
-                    errorMsg = "One time credential needed to login automatically."
-                )
+    private suspend fun attemptLoginAndCheckJmiWifiConnectionState() {
+        Timber.d("attempting login first and then checking connection state")
+        if (uiState.value.loginBtnEnabled) {
+            // username and password are not empty
+            repository.connect(shouldNotify = false).collect { result ->
+                Timber.tag(TAG).d("performLogin Result: $result")
+                when (result) {
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(
+                                supportingText = null,
+                                loadingMessage = "Loading..."
+                            )
+                        }
+                    }
+
+                    is Resource.Success -> {
+                        val isWifiPrimary = result.message.isNullOrBlank()
+                        _uiState.update {
+                            it.copy(
+                                supportingText = if (isWifiPrimary) JmiWifiState.LOGGED_IN.supportingMsg else  "You're Logged In!\nTo enjoy Wifi, please turn you're internet off!",
+                                isError = false,
+                                loadingMessage = null,
+                                isWifiPrimary = isWifiPrimary
+                            )
+                        }
+
+                        // Analytics event for successful login
+                        analyticsTracker.logEvent(
+                            eventName = "portal_login_success",
+                            mapOf(
+                                "username" to _uiState.value.username,
+                                "wifi_primary" to _uiState.value.isWifiPrimary.toString(),
+                                "auto_connect" to _uiState.value.autoConnect.toString(),
+                                "is_jamia_wifi" to _uiState.value.isJamiaWifi.toString(),
+                                "is_logged_in" to _uiState.value.isLoggedIn.toString(),
+                                "error_msg" to result.message.toString(),
+                                "loading_msg" to _uiState.value.loadingMessage.toString()
+                            )
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        Timber.tag(TAG).e("Error in performLogin(): ${result.message}")
+                        val wifiStateResult = repository.checkJmiWifiConnectionState()
+                        val isCaptivePortalPageError = wifiStateResult == JmiWifiState.NOT_LOGGED_IN
+                        Timber.d(wifiStateResult.name)
+                        _uiState.update {
+                            it.copy(
+                                supportingText = if (isCaptivePortalPageError) result.message else wifiStateResult.supportingMsg,
+                                loadingMessage = null,
+                                isError = if (isCaptivePortalPageError) true else wifiStateResult.showAsError
+                            )
+                        }
+                        // Analytics event for failed login
+                        analyticsTracker.logEvent(
+                            "portal_login_failed",
+                            mapOf(
+                                "username" to _uiState.value.username,
+                                "error_message" to (result.message ?: "unknown")
+                            )
+                        )
+                    }
+                }
             }
         } else {
-            Timber.d("checking connection state")
-            when (repository.checkConnectionState()) {
-                JmiWifiState.NOT_CONNECTED -> {
-                    Timber.d("Not connected")
-                    updateState(
-                        isJamiaWifi = false,
-                        isLoggedIn = false,
-                        loadingMessage = null,
-                        errorMsg = null
-                    )
-                }
-
-                JmiWifiState.NOT_LOGGED_IN -> {
-                    Timber.d("Not logged in")
-                    updateState(
-                        isJamiaWifi = true,
-                        isLoggedIn = false,
-                        loadingMessage = null,
-                        errorMsg = null
-                    )
-                    performLogin()
-                }
-
-                JmiWifiState.LOGGED_IN -> {
-                    Timber.d("Already Logged in")
-                    updateState(
-                        isJamiaWifi = true,
-                        isLoggedIn = true,
-                        loadingMessage = null,
-                        errorMsg = null
-                    )
-                }
+            // username and password are empty
+            _uiState.update {
+                it.copy(
+                    loadingMessage = null,
+                    supportingText = "One time credential needed to login automatically.",
+                    isError = false
+                )
             }
         }
-//        }
-    }
-
-    private fun handleError(exception: Throwable) {
-        val message = when {
-            exception.message?.contains("10.2.0.10:8090") == true ->
-                "You're not connected to Jamia Wifi.\nPlease connect and try again."
-
-            exception.message?.contains("Wrong Username or Password") == true ->
-                "Wrong Username or Password"
-
-            else -> exception.message ?: "Oops! An error occurred."
-        }
-
-        updateState(loadingMessage = null, errorMsg = message)
     }
 
     fun updateUsername(username: String) {
         _uiState.update { it.copy(username = username) }
-        saveCredentials()
     }
 
     fun updatePassword(password: String) {
         _uiState.update { it.copy(password = password) }
-        saveCredentials()
     }
 
     fun updateAutoConnect(autoConnect: Boolean) {
         viewModelScope.launch {
             _uiState.update { it.copy(autoConnect = autoConnect) }
             userPreferences.setAutoConnect(autoConnect)
-            saveCredentials()
         }
     }
 
-    private fun saveCredentials() {
+    private fun saveLoginStateToLocal() {
         viewModelScope.launch {
             userPreferences.saveCredentials(
                 username = _uiState.value.username,

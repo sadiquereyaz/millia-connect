@@ -1,6 +1,8 @@
 package com.reyaz.feature.portal.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.text_field.CustomSlimTextField
@@ -69,9 +73,9 @@ internal fun LoginFormComposable(
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
-                    scope.launch {
-                        viewModel.retry()
-                    }
+//                    scope.launch {
+                    viewModel.onLoginClick()
+//                    }
                 }
             )
         )
@@ -103,7 +107,7 @@ internal fun LoginFormComposable(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.retry()
+                    viewModel.onLoginClick()
                 },
                 modifier = Modifier
                     .height(48.dp)
@@ -112,18 +116,20 @@ internal fun LoginFormComposable(
                     .fillMaxWidth(),
                 enabled = uiState.loginBtnEnabled
             ) {
-                if (uiState.isLoading)
+                if (uiState.isLoading) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            trackColor = MaterialTheme.colorScheme.onSurface
                         )
-                        Text("Logging In...", color = MaterialTheme.colorScheme.onSurface)
+                        Text("Logging In...", fontWeight = FontWeight.Bold)
                     }
-                else {
+                } else {
                     Text("Login")
                 }
             }
@@ -139,26 +145,24 @@ internal fun LoginFormComposable(
             }
         }
 
-        uiState.supportingText?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                //modifier = Modifier.padding(top = 16.dp),
-                textAlign = TextAlign.Center
-            )
-        }
-
-        uiState.conditionalErrorMsg?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-//                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                //modifier = Modifier.padding(top = 16.dp),
-                textAlign = TextAlign.Center
-            )
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            uiState.supportingText?.let {
+                Text(
+                    text = it,
+                    color = if (uiState.isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
+                    fontWeight = if (uiState.isError) FontWeight.SemiBold else FontWeight.Normal,
+                    fontSize = 16.sp,
+                    //modifier = Modifier.padding(top = 16.dp),
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

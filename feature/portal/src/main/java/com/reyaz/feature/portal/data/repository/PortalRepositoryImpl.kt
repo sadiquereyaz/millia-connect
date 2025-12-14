@@ -1,11 +1,9 @@
 package com.reyaz.feature.portal.data.repository
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.Resource
@@ -23,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 
 class PortalRepositoryImpl(
     private val dataStore: PortalDataStore,
@@ -61,23 +60,31 @@ class PortalRepositoryImpl(
                 password = password
             ).collect {
                 emit(it)
-                when(it){
+                when (it) {
                     is Resource.Error -> {
                         dataStore.setLoggedIn(false)
-                        Log.d(TAG, "Error while login: ${it.message}")
+                        Timber.tag(TAG).d("Error while login: ${it.message}")
                         if (shouldNotify)
-                            showPortalNotification(title = "Failed to restore session", message = it.message ?: "You were not connected to JMI-WiFi [;_;]")
+                            showPortalNotification(
+                                title = "Failed to restore session",
+                                message = it.message ?: "You were not connected to JMI-WiFi [;_;]"
+                            )
                     }
+
                     is Resource.Success -> {
                         dataStore.setLoggedIn(true)
-                        Log.d(TAG, "Successfully logged in")
+                        Timber.tag(TAG).d("Successfully logged in")
                         if (shouldNotify) {
-                            showPortalNotification(title = "Wifi session restored", message = it.data ?: "Successfully wifi session restored!")
+                            showPortalNotification(
+                                title = "Wifi session restored",
+                                message = it.data ?: "Successfully wifi session restored!"
+                            )
                         }
                         networkManager.reportCaptivePortalDismissed()
-                        if(dataStore.autoConnect.first())
+                        if (dataStore.autoConnect.first())
                             AutoLoginWorker.scheduleOneTime(context)
                     }
+
                     is Resource.Loading -> {}
                 }
             }
@@ -85,7 +92,10 @@ class PortalRepositoryImpl(
             dataStore.setLoggedIn(false)
             Log.d(TAG, "Invalid Credentials")
             if (shouldNotify)
-                showPortalNotification(title = "Invalid Credentials", message = "Please open the app again and enter the valid credentials.")
+                showPortalNotification(
+                    title = "Invalid Credentials",
+                    message = "Please open the app again and enter the valid credentials."
+                )
             emit(Resource.Error("Invalid Credentials"))
         }
     }.flowOn(Dispatchers.IO)
@@ -135,17 +145,19 @@ class PortalRepositoryImpl(
      *   - [JmiWifiState.NOT_LOGGED_IN] if connected to JMI Wi-Fi but does not have internet access.
      *   - [JmiWifiState.NOT_CONNECTED] if not connected to JMI Wi-Fi.
      */
-    override suspend fun checkConnectionState(): JmiWifiState {
+    override suspend fun checkJmiWifiConnectionState(): JmiWifiState {
         val isJmiWifi = portalScraper.isJmiWifi(forceWifi = true)
         val isWifiHasInternet =
             portalScraper.isInternetAvailable(isCheckingForWifi = true).getOrNull() ?: false
-        Log.d(TAG, "wifi State: HasInternet: $isWifiHasInternet, IsJmiWifi: $isJmiWifi")
-        return if (isJmiWifi && isWifiHasInternet) {
-            dataStore.setLoggedIn(true)
-            JmiWifiState.LOGGED_IN
-        } else if (isJmiWifi) {
-            dataStore.setLoggedIn(false)
-            JmiWifiState.NOT_LOGGED_IN
+        Timber.tag(TAG).d("wifi State: HasInternet: $isWifiHasInternet, IsJmiWifi: $isJmiWifi")
+        return if (isJmiWifi) {
+            if (isWifiHasInternet) {
+                dataStore.setLoggedIn(true)
+                JmiWifiState.LOGGED_IN
+            } else {
+                dataStore.setLoggedIn(false)
+                JmiWifiState.NOT_LOGGED_IN
+            }
         } else {
             JmiWifiState.NOT_CONNECTED
         }
@@ -154,8 +166,11 @@ class PortalRepositoryImpl(
 
 private const val TAG = "PORTAL_REPO_IMPL"
 
-enum class JmiWifiState(val error: String? = null) {
-    NOT_CONNECTED("You're Not Connected with JMI-WiFi"),
-    NOT_LOGGED_IN,
-    LOGGED_IN,
+enum class JmiWifiState(val supportingMsg: String? = null, val showAsError: Boolean = false) {
+    NOT_CONNECTED(
+        "You're not connected to Jamia Wifi.\nPlease connect and try again.",
+        showAsError = true
+    ),
+    NOT_LOGGED_IN(supportingMsg = "You're not logged in"),
+    LOGGED_IN(supportingMsg = "You're logged in"),
 }

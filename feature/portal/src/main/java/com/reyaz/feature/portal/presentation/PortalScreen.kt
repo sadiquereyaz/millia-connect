@@ -2,10 +2,13 @@ package com.reyaz.feature.portal.presentation
 
 
 import android.widget.Space
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
@@ -17,8 +20,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reyaz.core.ui.components.text_field.CustomCircularTextField
@@ -46,9 +51,12 @@ fun PortalScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.weight(1f))
+
         GradientPromoCard(
             title = "Got a Minute?",
             bodyText = "Help us shape the future of this app! Take a quick 60-second survey to let us know how we are doing. Your input makes a huge difference.",
@@ -62,7 +70,7 @@ fun PortalScreen(
         Spacer(Modifier.weight(1f))
 
         LoginFormComposable(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp),
+            modifier = Modifier.padding(16.dp),
             uiState = uiState,
             viewModel = viewModel
         )

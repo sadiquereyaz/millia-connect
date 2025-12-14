@@ -5,25 +5,21 @@ data class PortalUiState(
     val username: String = "",
     val password: String = "",
 
-    val isLoggedIn: Boolean = false,
-    val isJamiaWifi: Boolean = true,
+    val isLoggedIn: Boolean = false, // todo: remove
+    val isJamiaWifi: Boolean = true, // todo: remove
     val autoConnect: Boolean = true,
-    val isWifiPrimary: Boolean = true,
+    val isWifiPrimary: Boolean = false,  // this property is necessary for mobile internet off warning
 
     val loadingMessage: String? = "Loading...",
-    val errorMsg: String? = null,
+    val errorMsg: String? = null, // todo: remove
 
     val supportingText: String? = null,
+//    val supportingText: String? = "You're not connected to Jamia Wifi.\nPlease connect and try again.",
+    val isError: Boolean = false,
+//    val isError: Boolean = true,
 ) {
     val loginBtnEnabled: Boolean = username.isNotEmpty() && password.isNotEmpty()
     val isLoading: Boolean = !loadingMessage.isNullOrBlank()
-    val conditionalErrorMsg: String? = if (!isJamiaWifi) {
-        "You're not connected to Jamia Wifi.\nPlease connect and try again."
-    } else if (!isWifiPrimary) {
-        "Please turn you're internet off!"
-    } else if (!errorMsg.isNullOrBlank()) {
-        errorMsg
-    } else null
 }
 
 // not connected to preferred wifi

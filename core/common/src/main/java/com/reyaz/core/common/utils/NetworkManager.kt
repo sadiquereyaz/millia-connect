@@ -106,6 +106,33 @@ class NetworkManager(context: Context) {
      fun observeMobileDataConnectivity(): Flow<Boolean> =
         observeConnectivity(NetworkCapabilities.TRANSPORT_CELLULAR)
 
+    fun observeCaptivePortalConnectivity(): Flow<Boolean> = callbackFlow {
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+            .build()
+
+        val callback = object : ConnectivityManager.NetworkCallback() {
+
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+                val isCaptive = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+                trySend(isCaptive)
+                Timber.tag(TAG).d("Captive portal changed: $isCaptive")
+            }
+
+            override fun onLost(network: Network) {
+                trySend(false)
+                Timber.tag(TAG).d("Captive portal lost")
+            }
+        }
+
+        connectivityManager.registerNetworkCallback(request, callback)
+
+        awaitClose {
+            connectivityManager.unregisterNetworkCallback(callback)
+            Timber.tag(TAG).d("Captive portal callback unregistered")
+        }
+    }.distinctUntilChanged()
+
     /**
      * Observes the connectivity status for a specific network transport type.
      *
@@ -127,7 +154,7 @@ class NetworkManager(context: Context) {
                 val hasTransport = capabilities?.hasTransport(transportType) == true
 //                trySend(hasTransport)
                 trySend(true)
-                Timber.tag(TAG).d( "onAvailable: $transportType = $hasTransport")
+                Timber.tag(TAG).d( "onAvailable($transportType)")
             }
 
             override fun onLost(network: Network) {

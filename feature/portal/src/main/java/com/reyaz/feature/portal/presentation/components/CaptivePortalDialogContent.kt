@@ -28,7 +28,7 @@ fun CaptivePortalDialogContent(
 //        Text(text = "${uiState.isLoggedIn}")
         if (!uiState.isJamiaWifi) {  // not JMI-WiFi
             NotJmiWifiComposable(
-                onRetry = { viewModel.retry() },
+                onRetry = {/* viewModel.retry()*/ },
             )
         } else if (uiState.isLoggedIn) {
             ConnectedComposable(
