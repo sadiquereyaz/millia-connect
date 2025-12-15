@@ -5,6 +5,7 @@ import java.util.UUID
 data class PromoCard(
     val id: String? = null,
     val title: String? = null,
+    val priority: Int? = Int.MAX_VALUE,
     val bodyText: String? = null,
     val primaryAction: PromoAction?  = null,
     val secondaryAction: PromoAction? = null

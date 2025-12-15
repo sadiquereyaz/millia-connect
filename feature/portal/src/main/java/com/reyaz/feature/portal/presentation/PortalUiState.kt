@@ -8,6 +8,7 @@ data class PortalUiState(
     val username: String = "",
     val password: String = "",
 
+    val isWifiOn: Boolean = true,
     val isLoggedIn: Boolean = false, // todo: remove
     val isJamiaWifi: Boolean = true, // todo: remove
     val autoConnect: Boolean = true,

@@ -8,6 +8,7 @@ import com.reyaz.core.common.utils.Resource
 import com.reyaz.feature.portal.data.local.PortalDataStore
 import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
+import com.reyaz.feature.portal.domain.repository.PromoRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,9 +24,10 @@ private const val LOGGING = true
 
 class PortalViewModel(
     private val repository: PortalRepository,
+//    private val promoRepository: PromoRepository,
     private val networkManager: NetworkManager,
     private val userPreferences: PortalDataStore,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PortalUiState())
@@ -34,7 +36,18 @@ class PortalViewModel(
     private var mobileDataJob: Job? = null
 
     init {
+//        loadPromos()
         observeNetworkAndInitialize()
+    }
+
+    private fun loadPromos() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+//                    promoCard =
+                )
+            }
+        }
     }
 
     private fun observeNetworkAndInitialize() {
@@ -45,6 +58,7 @@ class PortalViewModel(
                 Timber.tag(TAG).d("observeNetworkAndInitialize: $uiState")
                 networkManager.observeWifiConnectivity().collect { isWifiConnected ->
                     if (isWifiConnected) {
+                        _uiState.update { it.copy(isWifiOn = true) }
                         Timber.d("wifi connected")
 //                        checkJmiWifiConnectionAndLogin()
                         attemptLoginAndCheckJmiWifiConnectionState()
@@ -80,16 +94,11 @@ class PortalViewModel(
                         _uiState.update {
                             it.copy(
                                 loadingMessage = null,
+                                isWifiOn = false,
                                 isError = true,
                                 supportingText = "Wi-Fi is currently turned off.\nPlease enable Wi-Fi to continue.",
                             )
                         }
-                        updateState(
-                            isJamiaWifi = false,
-                            isLoggedIn = false,
-                            loadingMessage = null,
-
-                            )
                         // Cancel mobile data observation if wifi is off
                         mobileDataJob?.cancel()
                         mobileDataJob = null
@@ -151,6 +160,16 @@ class PortalViewModel(
 
     private suspend fun attemptLoginAndCheckJmiWifiConnectionState() {
         Timber.d("attempting login first and then checking connection state")
+        if(uiState.value.isWifiOn.not()){
+            _uiState.update {
+                it.copy(
+                    loadingMessage = null,
+                    isError = true,
+                    supportingText = "Wi-Fi is currently turned off.\nPlease enable Wi-Fi to continue.",
+                )
+            }
+            return
+        }
         if (uiState.value.loginBtnEnabled) {
             // username and password are not empty
             repository.connect(shouldNotify = false).collect { result ->

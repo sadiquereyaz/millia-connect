@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -46,7 +47,17 @@ fun PortalScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.weight(1f))
-
+        /*LazyRow {
+            items(
+                items = uiState.promoCards,
+                key = { it.id }
+            ) { promo ->
+                GradientPromoCard(
+                    promoCard = promo,
+                    onActionClick = onActionClick
+                )
+            }
+        }*/
         GradientPromoCard(
             modifier = Modifier.padding(horizontal = 16.dp),
             promoCard = uiState.promoCard ?: defaultPromoCard,

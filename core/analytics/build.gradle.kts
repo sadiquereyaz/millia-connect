@@ -44,7 +44,7 @@ dependencies {
     
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-analytics")        // todo: check how dependency is implemente when multimodule project is on
 
     // koin
     implementation(project.dependencies.platform(libs.koin.bom))
