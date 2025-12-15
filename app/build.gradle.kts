@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":feature:rent"))
     implementation(project(":core:auth"))
+    implementation(project(":core:firebase"))
 
 
     implementation(libs.androidx.core.ktx)

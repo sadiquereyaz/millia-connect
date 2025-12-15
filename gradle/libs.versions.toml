@@ -323,6 +323,7 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]

@@ -1,11 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-//    alias(libs.plugins.google.services)
 }
 
 android {
-    namespace = "com.reyaz.core.analytics"
+    namespace = "com.reyaz.core.firebase"
     compileSdk = 36
 
     defaultConfig {
@@ -41,12 +40,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    
-    // firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)        // todo: check how dependency is implemente when multimodule project is on
     // koin
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)
-
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }

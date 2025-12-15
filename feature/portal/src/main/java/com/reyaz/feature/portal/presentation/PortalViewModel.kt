@@ -8,7 +8,7 @@ import com.reyaz.core.common.utils.Resource
 import com.reyaz.feature.portal.data.local.PortalDataStore
 import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
-import com.reyaz.feature.portal.domain.repository.PromoRepository
+import com.reyaz.feature.portal.domain.repository.FirestorePromoRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ private const val LOGGING = true
 
 class PortalViewModel(
     private val repository: PortalRepository,
-//    private val promoRepository: PromoRepository,
+    private val promoRepository: FirestorePromoRepository,
     private val networkManager: NetworkManager,
     private val userPreferences: PortalDataStore,
     private val analyticsTracker: AnalyticsTracker,
@@ -36,15 +36,16 @@ class PortalViewModel(
     private var mobileDataJob: Job? = null
 
     init {
-//        loadPromos()
+        loadPromos()
         observeNetworkAndInitialize()
     }
 
     private fun loadPromos() {
         viewModelScope.launch {
+            val remotePromoCards = promoRepository.getPromoCards()
             _uiState.update {
                 it.copy(
-//                    promoCard =
+                    promoCard = remotePromoCards
                 )
             }
         }
@@ -160,7 +161,7 @@ class PortalViewModel(
 
     private suspend fun attemptLoginAndCheckJmiWifiConnectionState() {
         Timber.d("attempting login first and then checking connection state")
-        if(uiState.value.isWifiOn.not()){
+        if (uiState.value.isWifiOn.not()) {
             _uiState.update {
                 it.copy(
                     loadingMessage = null,

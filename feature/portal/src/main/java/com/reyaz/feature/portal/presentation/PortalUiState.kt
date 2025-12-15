@@ -22,7 +22,7 @@ data class PortalUiState(
     val isError: Boolean = false,
 //    val isError: Boolean = true,
 
-    val promoCard: PromoCard? = null
+    val promoCard: List<PromoCard> = emptyList()
 ) {
     val loginBtnEnabled: Boolean = username.isNotEmpty() && password.isNotEmpty()
     val isLoading: Boolean = !loadingMessage.isNullOrBlank()
