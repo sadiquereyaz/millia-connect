@@ -1,34 +1,23 @@
 package com.reyaz.feature.portal.presentation
 
 
-import android.widget.Space
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imeNestedScroll
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.reyaz.core.ui.components.text_field.CustomCircularTextField
-import com.reyaz.core.ui.components.button.MCOutlineButton
-import com.reyaz.core.ui.components.text_field.CustomSlimTextField
+import androidx.navigation.NavController
+import com.reyaz.feature.portal.domain.model.PromoCard
+import com.reyaz.feature.portal.domain.model.defaultPromoCard
+import com.reyaz.feature.portal.domain.model.handlePromoAction
 import com.reyaz.feature.portal.presentation.components.GradientPromoCard
 import com.reyaz.feature.portal.presentation.components.LoginFormComposable
 
@@ -37,11 +26,11 @@ import com.reyaz.feature.portal.presentation.components.LoginFormComposable
 fun PortalScreen(
     modifier: Modifier = Modifier,
     viewModel: PortalViewModel,
+    navController: NavController,
     dismissDialog: () -> Unit,
 //    showSnackBar: (String, (() -> Unit)?) -> Job,
 ) {
-    /*val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(uiState.errorMsg) {
+    /*LaunchedEffect(uiState.errorMsg) {
         uiState.errorMsg?.let {
             showSnackBar(it){
                 viewModel.retry()
@@ -49,6 +38,7 @@ fun PortalScreen(
         }
     }*/
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Column(
         Modifier
@@ -58,13 +48,15 @@ fun PortalScreen(
         Spacer(Modifier.weight(1f))
 
         GradientPromoCard(
-            title = "Got a Minute?",
-            bodyText = "Help us shape the future of this app! Take a quick 60-second survey to let us know how we are doing. Your input makes a huge difference.",
-            primaryBtnText = "Feedback",
-            secondaryText = "Rate Now!",
-            onPrimaryBtnClick = {},
-            onSecondaryTextClick = {},
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            promoCard = uiState.promoCard ?: defaultPromoCard,
+            onActionClick = { action ->
+                handlePromoAction(
+                    action = action,
+                    navController = navController,
+                    context = context
+                )
+            }
         )
 
         Spacer(Modifier.weight(1f))

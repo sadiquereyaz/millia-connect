@@ -260,6 +260,9 @@ class NetworkManager(context: Context) {
             capabilities?.hasTransport(transportType) == true
         }
     }
+    fun isVpnActive(): Boolean {
+        return isAnyNetworkOfTypeAvailable(NetworkCapabilities.TRANSPORT_VPN)
+    }
 
 }
 

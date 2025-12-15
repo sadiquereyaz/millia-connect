@@ -79,7 +79,7 @@ object TopLevelDestinations {
         PORTAL,
         RESULT,
         NOTICE,
-        PROPERTY
+//        PROPERTY  // its graph is already implemented, uncomment them
     )
 }
 

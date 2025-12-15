@@ -33,7 +33,6 @@ fun MCNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    portalViewModel: PortalViewModel,
     showSearchComponents: Boolean
 ) {
     NavHost(
@@ -55,8 +54,10 @@ fun MCNavHost(
         }
 
         composable(route = constants.NavigationRoute.Portal.route) {
+            val portalViewModel: PortalViewModel = koinViewModel()
             PortalScreen(
                 viewModel = portalViewModel,
+                navController = navController,
                 dismissDialog = {
                     navController.navigateUp()
                 }
@@ -79,13 +80,14 @@ fun MCNavHost(
         ) {
             resultNavGraph(navController, snackbarHostState)
         }
+
         // Property Graph
-        navigation(
+        /*navigation(
             route = constants.NavigationRoute.PropertyGraph.route,
             startDestination = constants.NavigationRoute.PropertyFeed.route//changes mad by me
         ) {
             propertyNavGraph(navController, snackbarHostState, showSearchComponents)
-        }
+        }*/
 
         // Notice
         composable(

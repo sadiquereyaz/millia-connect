@@ -6,7 +6,7 @@ import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.Resource
 import com.reyaz.feature.portal.data.local.PortalDataStore
-import com.reyaz.feature.portal.data.repository.JmiWifiState
+import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -81,7 +81,7 @@ class PortalViewModel(
                             it.copy(
                                 loadingMessage = null,
                                 isError = true,
-                                supportingText = "You're not connected to Jamia Wifi.\nPlease connect and try again.",
+                                supportingText = "Wi-Fi is currently turned off.\nPlease enable Wi-Fi to continue.",
                             )
                         }
                         updateState(
@@ -169,7 +169,10 @@ class PortalViewModel(
                         val isWifiPrimary = result.message.isNullOrBlank()
                         _uiState.update {
                             it.copy(
-                                supportingText = if (isWifiPrimary) JmiWifiState.LOGGED_IN.supportingMsg else  "You're Logged In!\nTo enjoy Wifi, please turn you're internet off!",
+                                supportingText = if (isWifiPrimary)
+                                    JmiWifiState.LOGGED_IN.supportingMsg
+                                else
+                                    "Login successful. Android is still using mobile data. Please turn off mobile data once to switch to Jamia Wi-Fi.",
                                 isError = false,
                                 loadingMessage = null,
                                 isWifiPrimary = isWifiPrimary
@@ -195,12 +198,23 @@ class PortalViewModel(
                         Timber.tag(TAG).e("Error in performLogin(): ${result.message}")
                         val wifiStateResult = repository.checkJmiWifiConnectionState()
                         val isCaptivePortalPageError = wifiStateResult == JmiWifiState.NOT_LOGGED_IN
+                        var isVpnActive = false
+                        if (wifiStateResult == JmiWifiState.NOT_CONNECTED) {
+                            isVpnActive = networkManager.isVpnActive()
+                        }
+
                         Timber.d(wifiStateResult.name)
                         _uiState.update {
                             it.copy(
-                                supportingText = if (isCaptivePortalPageError) result.message else wifiStateResult.supportingMsg,
+                                supportingText = if (isCaptivePortalPageError) {
+                                    result.message
+                                } else if (isVpnActive) {
+                                    "Please disable VPN to login to Jamia Wi-Fi.\nYou can re-enable VPN after login."
+                                } else {
+                                    wifiStateResult.supportingMsg
+                                },
                                 loadingMessage = null,
-                                isError = if (isCaptivePortalPageError) true else wifiStateResult.showAsError
+                                isError = if (isCaptivePortalPageError || isVpnActive) true else wifiStateResult.showAsError
                             )
                         }
                         // Analytics event for failed login

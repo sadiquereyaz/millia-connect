@@ -14,6 +14,7 @@ import com.reyaz.feature.portal.data.local.PortalDataStore
 import com.reyaz.feature.portal.data.remote.PortalScraper
 import com.reyaz.feature.portal.data.worker.AutoLoginWorker
 import com.reyaz.feature.portal.domain.model.ConnectRequest
+import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import constants.NavigationRoute
 import kotlinx.coroutines.Dispatchers
@@ -165,12 +166,3 @@ class PortalRepositoryImpl(
 }
 
 private const val TAG = "PORTAL_REPO_IMPL"
-
-enum class JmiWifiState(val supportingMsg: String? = null, val showAsError: Boolean = false) {
-    NOT_CONNECTED(
-        "You're not connected to Jamia Wifi.\nPlease connect and try again.",
-        showAsError = true
-    ),
-    NOT_LOGGED_IN(supportingMsg = "You're not logged in"),
-    LOGGED_IN(supportingMsg = "You're logged in"),
-}
