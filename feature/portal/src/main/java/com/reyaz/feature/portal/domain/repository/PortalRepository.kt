@@ -1,7 +1,7 @@
 package com.reyaz.feature.portal.domain.repository
 
 import com.reyaz.core.common.utils.Resource
-import com.reyaz.feature.portal.data.repository.JmiWifiState
+import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.model.ConnectRequest
 import kotlinx.coroutines.flow.Flow
 

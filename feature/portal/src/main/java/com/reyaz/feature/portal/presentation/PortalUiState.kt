@@ -1,5 +1,8 @@
 package com.reyaz.feature.portal.presentation
 
+import com.reyaz.feature.portal.domain.model.PromoCard
+import com.reyaz.feature.portal.domain.model.defaultPromoCard
+
 
 data class PortalUiState(
     val username: String = "",
@@ -17,6 +20,8 @@ data class PortalUiState(
 //    val supportingText: String? = "You're not connected to Jamia Wifi.\nPlease connect and try again.",
     val isError: Boolean = false,
 //    val isError: Boolean = true,
+
+    val promoCard: PromoCard? = null
 ) {
     val loginBtnEnabled: Boolean = username.isNotEmpty() && password.isNotEmpty()
     val isLoading: Boolean = !loadingMessage.isNullOrBlank()

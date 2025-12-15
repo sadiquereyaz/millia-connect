@@ -14,9 +14,110 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.reyaz.feature.portal.domain.model.DynamicUiClickAction
+import com.reyaz.feature.portal.domain.model.PromoCard
+
+@Composable
+fun GradientPromoCard(
+    promoCard: PromoCard,
+    modifier: Modifier = Modifier,
+    onActionClick: (DynamicUiClickAction) -> Unit
+) {
+    val gradientBrush = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF6B73FF),
+            Color(0xFF784BA0)
+        )
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(gradientBrush)
+            .padding(24.dp)
+    ) {
+        Column {
+
+            // Title
+            promoCard.title?.let {
+                Text(
+                    text = it,
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Body
+            promoCard.bodyText?.let {
+                Text(
+                    text = it,
+                    color = Color.White.copy(alpha = 0.95f),
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp,
+                    textAlign = TextAlign.Justify
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                // Secondary text
+                promoCard.secondaryAction?.let {
+                    Text(
+                        text = it.text,
+                        color = Color.White,
+                        textDecoration = TextDecoration.Underline,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .clickable(
+                                enabled = it.action != null
+                            ) {
+                                it.action?.let { it1 -> onActionClick(it1) }
+                            }
+                    )
+                }
+
+                // Primary button
+                promoCard.primaryAction?.let {
+                    Surface(
+                        shape = RoundedCornerShape(100),
+                        color = Color.White,
+                        contentColor = Color(0xFF784BA0),
+                        shadowElevation = 2.dp,
+                        tonalElevation = 4.dp,
+                        modifier = Modifier.clickable(
+                            enabled = it.action != null
+                        ) {
+                            it.action?.let { it1 -> onActionClick(it1) }
+
+                        }
+                    ) {
+                        Text(
+                            text = it.text,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*
 
 @Composable
 fun GradientPromoCard(
@@ -112,7 +213,8 @@ fun GradientPromoCard(
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
                             )
                         }
-                        /*Button(
+                        */
+/*Button(
                             onClick = { onPrimaryBtnClick?.invoke() },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.White,
@@ -126,7 +228,8 @@ fun GradientPromoCard(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
-                        }*/
+                        }*//*
+
                     }
 
             }
@@ -149,4 +252,4 @@ fun GradientPromoCardPreview() {
             )
         }
     }
-}
+}*/
