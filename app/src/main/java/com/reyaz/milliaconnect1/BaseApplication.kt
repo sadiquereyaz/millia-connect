@@ -3,6 +3,7 @@ package com.reyaz.milliaconnect1
 import android.app.Application
 import com.reyaz.core.auth.di.authModule
 import com.reyaz.core.analytics.di.analyticsModule
+import com.reyaz.core.config.configModule
 import com.reyaz.core.firebase.di.firebaseModule
 import com.reyaz.core.network.networkModule
 import com.reyaz.core.notification.notificationModule
@@ -37,7 +38,8 @@ class BaseApplication : Application() {
             androidLogger()
             androidContext(this@BaseApplication)
 //            workManagerFactory()
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule, firebaseModule)
+            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule, firebaseModule,
+                configModule)
         }
 
         if (BuildConfig.DEBUG) {

@@ -14,12 +14,21 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.WorkManager
+import com.reyaz.core.common.utils.openUrl
+import com.reyaz.core.config.AppViewModel
+import com.reyaz.core.config.ForceUpdateDialog
+import com.reyaz.core.config.UpdateState
 import com.reyaz.core.ui.theme.MilliaConnectTheme
 import com.reyaz.milliaconnect1.util.NetworkConnectivityObserver
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     // Register the permission request launcher
