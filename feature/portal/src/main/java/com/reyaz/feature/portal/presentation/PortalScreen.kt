@@ -3,12 +3,16 @@ package com.reyaz.feature.portal.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,6 +25,8 @@ import com.reyaz.feature.portal.domain.model.defaultPromoCard
 import com.reyaz.feature.portal.domain.model.handlePromoAction
 import com.reyaz.feature.portal.presentation.components.GradientPromoCard
 import com.reyaz.feature.portal.presentation.components.LoginFormComposable
+import com.reyaz.feature.portal.presentation.components.PagerDots
+import com.reyaz.feature.portal.presentation.components.PromoCarousel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -39,7 +45,6 @@ fun PortalScreen(
         }
     }*/
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     Column(
         Modifier
@@ -47,27 +52,10 @@ fun PortalScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.weight(1f))
-        /*LazyRow {
-            items(
-                items = uiState.promoCards,
-                key = { it.id }
-            ) { promo ->
-                GradientPromoCard(
-                    promoCard = promo,
-                    onActionClick = onActionClick
-                )
-            }
-        }*/
-        GradientPromoCard(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            promoCard = uiState.promoCard ?: defaultPromoCard,
-            onActionClick = { action ->
-                handlePromoAction(
-                    action = action,
-                    navController = navController,
-                    context = context
-                )
-            }
+
+        PromoCarousel(
+            promoCards = uiState.promoCard + defaultPromoCard,
+            navController = navController
         )
 
         Spacer(Modifier.weight(1f))

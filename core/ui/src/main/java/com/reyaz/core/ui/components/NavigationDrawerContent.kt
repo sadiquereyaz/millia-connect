@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.reyaz.core.common.utils.openUrl
 import com.reyaz.core.common.utils.shareTextExternally
 import com.reyaz.core.ui.R
@@ -134,8 +135,8 @@ fun NavigationDrawerContent(
 //                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.sadique),
+                        AsyncImage(
+                            model = "https://github.com/sadiquereyaz.png",
                             contentDescription = "sadique",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

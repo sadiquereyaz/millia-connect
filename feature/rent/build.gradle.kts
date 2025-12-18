@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services)
     //kotlin symbol processing
     alias(libs.plugins.ksp)
 
@@ -89,6 +89,6 @@ dependencies {
     implementation("io.coil-kt:coil:2.7.0")
 
     // For Jetpack Compose integration
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose)
 
 }

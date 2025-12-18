@@ -3,6 +3,8 @@ package com.reyaz.milliaconnect1
 import android.app.Application
 import com.reyaz.core.auth.di.authModule
 import com.reyaz.core.analytics.di.analyticsModule
+import com.reyaz.core.config.configModule
+import com.reyaz.core.firebase.di.firebaseModule
 import com.reyaz.core.network.networkModule
 import com.reyaz.core.notification.notificationModule
 import com.reyaz.feature.attendance.schedule.di.scheduleModule
@@ -31,13 +33,13 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         // Initialize Koin for dependency injection
         startKoin {
             androidLogger()
             androidContext(this@BaseApplication)
 //            workManagerFactory()
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule)
+            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule, firebaseModule,
+                configModule)
         }
 
         if (BuildConfig.DEBUG) {

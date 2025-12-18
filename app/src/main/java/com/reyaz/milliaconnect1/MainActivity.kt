@@ -14,41 +14,39 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.WorkManager
+import com.reyaz.core.common.utils.openUrl
+import com.reyaz.core.config.AppViewModel
+import com.reyaz.core.config.ForceUpdateDialog
+import com.reyaz.core.config.UpdateState
 import com.reyaz.core.ui.theme.MilliaConnectTheme
 import com.reyaz.milliaconnect1.util.NetworkConnectivityObserver
+import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
-    // Register the permission request launcher
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                // Permission granted, you can now send notifications
-                showToast("Notification permission granted!")
-            } else {
-                // Permission denied, handle accordingly
-                showToast("Notification permission denied!")
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen  = installSplashScreen()
         splashScreen.setKeepOnScreenCondition{false}
 
-        checkAndRequestNotificationPermission()
         // Check if this activity was launched from a captive portal notification
         if (intent?.action == ConnectivityManager.ACTION_CAPTIVE_PORTAL_SIGN_IN) {
-            Log.d("MAIN_ACTIVITY", "Captive portal intent received")
+            Timber.d("Captive portal intent received")
             val networkConnectivityObserver = NetworkConnectivityObserver(this)
             networkConnectivityObserver.setCaptivePortal(intent)
 
             // You might want to automatically trigger login here or wait for user input
         } else
-            Log.d("MAIN_ACTIVITY", "No Captive Portal Intent Received!")
+            Timber.d("No Captive Portal Intent Received!")
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
@@ -61,31 +59,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun checkAndRequestNotificationPermission() {
-        // Check if the device is running Android 13 or higher
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Check if the permission is already granted
-            val permissionStatus = ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-
-            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                // Permission already granted
-//                showToast("Notification permission already granted!")
-            } else {
-                // Request the permission
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        } else {
-            // For devices below Android 13, no need to request permission
-            showToast("Notification permission not required for this Android version.")
-        }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -9,20 +9,17 @@ data class PortalUiState(
     val password: String = "",
 
     val isWifiOn: Boolean = true,
-    val isLoggedIn: Boolean = false, // todo: remove
-    val isJamiaWifi: Boolean = true, // todo: remove
     val autoConnect: Boolean = true,
     val isWifiPrimary: Boolean = false,  // this property is necessary for mobile internet off warning
 
     val loadingMessage: String? = "Loading...",
-    val errorMsg: String? = null, // todo: remove
 
     val supportingText: String? = null,
 //    val supportingText: String? = "You're not connected to Jamia Wifi.\nPlease connect and try again.",
     val isError: Boolean = false,
 //    val isError: Boolean = true,
 
-    val promoCard: PromoCard? = null
+    val promoCard: List<PromoCard> = emptyList()
 ) {
     val loginBtnEnabled: Boolean = username.isNotEmpty() && password.isNotEmpty()
     val isLoading: Boolean = !loadingMessage.isNullOrBlank()

@@ -37,10 +37,12 @@ fun GradientPromoCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
             .background(gradientBrush)
-            .padding(24.dp)
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column {
-
+        Column(
+//            modifier = Modifier.fillMaxSize()
+        ) {
             // Title
             promoCard.title?.let {
                 Text(
@@ -68,7 +70,6 @@ fun GradientPromoCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -88,7 +89,7 @@ fun GradientPromoCard(
                             }
                     )
                 }
-
+                Spacer(Modifier.weight(1f))
                 // Primary button
                 promoCard.primaryAction?.let {
                     Surface(

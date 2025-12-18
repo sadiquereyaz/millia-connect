@@ -1,5 +1,9 @@
 package com.reyaz.feature.portal.presentation.components
 
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +26,12 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -34,10 +40,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.reyaz.core.ui.components.text_field.CustomSlimTextField
 import com.reyaz.feature.portal.presentation.PortalUiState
 import com.reyaz.feature.portal.presentation.PortalViewModel
 import kotlinx.coroutines.launch
+import java.util.jar.Manifest
 
 @Composable
 internal fun LoginFormComposable(
@@ -46,7 +54,17 @@ internal fun LoginFormComposable(
     viewModel: PortalViewModel
 ) {
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+
+        } else {
+
+        }
+    }
     Column(
         modifier = modifier.padding(top = 4.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -109,6 +127,16 @@ internal fun LoginFormComposable(
                 onClick = {
                     focusManager.clearFocus()
                     viewModel.onLoginClick()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val permissionStatus = ContextCompat.checkSelfPermission(
+                            context,
+                            android.Manifest.permission.POST_NOTIFICATIONS
+                        )
+                        if (permissionStatus == PackageManager.PERMISSION_DENIED) {
+                            // Request the permission
+                            permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    }
                 },
                 modifier = Modifier
                     .height(48.dp)

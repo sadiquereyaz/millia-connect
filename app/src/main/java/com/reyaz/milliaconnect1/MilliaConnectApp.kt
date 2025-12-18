@@ -15,7 +15,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,14 +29,11 @@ import com.reyaz.core.ui.components.BottomNavItem
 import com.reyaz.core.ui.components.CustomBottomNavigationBar
 import com.reyaz.core.ui.components.CustomCenterAlignedTopAppBar
 import com.reyaz.core.ui.components.NavigationDrawerContent
-import com.reyaz.feature.portal.presentation.PortalViewModel
 import com.reyaz.milliaconnect1.navigation.MCNavHost
 import com.reyaz.milliaconnect1.navigation.TopLevelDestinations
 import com.reyaz.milliaconnect1.navigation.getIcon
-import com.reyaz.milliaconnect1.ui.components.WifiIconComposable
 import constants.NavigationRoute
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +41,7 @@ fun MilliaConnectApp() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute: String? = navBackStackEntry?.destination?.route
-    val currentDestination = TopLevelDestinations.ALL.find { it.route.route == currentRoute }
+
     // Determine if current destination is a top-level destination
     val isTopLevelDestination =
         TopLevelDestinations.ALL.any { it.route.route == currentRoute || currentRoute == NavigationRoute.Portal.route }
@@ -85,7 +81,6 @@ fun MilliaConnectApp() {
         )*/
     )
 
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -122,7 +117,8 @@ fun MilliaConnectApp() {
                         }
                     },
                     actions = {
-                        val actionsForRoute = actionIconItems.filter { it.route == currentRoute }
+                        val actionsForRoute =
+                            actionIconItems.filter { it.route == currentRoute }
                         actionsForRoute.forEach { action ->
                             when (action) {
                                 is ActionIconItem.IconButtonItem -> {

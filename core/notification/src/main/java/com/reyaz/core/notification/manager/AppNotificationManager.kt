@@ -1,7 +1,6 @@
 package com.reyaz.core.notification.manager
 
 import android.Manifest
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -31,7 +30,7 @@ class AppNotificationManager(
         val notification = NotificationCompat.Builder(context, notificationData.channelId)
             .setContentTitle(notificationData.title)
 
-            .setSilent(!notificationData.playSound)
+            .setSilent(notificationData.isSilent)
 
             .setContentText(notificationData.message)
             .setSmallIcon(

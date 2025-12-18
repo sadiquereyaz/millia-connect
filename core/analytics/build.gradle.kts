@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services)
+//    alias(libs.plugins.google.services)
 }
 
 android {
@@ -43,9 +43,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     
     // firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.google.firebase:firebase-analytics")        // todo: check how dependency is implemente when multimodule project is on
-
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)        // todo: check how dependency is implemente when multimodule project is on
     // koin
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)

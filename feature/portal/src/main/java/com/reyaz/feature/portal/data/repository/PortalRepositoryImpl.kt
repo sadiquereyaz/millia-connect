@@ -105,14 +105,14 @@ class PortalRepositoryImpl(
     private fun showPortalNotification(title: String, message: String) {
         notificationManager.showNotification(
             NotificationData(
-                id = NotificationConstant.PORTAL_CHANNEL.hashCode(),
+                id = NotificationConstant.PORTAL_CHANNEL.channelId.hashCode(),
                 title = title,
                 message = message,
                 channelId = NotificationConstant.PORTAL_CHANNEL.channelId,
                 channelName = NotificationConstant.PORTAL_CHANNEL.channelName,
                 importance = NotificationConstant.PORTAL_CHANNEL.importance,
                 destinationUri = NavigationRoute.Portal.getDeepLink().toUri(),
-                playSound = false,
+                isSilent = true,
             )
         )
     }

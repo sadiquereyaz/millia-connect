@@ -13,16 +13,16 @@ android {
         applicationId = "com.reyaz.milliaconnect1"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "2.1.0"
+        versionCode = 14
+        versionName = "2.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-//            applicationIdSuffix =  ".debug"
-//            versionNameSuffix = "-debug"
+            applicationIdSuffix =  ".debug"
+            versionNameSuffix = "-debug"
         }
         release {
             isDebuggable = false
@@ -61,6 +61,8 @@ dependencies {
     implementation(project(":core:analytics"))
     implementation(project(":feature:rent"))
     implementation(project(":core:auth"))
+    implementation(project(":core:firebase"))
+    implementation(project(":core:config"))
 
 
     implementation(libs.androidx.core.ktx)
