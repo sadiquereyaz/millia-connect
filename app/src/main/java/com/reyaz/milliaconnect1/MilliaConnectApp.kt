@@ -169,7 +169,6 @@ fun MilliaConnectApp() {
                 snackbarHostState = snackbarHostState,
                 showSearchComponents = showSearchComponents,
             )
-
         }
     }
 }

@@ -89,6 +89,6 @@ dependencies {
     implementation("io.coil-kt:coil:2.7.0")
 
     // For Jetpack Compose integration
-    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation(libs.coil.compose)
 
 }
