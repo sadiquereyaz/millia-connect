@@ -206,8 +206,6 @@ class PortalViewModel(
                                 "username" to _uiState.value.username,
                                 "wifi_primary" to _uiState.value.isWifiPrimary.toString(),
                                 "auto_connect" to _uiState.value.autoConnect.toString(),
-                                "is_jamia_wifi" to _uiState.value.isJamiaWifi.toString(),
-                                "is_logged_in" to _uiState.value.isLoggedIn.toString(),
                                 "error_msg" to result.message.toString(),
                                 "loading_msg" to _uiState.value.loadingMessage.toString()
                             )
@@ -284,29 +282,4 @@ class PortalViewModel(
             )
         }
     }
-
-    private fun updateState(
-        username: String? = null,
-        password: String? = null,
-        isLoggedIn: Boolean? = null,
-        isJamiaWifi: Boolean? = null,
-        autoConnect: Boolean? = null,
-        loadingMessage: String? = _uiState.value.loadingMessage,
-        errorMsg: String? = _uiState.value.errorMsg,
-        isWifiPrimary: Boolean = _uiState.value.isWifiPrimary
-    ) {
-        _uiState.update {
-            it.copy(
-                username = username ?: it.username,
-                password = password ?: it.password,
-                isLoggedIn = isLoggedIn ?: it.isLoggedIn,
-                isJamiaWifi = isJamiaWifi ?: it.isJamiaWifi,
-                autoConnect = autoConnect ?: it.autoConnect,
-                loadingMessage = loadingMessage,
-                errorMsg = errorMsg,
-                isWifiPrimary = isWifiPrimary
-            )
-        }
-    }
-
 }

@@ -23,22 +23,21 @@ class FirebaseAppUpdateChecker(
 
             val currentVersion = versionProvider.versionCode()
 
-            Timber.tag("AppUpdateChecker")
-                .d("remoteMinVersion (minVersion) $minVersion, currentLocalVersion (currentVersion) $currentVersion, force $force, message $message")
+//            Timber.tag("AppUpdateChecker").d("remoteMinVersion (minVersion) $minVersion, currentLocalVersion (currentVersion) $currentVersion, force $force, message $message")
 
             return when {
                 currentVersion < minVersion && force -> {
-                    Timber.tag("AppUpdateChecker").d("Force update required")
+//                    Timber.tag("AppUpdateChecker").d("Force update required")
                     UpdateState.Force(message)
                 }
 
                 currentVersion < minVersion -> {
-                    Timber.tag("AppUpdateChecker").d("Optional update required")
+//                    Timber.tag("AppUpdateChecker").d("Optional update required")
                     UpdateState.Optional(message)
                 }
 
                 else -> {
-                    Timber.tag("AppUpdateChecker").d("No update required")
+//                    Timber.tag("AppUpdateChecker").d("No update required")
                     UpdateState.None
                 }
             }
