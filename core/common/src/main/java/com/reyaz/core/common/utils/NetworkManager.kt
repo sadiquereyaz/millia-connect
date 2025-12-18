@@ -20,8 +20,29 @@ import timber.log.Timber
 
 private const val TAG = "NETWORK_MANAGER"
 
+interface NetworkManager {
+
+    /** Captive portal handling */
+    fun setCaptivePortal(intent: Intent?)
+    fun reportCaptivePortalDismissed()
+
+    /** Network binding */
+    fun bindToWifiNetwork()
+    fun resetNetworkBinding()
+
+    /** Connectivity observation */
+    fun observeWifiConnectivity(): Flow<Boolean>
+    fun observeMobileDataConnectivity(): Flow<Boolean>
+    fun observeCaptivePortalConnectivity(): Flow<Boolean>
+    fun observeInternetConnectivity(): Flow<Boolean>
+    fun observeAllNetworkType(): Flow<NetworkPreference>
+
+    /** Instant checks */
+    fun isVpnActive(): Boolean
+}
+
 @SuppressLint("MissingPermission")
-class NetworkManager(context: Context) {
+class NetworkManagerImpl(context: Context) : NetworkManager {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -30,35 +51,35 @@ class NetworkManager(context: Context) {
     private var wifiForceCallback: ConnectivityManager.NetworkCallback? = null
 
     // todo: integrate launch with captive portal intent
-    fun setCaptivePortal(intent: Intent?) {
+    override fun setCaptivePortal(intent: Intent?) {
         captivePortal = intent?.getParcelableExtra(ConnectivityManager.EXTRA_CAPTIVE_PORTAL)
         Timber.tag(TAG).d("CaptivePortal object received: ${captivePortal != null}")
     }
 
-    fun reportCaptivePortalDismissed() {
-        try{
+    override fun reportCaptivePortalDismissed() {
+        try {
             captivePortal?.let {
-                Timber.tag(TAG).d( "Reporting captive portal dismissed")
+                Timber.tag(TAG).d("Reporting captive portal dismissed")
                 it.reportCaptivePortalDismissed()
                 captivePortal = null
             }
-        } catch (e: Exception){
-            Timber.tag(TAG).d( "Error while dismissing Captive Portal: ${e.message}")
+        } catch (e: Exception) {
+            Timber.tag(TAG).d("Error while dismissing Captive Portal: ${e.message}")
         }
     }
 
     /**
      * Binds the current process to a Wi-Fi network.
      *
-     * This function requests a Wi-Fi network with internet capability.
+     * This override function requests a Wi-Fi network with internet capability.
      * When a suitable Wi-Fi network becomes available, the process is bound to it.
      * If the Wi-Fi network is lost, the process binding is reset.
      *
      * It also ensures that any previously registered network callback for forcing Wi-Fi
      * is unregistered before registering a new one.
      */
-    fun bindToWifiNetwork() {
-        Timber.tag(TAG).d( "Binding to Wi-Fi network...")
+    override fun bindToWifiNetwork() {
+        Timber.tag(TAG).d("Binding to Wi-Fi network...")
 
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -68,12 +89,12 @@ class NetworkManager(context: Context) {
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 connectivityManager.bindProcessToNetwork(network)
-                Timber.tag(TAG).d( "Wi-Fi network bound")
+                Timber.tag(TAG).d("Wi-Fi network bound")
             }
 
             override fun onLost(network: Network) {
                 connectivityManager.bindProcessToNetwork(null)
-                Timber.tag(TAG).d( "Wi-Fi network lost, reset binding")
+                Timber.tag(TAG).d("Wi-Fi network lost, reset binding")
             }
         }
 
@@ -91,8 +112,8 @@ class NetworkManager(context: Context) {
      * This function unbinds the process from any specific network and
      * unregisters the `wifiForceCallback` if it was previously set.
      */
-    fun resetNetworkBinding() {
-        Timber.tag(TAG).d( "Resetting network binding")
+    override fun resetNetworkBinding() {
+        Timber.tag(TAG).d("Resetting network binding")
         connectivityManager.bindProcessToNetwork(null)
         wifiForceCallback?.let {
             connectivityManager.unregisterNetworkCallback(it)
@@ -100,13 +121,13 @@ class NetworkManager(context: Context) {
         }
     }
 
-    fun observeWifiConnectivity(): Flow<Boolean> =
+    override fun observeWifiConnectivity(): Flow<Boolean> =
         observeConnectivity(NetworkCapabilities.TRANSPORT_WIFI)
 
-     fun observeMobileDataConnectivity(): Flow<Boolean> =
+    override fun observeMobileDataConnectivity(): Flow<Boolean> =
         observeConnectivity(NetworkCapabilities.TRANSPORT_CELLULAR)
 
-    fun observeCaptivePortalConnectivity(): Flow<Boolean> = callbackFlow {
+    override fun observeCaptivePortalConnectivity(): Flow<Boolean> = callbackFlow {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
             .build()
@@ -114,7 +135,8 @@ class NetworkManager(context: Context) {
         val callback = object : ConnectivityManager.NetworkCallback() {
 
             override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
-                val isCaptive = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
+                val isCaptive =
+                    caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL)
                 trySend(isCaptive)
                 Timber.tag(TAG).d("Captive portal changed: $isCaptive")
             }
@@ -154,7 +176,7 @@ class NetworkManager(context: Context) {
                 val hasTransport = capabilities?.hasTransport(transportType) == true
 //                trySend(hasTransport)
                 trySend(true)
-                Timber.tag(TAG).d( "onAvailable($transportType)")
+                Timber.tag(TAG).d("onAvailable($transportType)")
             }
 
             override fun onLost(network: Network) {
@@ -162,10 +184,13 @@ class NetworkManager(context: Context) {
                 val stillConnected = isAnyNetworkOfTypeAvailable(transportType)
 //                trySend(stillConnected)
                 trySend(false)
-                Timber.tag(TAG).d( "onLost: $transportType, still connected: $stillConnected")
+                Timber.tag(TAG).d("onLost: $transportType, still connected: $stillConnected")
             }
 
-            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+            override fun onCapabilitiesChanged(
+                network: Network,
+                capabilities: NetworkCapabilities
+            ) {
 //                val hasTransport = capabilities.hasTransport(transportType)
 //                trySend(hasTransport)
 //                Timber.tag(TAG).d( "onCapabilitiesChanged: $transportType = $hasTransport")
@@ -181,39 +206,42 @@ class NetworkManager(context: Context) {
         // Get initial state more comprehensively
         val connected = isAnyNetworkOfTypeAvailable(transportType)
         trySend(connected)
-        Timber.tag(TAG).d( "Initial state: $transportType = $connected")
+        Timber.tag(TAG).d("Initial state: $transportType = $connected")
 
         awaitClose {
             connectivityManager.unregisterNetworkCallback(callback)
-            Timber.tag(TAG).d( "NetworkCallback unregistered: $transportType")
+            Timber.tag(TAG).d("NetworkCallback unregistered: $transportType")
         }
     }.distinctUntilChanged()
 
-    fun observeAllNetworkType(): Flow<NetworkPreference> = combine(
+    override fun observeAllNetworkType(): Flow<NetworkPreference> = combine(
         observeWifiConnectivity(),
         observeMobileDataConnectivity()
     ) { isWifiConnected, isMobileDataConnected ->
         when {
             isWifiConnected && isMobileDataConnected -> {
-                Timber.tag(TAG).d( "Both wifi and mobile data connected")
+                Timber.tag(TAG).d("Both wifi and mobile data connected")
                 NetworkPreference.BOTH_CONNECTED
             }
+
             isWifiConnected -> {
-                Timber.tag(TAG).d( "Only wifi connected")
+                Timber.tag(TAG).d("Only wifi connected")
                 NetworkPreference.WIFI_ONLY
             }
+
             isMobileDataConnected -> {
-                Timber.tag(TAG).d( "Only mobile data connected")
+                Timber.tag(TAG).d("Only mobile data connected")
                 NetworkPreference.MOBILE_DATA_ONLY
             }
+
             else -> {
-                Timber.tag(TAG).d( "No connection")
+                Timber.tag(TAG).d("No connection")
                 NetworkPreference.NONE
             }
         }
     }
 
-    fun observeInternetConnectivity(): Flow<Boolean> = callbackFlow {
+    override fun observeInternetConnectivity(): Flow<Boolean> = callbackFlow {
         val request = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
@@ -221,12 +249,12 @@ class NetworkManager(context: Context) {
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 trySend(true)
-                Timber.tag(TAG).d( "Internet connectivity available")
+                Timber.tag(TAG).d("Internet connectivity available")
             }
 
             override fun onLost(network: Network) {
                 trySend(false)
-                Timber.tag(TAG).d( "Internet connectivity lost")
+                Timber.tag(TAG).d("Internet connectivity lost")
             }
         }
 
@@ -235,16 +263,15 @@ class NetworkManager(context: Context) {
         // Emit initial connectivity state
         val network = connectivityManager.activeNetwork
         val capabilities = connectivityManager.getNetworkCapabilities(network)
-        val hasInternet = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        val hasInternet =
+            capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         trySend(hasInternet)
 
         awaitClose {
             connectivityManager.unregisterNetworkCallback(callback)
-            Timber.tag(TAG).d( "Internet NetworkCallback unregistered")
+            Timber.tag(TAG).d("Internet NetworkCallback unregistered")
         }
     }.distinctUntilChanged()
-
-
 
 
     /**
@@ -260,7 +287,8 @@ class NetworkManager(context: Context) {
             capabilities?.hasTransport(transportType) == true
         }
     }
-    fun isVpnActive(): Boolean {
+
+    override fun isVpnActive(): Boolean {
         return isAnyNetworkOfTypeAvailable(NetworkCapabilities.TRANSPORT_VPN)
     }
 

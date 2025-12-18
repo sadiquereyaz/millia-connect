@@ -87,7 +87,7 @@ fun NavigationDrawerContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    imageVector = ImageVector.vectorResource(R.drawable.app_logo),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_launcher_foreground),
                     contentDescription = "logo",
                     modifier = Modifier.size(100.dp)
                 )

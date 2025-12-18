@@ -1,6 +1,5 @@
 package com.reyaz.feature.portal.data.remote
 
-import android.util.Log
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.Resource
 import kotlinx.coroutines.Dispatchers
@@ -10,8 +9,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import org.htmlunit.WebClient
-import org.htmlunit.html.*
-import org.htmlunit.xpath.operations.Bool
+import org.htmlunit.html.HtmlElement
+import org.htmlunit.html.HtmlPage
+import org.htmlunit.html.HtmlPasswordInput
+import org.htmlunit.html.HtmlTextInput
+import timber.log.Timber
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -21,9 +23,6 @@ class PortalScraper(
 ) {
 
     companion object {
-        private const val TAG = "PORTAL_SCRAPER"
-        private const val ENABLE_LOGGING = true
-
         private const val LOGIN_URL = "http://10.2.0.10:8090/login?dummy"
         private const val LOGOUT_URL = "http://10.2.0.10:8090/logout?dummy"
         //private const val URL_204 = "http://www.gstatic.com/generate_204"
@@ -48,7 +47,7 @@ class PortalScraper(
 
         try {
             val page = webClient.getPage<HtmlPage>(LOGIN_URL)
-//            log("Page: ${page.asNormalizedText()}")
+//            Timber.d("Page: ${page.asNormalizedText()}")
 
             val usernameField = page.getFirstByXPath<HtmlTextInput>(USERNAME_XPATH)
             val passwordField = page.getFirstByXPath<HtmlPasswordInput>(PASSWORD_XPATH)
@@ -68,12 +67,12 @@ class PortalScraper(
             networkManager.reportCaptivePortalDismissed()
 
             val isWifiPrimary = isJmiWifi(forceWifi = false) && isInternetAvailable(isCheckingForWifi = false).getOrNull() ?: true
-            log("Is Wifi Primary: $isWifiPrimary")
+            Timber.d("Is Wifi Primary: $isWifiPrimary")
             val message = if (isWifiPrimary) null else WIFI_NOT_PRIMARY_MSG
             emit(Resource.Success(data = "Successfully Logged in!", message = message))
 
         } catch (e: Exception) {
-            log("Login error: ${e.message}")
+            Timber.d("Login error: ${e.message}")
             emit(Resource.Error("You were not connected to JMI-WiFi"))
         }
     }.flowOn(Dispatchers.IO)
@@ -90,7 +89,7 @@ class PortalScraper(
 
     suspend fun isJmiWifi(forceWifi: Boolean): Boolean = withContext(Dispatchers.IO) {
         try {
-            Log.d(TAG, "Checking JMI-WiFi (for wifi: $forceWifi)")
+            Timber.d( "Checking JMI-WiFi (for wifi: $forceWifi)")
             if (forceWifi) {
                 networkManager.bindToWifiNetwork()
                 delay(500)
@@ -99,11 +98,11 @@ class PortalScraper(
                 connectTimeout = 5000
                 connect()
             }
-            log("Response code: ${connection.responseCode}")
+            Timber.d("Response code: ${connection.responseCode}")
             val responseCode = connection.responseCode
             return@withContext responseCode == 200 || connection.responseCode == 302
         } catch (e: Exception) {
-            log("isJmiWifi error: ${e.message}")
+            Timber.d("isJmiWifi error: ${e.message}")
             return@withContext false
         } finally {
             networkManager.resetNetworkBinding()
@@ -112,7 +111,7 @@ class PortalScraper(
 
      suspend fun isInternetAvailable(isCheckingForWifi: Boolean) : Result<Boolean> = withContext(Dispatchers.IO) {
         try {
-            Log.d(TAG, "Checking Internet Availability (for wifi: $isCheckingForWifi)")
+            Timber.d( "Checking Internet Availability (for wifi: $isCheckingForWifi)")
             if (isCheckingForWifi)
                 networkManager.bindToWifiNetwork()
             val connection = (URL(URL_204).openConnection() as HttpURLConnection).apply {
@@ -120,11 +119,11 @@ class PortalScraper(
                 connect()
             }
             val responseCode = connection.responseCode
-//            log("Response code: $responseCode, Is internet available: ${responseCode == 204}")
-            log("Result:  Is internet available: ${responseCode == 204}")
+//            Timber.d("Response code: $responseCode, Is internet available: ${responseCode == 204}")
+            Timber.d("Result:  Is internet available: ${responseCode == 204}")
             return@withContext Result.success(responseCode == 204)
         } catch (e: Exception){
-            log("Error: $e")
+            Timber.d("Error: $e")
             return@withContext Result.failure(Exception("Error Occur: ${e.message}"))
         } finally {
             networkManager.resetNetworkBinding()
@@ -139,10 +138,5 @@ class PortalScraper(
         networkManager.reportCaptivePortalDismissed()
         return Resource.Success("Successfully Logged in!", null)
     }
-
-    private fun log(message: String) {
-        if (ENABLE_LOGGING) Log.d(TAG, message)
-    }
-
 }
 
