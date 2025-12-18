@@ -1,16 +1,21 @@
 package com.reyaz.feature.portal.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
@@ -20,12 +25,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.reyaz.core.ui.components.text_field.CustomSlimTextField
 import com.reyaz.feature.portal.presentation.PortalUiState
 import com.reyaz.feature.portal.presentation.PortalViewModel
 import kotlinx.coroutines.launch
@@ -40,10 +49,10 @@ internal fun LoginFormComposable(
     val scope = rememberCoroutineScope()
     Column(
         modifier = modifier.padding(top = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomTextField(
+        CustomSlimTextField(
             modifier = Modifier.height(42.dp),
             value = uiState.username,
             onValueChange = { viewModel.updateUsername(it) },
@@ -52,17 +61,8 @@ internal fun LoginFormComposable(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Text
             ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                    scope.launch {
-                        viewModel.retry()
-                    }
-                }
-            )
-
         )
-        CustomTextField(
+        CustomSlimTextField(
             modifier = Modifier.height(42.dp),
             value = uiState.password,
             onValueChange = { viewModel.updatePassword(it) },
@@ -74,9 +74,9 @@ internal fun LoginFormComposable(
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
-                    scope.launch {
-                        viewModel.retry()
-                    }
+//                    scope.launch {
+                    viewModel.onLoginClick()
+//                    }
                 }
             )
         )
@@ -90,9 +90,9 @@ internal fun LoginFormComposable(
                 modifier = Modifier.weight(1f),
                 text = if (uiState.autoConnect) "Your device will automatically connect when session expired." else "Auto Connect",
                 textAlign = TextAlign.End,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.secondary,
-                lineHeight = 12.sp
+                lineHeight = 14.sp
             )
             Spacer(Modifier.width(16.dp))
             Switch(
@@ -103,13 +103,12 @@ internal fun LoginFormComposable(
             )
         }
 
-        Column {// login btn
+        // login btn
+        Column {
             Button(
                 onClick = {
                     focusManager.clearFocus()
-//                    scope.launch {
-                        viewModel.retry()
-//                    }
+                    viewModel.onLoginClick()
                 },
                 modifier = Modifier
                     .height(48.dp)
@@ -118,7 +117,22 @@ internal fun LoginFormComposable(
                     .fillMaxWidth(),
                 enabled = uiState.loginBtnEnabled
             ) {
-                Text("Login")
+                if (uiState.isLoading) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            trackColor = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text("Logging In...", fontWeight = FontWeight.Bold)
+                    }
+                } else {
+                    Text("Login")
+                }
             }
 
             //logout btn
@@ -127,21 +141,29 @@ internal fun LoginFormComposable(
                     .height(48.dp)
                     .padding(4.dp, 12.dp, 4.dp, 0.dp)
                     .fillMaxWidth(),
-                enabled = uiState.isLoggedIn,
                 onClick = { viewModel.logout() }) {
-                Text("Logout")
+                Text("Logout", color = MaterialTheme.colorScheme.onSurface)
             }
         }
 
-        uiState.errorMsg?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-//                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                //modifier = Modifier.padding(top = 16.dp),
-                textAlign = TextAlign.Center
-            )
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            uiState.supportingText?.let {
+                Text(
+                    text = it,
+                    color = if (uiState.isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground,
+                    fontWeight = if (uiState.isError) FontWeight.SemiBold else FontWeight.Normal,
+                    fontSize = 16.sp,
+                    //modifier = Modifier.padding(top = 16.dp),
+                    textAlign = TextAlign.Center,
+                    maxLines = 6,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

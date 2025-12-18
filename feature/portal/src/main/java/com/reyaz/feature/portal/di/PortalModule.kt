@@ -13,6 +13,6 @@ val portalModule = module {
     single { NetworkManager(get()) }
     single { PortalDataStore(get()) }
     single{ PortalScraper(get<NetworkManager>(), get()) }
-    viewModel{ PortalViewModel(get(), get(), get()) }
+    viewModel{ PortalViewModel(get(), get(), get(), get()) }
     single<PortalRepository> { PortalRepositoryImpl(get(), get(), get(), get(), get()) }
 }

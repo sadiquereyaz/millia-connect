@@ -1,13 +1,16 @@
 package com.reyaz.milliaconnect1.navigation
 
-import constants.NavigationRoute
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HomeWork
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Wifi
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -38,11 +41,19 @@ object TopLevelDestinations {
     )
 
     val NOTICE = AppTopLevelDestination(
-        route = constants.NavigationRoute.Notice,
+        route = constants.NavigationRoute.NoticeGraph,
         selectedIcon = Icons.Filled.Newspaper,
         unselectedIcon = Icons.Outlined.Newspaper,
         titleResourceId = "Notice",
         iconContentDescription = "Notice tab"
+    )
+
+    val PORTAL = AppTopLevelDestination(
+        route = constants.NavigationRoute.Portal,
+        selectedIcon = Icons.Filled.Wifi,
+        unselectedIcon = Icons.Outlined.Wifi,
+        titleResourceId = "Captive Portal",
+        iconContentDescription = "Wifi tab"
     )
 
     val RESULT = AppTopLevelDestination(
@@ -52,14 +63,23 @@ object TopLevelDestinations {
         titleResourceId = "Result",
         iconContentDescription = "Result tab"
     )
+    val PROPERTY = AppTopLevelDestination(
+        route = constants.NavigationRoute.PropertyGraph,
+        selectedIcon = Icons.Filled.HomeWork,
+        unselectedIcon = Icons.Outlined.HomeWork,
+        titleResourceId = "Property",
+        iconContentDescription = "Property tab"
+    )
 
     /**
      * List of all top-level destinations in the order they should appear
      */
     val ALL = listOf(
-        SCHEDULE,
+//        SCHEDULE,
+        PORTAL,
         RESULT,
         NOTICE,
+//        PROPERTY  // its graph is already implemented, uncomment them
     )
 }
 

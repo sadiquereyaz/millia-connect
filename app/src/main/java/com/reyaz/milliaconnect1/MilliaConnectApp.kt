@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -14,8 +17,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,7 +47,8 @@ fun MilliaConnectApp() {
     val currentRoute: String? = navBackStackEntry?.destination?.route
     val currentDestination = TopLevelDestinations.ALL.find { it.route.route == currentRoute }
     // Determine if current destination is a top-level destination
-    val isTopLevelDestination = TopLevelDestinations.ALL.any { it.route.route == currentRoute || currentRoute == NavigationRoute.Portal.route }
+    val isTopLevelDestination =
+        TopLevelDestinations.ALL.any { it.route.route == currentRoute || currentRoute == NavigationRoute.Portal.route }
 
     val bottomNavItems = TopLevelDestinations.ALL.map {
         BottomNavItem(
@@ -51,18 +57,43 @@ fun MilliaConnectApp() {
             title = it.titleResourceId
         )
     }
+    var showSearchComponents by remember { mutableStateOf(false) }
+
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val portalViewModel: PortalViewModel = koinViewModel()
-    val portalUiState by portalViewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    val actionIconItems = listOf<ActionIconItem>(
+        ActionIconItem.IconButtonItem(
+            actionRoute = NavigationRoute.PropertyFeed.route,
+            icon = Icons.Default.Search,
+            onClick = { showSearchComponents = !showSearchComponents },
+            contentDescription = "Search Property"
+        ),
+        /*ActionIconItem.CustomComposableItem(
+            actionRoute = NavigationRoute.Portal.route,
+            content = {
+                WifiIconComposable(
+                    portalUiState = portalUiState,
+                    navigateToPortal = {
+                        navController.navigate(NavigationRoute.Portal.route)
+                    }
+                )
+            }
+        )*/
+    )
+
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-                NavigationDrawerContent(navController=navController, drawerState=drawerState, scope=scope)
+            NavigationDrawerContent(
+                navController = navController,
+                drawerState = drawerState,
+                scope = scope
+            )
         },
         gesturesEnabled = false
     ) {
@@ -71,10 +102,13 @@ fun MilliaConnectApp() {
             topBar = {
                 CustomCenterAlignedTopAppBar(
                     title = when (currentRoute) {
+                        NavigationRoute.Portal.route -> "Captive Portal"
                         NavigationRoute.Result.route -> "Entrance Result"
                         NavigationRoute.Schedule.route -> "Class Schedule"
 //                        NavigationRoute.Notice.route -> "Millia Connect"
                         NavigationRoute.AttendanceHistory.route -> "Attendance Summary"
+                        NavigationRoute.PropertyFeed.route -> "Rent Property"
+                        NavigationRoute.CreatePost.route -> "List Your Property"
                         else -> /*currentDestination?.titleTextId ?:*/ stringResource(R.string.app_name)
                     },
                     navigationIcon = if (isTopLevelDestination) Icons.Default.Menu else Icons.Default.ArrowBackIosNew,
@@ -88,19 +122,25 @@ fun MilliaConnectApp() {
                         }
                     },
                     actions = {
-                        // Add common actions like search and notifications
-                        /*IconButton(onClick = {
-                        //navController.navigate(AppDestinations.Notifications.route)
-                    }) {
-                        Icon(
-                            Icons.Default.NotificationsActive, contentDescription = "Notifications",
-                        )
-                    }*/
+                        val actionsForRoute = actionIconItems.filter { it.route == currentRoute }
+                        actionsForRoute.forEach { action ->
+                            when (action) {
+                                is ActionIconItem.IconButtonItem -> {
+                                    IconButton(onClick = action.onClick) {
+                                        Icon(
+                                            imageVector = action.icon,
+                                            contentDescription = action.contentDescription
+                                        )
+                                    }
+                                }
 
-                        WifiIconComposable(
-                            portalUiState = portalUiState,
-                            navigateToPortal = { navController.navigate(NavigationRoute.Portal.route) })
+                                is ActionIconItem.CustomComposableItem -> {
+                                    action.content()
+                                }
+                            }
+                        }
                     }
+
                 )
             },
             bottomBar = {
@@ -130,9 +170,10 @@ fun MilliaConnectApp() {
             MCNavHost(
                 modifier = Modifier.padding(innerPadding),
                 navController = navController,
-                portalViewModel = portalViewModel,
-                snackbarHostState = snackbarHostState
+                snackbarHostState = snackbarHostState,
+                showSearchComponents = showSearchComponents,
             )
         }
     }
 }
+

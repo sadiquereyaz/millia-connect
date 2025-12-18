@@ -1,7 +1,6 @@
 package com.reyaz.milliaconnect1.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import constants.NavigationRoute
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +19,9 @@ import com.reyaz.feature.notice.presentation.NoticeViewModel
 import com.reyaz.feature.portal.presentation.PortalScreen
 import com.reyaz.feature.portal.presentation.PortalViewModel
 import com.reyaz.milliaconnect1.navigation.graph.attendanceNavGraph
+import com.reyaz.milliaconnect1.navigation.graph.propertyNavGraph
 import com.reyaz.milliaconnect1.navigation.graph.resultNavGraph
+import constants.NavigationRoute
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -32,14 +33,15 @@ fun MCNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
-    portalViewModel: PortalViewModel,
+    showSearchComponents: Boolean
 ) {
     NavHost(
         navController = navController,
         startDestination =
 //            NavigationRoute.AttendanceGraph.route,
-//            NavigationRoute.Portal.route,
-            constants.NavigationRoute.ResultGraph.route,
+            NavigationRoute.Portal.route,
+//            constants.NavigationRoute.ResultGraph.route,
+//            constants.NavigationRoute.PropertyGraph.route,
 //        NavigationRoute.Notice.route,
         modifier = modifier.fillMaxSize()
     ) {
@@ -51,9 +53,11 @@ fun MCNavHost(
             attendanceNavGraph(navController, snackbarHostState)
         }
 
-        dialog(route = constants.NavigationRoute.Portal.route) {
+        composable(route = constants.NavigationRoute.Portal.route) {
+            val portalViewModel: PortalViewModel = koinViewModel()
             PortalScreen(
                 viewModel = portalViewModel,
+                navController = navController,
                 dismissDialog = {
                     navController.navigateUp()
                 }
@@ -77,9 +81,17 @@ fun MCNavHost(
             resultNavGraph(navController, snackbarHostState)
         }
 
+        // Property Graph
+        /*navigation(
+            route = constants.NavigationRoute.PropertyGraph.route,
+            startDestination = constants.NavigationRoute.PropertyFeed.route//changes mad by me
+        ) {
+            propertyNavGraph(navController, snackbarHostState, showSearchComponents)
+        }*/
+
         // Notice
         composable(
-            route = constants.NavigationRoute.Notice.route
+            route = constants.NavigationRoute.NoticeGraph.route
         ) {
             val noticeViewModel: NoticeViewModel = koinViewModel()
             val uiState by noticeViewModel.uiState.collectAsStateWithLifecycle()

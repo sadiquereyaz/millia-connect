@@ -9,7 +9,7 @@ import org.htmlunit.WebClient
 import org.koin.dsl.module
 
 val networkModule = module {
-    single { PdfManager(context = get()) }
+    single { PdfManager(context = get(), get()) }
     single { RequestTimeStore(context = get()) }
 
 single {

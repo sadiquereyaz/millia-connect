@@ -1,54 +1,84 @@
 package com.reyaz.feature.portal.presentation
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.reyaz.feature.portal.presentation.components.CaptivePortalDialogContent
-import com.reyaz.core.ui.components.TranslucentLoader
-import kotlinx.coroutines.Job
+import androidx.navigation.NavController
+import com.reyaz.feature.portal.domain.model.PromoCard
+import com.reyaz.feature.portal.domain.model.defaultPromoCard
+import com.reyaz.feature.portal.domain.model.handlePromoAction
+import com.reyaz.feature.portal.presentation.components.GradientPromoCard
+import com.reyaz.feature.portal.presentation.components.LoginFormComposable
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PortalScreen(
     modifier: Modifier = Modifier,
     viewModel: PortalViewModel,
+    navController: NavController,
     dismissDialog: () -> Unit,
 //    showSnackBar: (String, (() -> Unit)?) -> Job,
-
-    ) {
-    /*val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(uiState.errorMsg) {
+) {
+    /*LaunchedEffect(uiState.errorMsg) {
         uiState.errorMsg?.let {
             showSnackBar(it){
                 viewModel.retry()
             }
         }
     }*/
-    Dialog(onDismissRequest = {dismissDialog() }) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Spacer(Modifier.weight(1f))
+        /*LazyRow {
+            items(
+                items = uiState.promoCards,
+                key = { it.id }
+            ) { promo ->
+                GradientPromoCard(
+                    promoCard = promo,
+                    onActionClick = onActionClick
+                )
+            }
+        }*/
+        GradientPromoCard(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            promoCard = uiState.promoCard ?: defaultPromoCard,
+            onActionClick = { action ->
+                handlePromoAction(
+                    action = action,
+                    navController = navController,
+                    context = context
+                )
+            }
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        LoginFormComposable(
+            modifier = Modifier.padding(16.dp),
+            uiState = uiState,
+            viewModel = viewModel
+        )
+    }
+    /*Dialog(onDismissRequest = {dismissDialog() }) {
         Box {
             Card(
                 modifier = Modifier
@@ -90,5 +120,5 @@ fun PortalScreen(
             if (viewModel.uiState.collectAsState().value.isLoading)
                 TranslucentLoader(modifier = modifier.matchParentSize())
         }
-    }
+    }*/
 }

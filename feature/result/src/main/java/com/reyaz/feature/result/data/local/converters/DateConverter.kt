@@ -1,7 +1,6 @@
 package com.reyaz.feature.result.data.local.converters
 
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import java.util.Date
 
 class DateConverter {

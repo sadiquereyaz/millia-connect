@@ -18,8 +18,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val resultModule = module {
-    viewModel { ResultViewModel(get(), get()) }
-    single<ResultRepository> { ResultRepositoryImpl(get(), get(),get(), get(), get()) }
+    viewModel { ResultViewModel(get(), get(), get()) }
+    single<ResultRepository> { ResultRepositoryImpl(get(), get(),get(), get(), get(), get()) }
 
     // scraping
 //    single { ResultScraper(get(), get()) }
