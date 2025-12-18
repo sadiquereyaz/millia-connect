@@ -1,8 +1,6 @@
 package com.reyaz.core.notification.model
 
-import android.app.NotificationManager
 import android.net.Uri
-import androidx.core.app.NotificationCompat
 
 data class NotificationData(
     val id: Int,
@@ -13,7 +11,7 @@ data class NotificationData(
     val iconResId: Int? = null,
     val importance: Int,
     val destinationUri: Uri,
-    val playSound: Boolean
+    val isSilent: Boolean
 )
 
 /**

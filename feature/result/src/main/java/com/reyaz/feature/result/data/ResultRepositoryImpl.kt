@@ -1,11 +1,9 @@
 package com.reyaz.feature.result.data
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.reyaz.core.analytics.AnalyticsTracker
 import com.reyaz.core.common.utils.safeSuspendCall
@@ -210,7 +208,7 @@ class ResultRepositoryImpl(
                                         destinationUri = NavigationRoute.Result.getDeepLink()
                                             .toUri(),
                                         importance = NotificationConstant.RESULT_CHANNEL.importance,
-                                        playSound = true
+                                        isSilent = false
                                     )
                                 )
                         }
