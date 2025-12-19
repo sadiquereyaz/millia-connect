@@ -73,7 +73,7 @@ class PortalViewModel(
                                 networkManager.observeMobileDataConnectivity()
                                     .collect { isMobileData ->
                                         if (!isMobileData) {
-                                            Timber.d("mobile data off, stopping observation and handling login")
+                                            Timber.d("mobile data off, stopping observation.")
                                             _uiState.update {
                                                 it.copy(
                                                     isWifiPrimary = true,
@@ -180,7 +180,8 @@ class PortalViewModel(
                         _uiState.update {
                             it.copy(
                                 supportingText = null,
-                                loadingMessage = "Loading..."
+                                loadingMessage = "Loading...",
+                                isConnected = false,
                             )
                         }
                     }
@@ -195,7 +196,8 @@ class PortalViewModel(
                                     "Login successful. Android is still using mobile data. Please turn off mobile data once to switch to Jamia Wi-Fi.",
                                 isError = false,
                                 loadingMessage = null,
-                                isWifiPrimary = isWifiPrimary
+                                isWifiPrimary = isWifiPrimary,
+                                isConnected = isWifiPrimary
                             )
                         }
 
@@ -232,7 +234,8 @@ class PortalViewModel(
                                     wifiStateResult.supportingMsg
                                 },
                                 loadingMessage = null,
-                                isError = if (isCaptivePortalPageError || isVpnActive) true else wifiStateResult.showAsError
+                                isError = if (isCaptivePortalPageError || isVpnActive) true else wifiStateResult.showAsError,
+                                isConnected = false,
                             )
                         }
                         // Analytics event for failed login

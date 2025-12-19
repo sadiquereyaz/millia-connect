@@ -2,6 +2,7 @@ package com.reyaz.feature.portal.presentation
 
 import com.reyaz.feature.portal.domain.model.PromoCard
 import com.reyaz.feature.portal.domain.model.defaultPromoCard
+import org.htmlunit.xpath.operations.Bool
 
 
 data class PortalUiState(
@@ -19,7 +20,8 @@ data class PortalUiState(
     val isError: Boolean = false,
 //    val isError: Boolean = true,
 
-    val promoCard: List<PromoCard> = emptyList()
+    val promoCard: List<PromoCard> = emptyList(),
+    val isConnected: Boolean = false
 ) {
     val loginBtnEnabled: Boolean = username.isNotEmpty() && password.isNotEmpty()
     val isLoading: Boolean = !loadingMessage.isNullOrBlank()
