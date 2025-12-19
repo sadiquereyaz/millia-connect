@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":core:auth"))
     implementation(project(":core:firebase"))
     implementation(project(":core:config"))
+    implementation(project(":core:location"))
 
 
     implementation(libs.androidx.core.ktx)

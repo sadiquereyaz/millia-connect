@@ -33,7 +33,7 @@ data class AppTopLevelDestination(
 object TopLevelDestinations {
 
     val SCHEDULE = AppTopLevelDestination(
-        route = constants.NavigationRoute.Schedule,
+        route = constants.NavigationRoute.AttendanceGraph,
         selectedIcon = Icons.Filled.Timer,
         unselectedIcon = Icons.Outlined.Timer,
         titleResourceId = "Schedule",
@@ -75,7 +75,7 @@ object TopLevelDestinations {
      * List of all top-level destinations in the order they should appear
      */
     val ALL = listOf(
-//        SCHEDULE,
+        SCHEDULE,
         PORTAL,
         RESULT,
         NOTICE,

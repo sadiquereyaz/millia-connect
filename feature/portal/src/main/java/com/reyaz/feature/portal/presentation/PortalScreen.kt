@@ -32,7 +32,6 @@ import com.reyaz.feature.portal.presentation.components.LoginFormComposable
 import com.reyaz.feature.portal.presentation.components.PagerDots
 import com.reyaz.feature.portal.presentation.components.PromoCarousel
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PortalScreen(
     modifier: Modifier = Modifier,

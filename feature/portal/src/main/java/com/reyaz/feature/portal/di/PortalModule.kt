@@ -11,7 +11,6 @@ import com.reyaz.feature.portal.data.repository.PortalRepositoryImpl
 import com.reyaz.feature.portal.domain.repository.FirestorePromoRepository
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import com.reyaz.feature.portal.presentation.PortalViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
