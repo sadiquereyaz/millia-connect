@@ -63,7 +63,8 @@ fun MCNavHost(
             navController = navController,
             startDestination =
 //            NavigationRoute.AttendanceGraph.route,
-                NavigationRoute.Portal.route,
+           constants.NavigationRoute.AttendanceGraph.route,
+//                NavigationRoute.Portal.route,
 //            constants.NavigationRoute.ResultGraph.route,
 //            constants.NavigationRoute.PropertyGraph.route,
 //        NavigationRoute.Notice.route,
@@ -72,7 +73,7 @@ fun MCNavHost(
             // Attendance Feature Graph
             navigation(
                 route = constants.NavigationRoute.AttendanceGraph.route,
-                startDestination = constants.NavigationRoute.AddSchedule.route
+                startDestination = constants.NavigationRoute.Schedule.route
             ) {
                 attendanceNavGraph(navController, snackbarHostState)
             }

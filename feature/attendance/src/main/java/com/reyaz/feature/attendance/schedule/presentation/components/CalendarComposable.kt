@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.reyaz.feature.attendance.schedule.presentation.ScheduleUiState
+import com.reyaz.feature.attendance.schedule.presentation.ScheduleUiStateOld
 
 @Composable
 fun CalendarComposable(
-    uiState: ScheduleUiState,
+    uiState: ScheduleUiStateOld,
     listState: LazyListState,
     onDateClick: (Int) -> Unit
 ) {
@@ -51,7 +51,7 @@ fun CalendarComposable(
 @Composable
 private fun DayDate(
     listState: LazyListState,
-    uiState: ScheduleUiState,
+    uiState: ScheduleUiStateOld,
     onDateSelect: (Int) -> Unit
 ) {
     LazyRow(

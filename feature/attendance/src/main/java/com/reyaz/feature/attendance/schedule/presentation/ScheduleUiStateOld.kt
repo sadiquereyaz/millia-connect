@@ -3,7 +3,7 @@ package com.reyaz.feature.attendance.schedule.presentation
 import com.reyaz.feature.attendance.schedule.data.dao.CombinedScheduleTaskModel
 import com.reyaz.feature.attendance.schedule.domain.models.DayDateModel
 
-data class ScheduleUiState(
+data class ScheduleUiStateOld(
     val scheduleList: List<CombinedScheduleTaskModel> = listOf(),
     val dayDateList: List<DayDateModel> = listOf(),
     val selectedDateIndex: Int = 15,      //current day/date

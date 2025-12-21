@@ -9,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.reyaz.feature.attendance.schedule.data.dao.CombinedScheduleTaskModel
 import com.reyaz.feature.attendance.schedule.domain.AttendanceType
-import com.reyaz.feature.attendance.schedule.presentation.ScheduleUiState
+import com.reyaz.feature.attendance.schedule.presentation.ScheduleUiStateOld
 import java.time.LocalTime
 
 @Composable
 fun ScheduleList(
     navigateToEditSchedule: (Int) -> Unit = {},
-    uiState: ScheduleUiState,
+    uiState: ScheduleUiStateOld,
     upsertAttendance: (Int, Int, AttendanceType) -> Unit,
     upsertTask: (Int, Int, String?, Int) -> Unit,
     onScheduleTaskReminder: (CombinedScheduleTaskModel, String?, Int) -> Unit,

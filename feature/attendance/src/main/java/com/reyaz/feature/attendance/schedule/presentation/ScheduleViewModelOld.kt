@@ -4,7 +4,6 @@ import com.reyaz.feature.attendance.schedule.data.dao.CombinedScheduleTaskModel
 import com.reyaz.feature.attendance.schedule.domain.AttendanceType
 import com.reyaz.feature.attendance.schedule.domain.models.DayDateModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,13 +17,13 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-class ScheduleViewModel(
+class ScheduleViewModelOld(
 //    private val scheduleRepository: ScheduleRepository,
 //    private val workManagerTaskRepository: TaskReminderRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ScheduleUiState())
-    val uiState: StateFlow<ScheduleUiState> = _uiState
+    private val _uiState = MutableStateFlow(ScheduleUiStateOld())
+    val uiState: StateFlow<ScheduleUiStateOld> = _uiState
 
     private val todayDateIndex: Int = 15
     private val _calendar = Calendar.getInstance()

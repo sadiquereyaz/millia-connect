@@ -31,9 +31,9 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.LocalTime
 
 @Composable
-fun ScheduleScreen(
+fun ScheduleScreenOld(
     modifier: Modifier = Modifier,
-    viewModel: ScheduleViewModel = koinViewModel(),
+    viewModel: ScheduleViewModelOld = koinViewModel(),
     navigateToEditSchedule: (Int, String) -> Unit = { _, _ -> },
 ) {
     val uiState by viewModel.uiState.collectAsState()

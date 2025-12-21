@@ -37,6 +37,7 @@ android {
 dependencies {
 
     implementation(project(":core:location"))
+    implementation(project(":core:common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
