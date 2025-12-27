@@ -2,28 +2,30 @@ package com.reyaz.feature.attendance.presentation.schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Task
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,15 +39,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.reyaz.core.ui.components.SingleLineText
 import com.reyaz.feature.attendance.presentation.components.HorizontalCalendar
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.asTimeSource
-import kotlinx.datetime.atTime
-import kotlinx.datetime.todayIn
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -84,44 +81,55 @@ fun LectureItem(
     val task: String? = null
     val locationName: String? = "Faculty of Engg. & Technology"
     val taskColor = MaterialTheme.colorScheme.outline
-    Box(
+    val warningColor = MaterialTheme.colorScheme.primary
+    val isDarkMode = isSystemInDarkTheme()
+    val selectedAttendanceType = PresentType.PRESENT
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(124.dp)
+            .height(IntrinsicSize.Min) // its height becomes the height of the tallest child.
     ) {
-        Row() {
-            Text(
+        // times
+        Text(
 //                modifier = Modifier.align(Alignment.TopStart),
-                text = "9:35 am\n-\n10:37 pm",
-                textAlign = TextAlign.Center,
+            text = "9:35 am\n-\n10:37 pm",
+            textAlign = TextAlign.Center,
+        )
+
+        // line left space
+        Spacer(Modifier.width(4.dp))
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(6.dp)
+                    .background(MaterialTheme.colorScheme.onBackground)
             )
 
-            // line left space
-            Spacer(Modifier.width(4.dp))
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(6.dp)
-                        .background(MaterialTheme.colorScheme.onBackground)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(0.6.dp)
-                        .background(MaterialTheme.colorScheme.onBackground)
-                )
-
-            }
-            // line right space
-            Spacer(Modifier.width(8.dp))
-
-            // subject info box
+            // vertical line
             Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(0.6.dp)
+                    .background(MaterialTheme.colorScheme.onBackground)
+            )
+
+        }
+        // line right space
+        Spacer(Modifier.width(8.dp))
+
+        // subject info box
+        Box(
+            Modifier.padding(
+                bottom = 16.dp
+            )
+
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -131,91 +139,137 @@ fun LectureItem(
                     )
                     .padding(10.dp)
             ) {
-                Column() {
-                    Row(
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // attendance percent circle
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(48.dp)
+                            .background(attendancePerColor.copy(alpha = 0.25f)),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        // attendance percent circle
-                        Box(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(48.dp)
-                                .background(attendancePerColor.copy(alpha = 0.25f)),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = "64%",
-                                fontWeight = FontWeight.Bold,
-                                color = attendancePerColor
-                            )
-                        }
+                        Text(
+                            text = "64%",
+                            fontWeight = FontWeight.Bold,
+                            color = attendancePerColor
+                        )
+                    }
 
-                        Spacer(Modifier.weight(1f))
-//                        Spacer(Modifier.width(24.dp))
+//                        Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.width(4.dp))
 
-                        Column(
-                            Modifier.padding(horizontal = 8.dp)
-                        ) {
-                            Text(
-                                text = "Engg. Mathematics III",
-                                fontSize = 18.sp
-                            )
-                            // location
-                            locationName?.let {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        modifier = Modifier.size(16.dp),
-                                        imageVector = Icons.Default.LocationOn,
-                                        contentDescription = "task icon",
-                                        tint = taskColor,
-                                    )
-                                    Spacer(Modifier.width(4.dp))
-                                    Text(
-                                        text = it,
-                                        color = taskColor,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Spacer(Modifier.weight(1f))
-
-                                }
+                    Column(
+                        Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        SingleLineText(
+                            text = "Engg. Mathematics III",
+                            fontSize = 18.sp
+                        )
+                        // location
+                        locationName?.let {
+                            Spacer(Modifier.height(4.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(12.dp),
+                                    imageVector = Icons.Default.LocationOn,
+                                    contentDescription = "task icon",
+                                    tint = taskColor,
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                SingleLineText(
+                                    text = it,
+                                    color = taskColor,
+                                    fontSize = 12.sp,
+                                )
                             }
                         }
-//                        Spacer(Modifier.weight(1f))
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "lecture reminder"
+                        Spacer(Modifier.height(4.dp))
+                        // warning
+                        SingleLineText(
+                            text = "You can miss this lecture",
+                            color = warningColor,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 4.dp)
                         )
-
                     }
+                    Spacer(Modifier.weight(1f))
+                    /*Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "lecture reminder"
+                    )*/
 
-                    Spacer(Modifier.height(12.dp))
+                }
 
-                    // task
+                Spacer(Modifier.height(12.dp))
+
+                // task
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    /*Icon(
+                        modifier = Modifier.size(16.dp),
+                        imageVector = Icons.Default.Task, contentDescription = "task icon",
+                        tint = taskColor,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = task ?: "Add task...",
+                        color = taskColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )*/
+                    Spacer(Modifier.weight(1f))
+                    // atttemdance types
                     Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.size(16.dp),
-                            imageVector = Icons.Default.Task, contentDescription = "task icon",
-                            tint = taskColor,
-                        )
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = task ?: "Add task...",
-                            color = taskColor,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(Modifier.weight(1f))
+                        PresentType.entries.forEach { type ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(
+                                        shape = CircleShape
+//                                            shape = RoundedCornerShape(50)
+                                    )
+                                    .clickable {
 
+                                    }
+                                    .border(
+                                        width = 1.dp,
+                                        color = type.getColor(isDarkMode),
+                                        shape = CircleShape
+                                    )
+                                    .then(
+                                        if (type == selectedAttendanceType) {
+                                            Modifier
+                                                .height(24.dp)
+                                                .background(type.getColor(isDarkMode))
+                                                .padding(horizontal = 8.dp)
+                                        } else {
+                                            Modifier.size(24.dp)
+                                        }
+                                    ),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                SingleLineText(
+                                    text = type.getDisplayText(selectedAttendanceType != type),
+                                    color = if (type == selectedAttendanceType) MaterialTheme.colorScheme.onPrimary else type.getColor(
+                                        isDarkMode
+                                    )
+                                )
+                            }
+                        }
                     }
+
                 }
             }
-
         }
+
     }
 
 }
@@ -255,16 +309,39 @@ data class TaskItem(
 )
 
 enum class PresentType(
-    color: Color = Color(0xFF000000),
+    val lightColor: Color,
+    val darkColor: Color,
+    val title: String
 ) {
     PRESENT(
-//        color = if (isDarkTheme)MaterialTheme.colorScheme.primary
+        lightColor = Color(0xFF2E7D32),   // Green 800
+        darkColor = Color(0xFF81C784),    // Light Green
+        title = "Present"
     ),
+
     ABSENT(
-//        color = MaterialTheme.colorScheme.error
+        lightColor = Color(0xFFC62828),   // Red 800
+        darkColor = Color(0xFFEF9A9A),    // Light Red
+        title = "Absent"
     ),
+
     CANCELLED(
-//        color = MaterialTheme.colorScheme.surfaceVariant
+        lightColor = Color(0xFFF9A825),   // Amber 800
+        darkColor = Color(0xFFFFE082),    // Light Amber
+        title = "Cancelled"
     ),
-    NOT_COUNTED
+
+    NOT_COUNTED(
+        lightColor = Color(0xFF616161),   // Grey 700
+        darkColor = Color(0xFFBDBDBD),    // Light Grey
+        title = "Not Counted"
+    );
+
+    fun getColor(isDark: Boolean): Color {
+        return if (isDark) darkColor else lightColor
+    }
+
+    fun getDisplayText(isCompact: Boolean): String {
+        return if (isCompact) title.first().toString() else title
+    }
 }
