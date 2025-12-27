@@ -151,7 +151,9 @@ milia-connect/
 ## 🏗️ Detailed Project Structure
 
 ```
-millia-connect/
+Directory structure:
+└── sadiquereyaz-millia-connect/
+    ├── README.md
     ├── build.gradle.kts
     ├── gradle.properties
     ├── gradlew
@@ -159,6 +161,7 @@ millia-connect/
     ├── settings.gradle.kts
     ├── app/
     │   ├── build.gradle.kts
+    │   ├── google-services.json
     │   └── src/
     │       ├── androidTest/
     │       │   └── java/
@@ -166,28 +169,87 @@ millia-connect/
     │       │           └── reyaz/
     │       │               └── milliaconnect1/
     │       │                   └── ExampleInstrumentedTest.kt
+    │       ├── debug/
+    │       │   └── res/
+    │       │       └── values/
+    │       │           └── strings.xml
     │       ├── main/
-    │       │   └── java/
-    │       │       └── com/
-    │       │           └── reyaz/
-    │       │               └── milliaconnect1/
-    │       │                   ├── BaseApplication.kt
-    │       │                   ├── MainActivity.kt
-    │       │                   ├── MilliaConnectApp.kt
-    │       │                   ├── di/
-    │       │                   │   └── AppModule.kt
-    │       │                   ├── navigation/
-    │       │                   │   ├── AppDestinations.kt
-    │       │                   │   ├── AppTopLevelDestination.kt
-    │       │                   │   ├── MCNavHost.kt
-    │       │                   │   └── graph/
-    │       │                   │       ├── AttendanceNavGraph.kt
-    │       │                   │       └── ResultNavGraph.kt
-    │       │                   ├── ui/
-    │       │                   │   └── components/
-    │       │                   │       └── WifiIconComposable.kt
-    │       │                   └── util/
-    │       │                       └── NetworkConnectivityObserver.kt
+    │       │   ├── AndroidManifest.xml
+    │       │   ├── java/
+    │       │   │   └── com/
+    │       │   │       └── reyaz/
+    │       │   │           └── milliaconnect1/
+    │       │   │               ├── ActionIconItem.kt
+    │       │   │               ├── BaseApplication.kt
+    │       │   │               ├── MainActivity.kt
+    │       │   │               ├── MilliaConnectApp.kt
+    │       │   │               ├── di/
+    │       │   │               │   └── AppModule.kt
+    │       │   │               ├── navigation/
+    │       │   │               │   ├── AppDestinations.kt
+    │       │   │               │   ├── AppTopLevelDestination.kt
+    │       │   │               │   ├── MCNavHost.kt
+    │       │   │               │   └── graph/
+    │       │   │               │       ├── AttendanceNavGraph.kt
+    │       │   │               │       ├── PropertyNavGraph.kt
+    │       │   │               │       └── ResultNavGraph.kt
+    │       │   │               └── util/
+    │       │   │                   ├── AppEnvironmentImpl.kt
+    │       │   │                   └── NetworkConnectivityObserver.kt
+    │       │   └── res/
+    │       │       ├── drawable/
+    │       │       │   ├── ic_launcher_foreground.xml
+    │       │       │   ├── millia_connect_logo.xml
+    │       │       │   ├── visibility_off_24.xml
+    │       │       │   ├── visibility_on_24.xml
+    │       │       │   ├── wifi_off.xml
+    │       │       │   └── wifi_on.xml
+    │       │       ├── mipmap-anydpi-v26/
+    │       │       │   ├── ic_launcher.xml
+    │       │       │   ├── ic_launcher_round.xml
+    │       │       │   ├── ic_splash.xml
+    │       │       │   └── ic_splash_round.xml
+    │       │       ├── mipmap-hdpi/
+    │       │       │   ├── ic_launcher.webp
+    │       │       │   ├── ic_launcher_foreground.webp
+    │       │       │   ├── ic_launcher_round.webp
+    │       │       │   ├── ic_splash.webp
+    │       │       │   └── ic_splash_round.webp
+    │       │       ├── mipmap-mdpi/
+    │       │       │   ├── ic_launcher.webp
+    │       │       │   ├── ic_launcher_foreground.webp
+    │       │       │   ├── ic_launcher_round.webp
+    │       │       │   ├── ic_splash.webp
+    │       │       │   └── ic_splash_round.webp
+    │       │       ├── mipmap-xhdpi/
+    │       │       │   ├── ic_launcher.webp
+    │       │       │   ├── ic_launcher_foreground.webp
+    │       │       │   ├── ic_launcher_round.webp
+    │       │       │   ├── ic_splash.webp
+    │       │       │   └── ic_splash_round.webp
+    │       │       ├── mipmap-xxhdpi/
+    │       │       │   ├── ic_launcher.webp
+    │       │       │   ├── ic_launcher_round.webp
+    │       │       │   ├── ic_splash.webp
+    │       │       │   └── ic_splash_round.webp
+    │       │       ├── mipmap-xxxhdpi/
+    │       │       │   ├── ic_launcher.webp
+    │       │       │   ├── ic_launcher_round.webp
+    │       │       │   ├── ic_splash.webp
+    │       │       │   └── ic_splash_round.webp
+    │       │       ├── values/
+    │       │       │   ├── colors.xml
+    │       │       │   ├── ic_launcher_background.xml
+    │       │       │   ├── ic_splash_background.xml
+    │       │       │   ├── strings.xml
+    │       │       │   └── themes.xml
+    │       │       ├── values-night/
+    │       │       │   ├── colors.xml
+    │       │       │   └── themes.xml
+    │       │       └── xml/
+    │       │           ├── backup_rules.xml
+    │       │           ├── data_extraction_rules.xml
+    │       │           └── network_security_config.xml
     │       └── test/
     │           └── java/
     │               └── com/
@@ -195,6 +257,71 @@ millia-connect/
     │                       └── milliaconnect1/
     │                           └── ExampleUnitTest.kt
     ├── core/
+    │   ├── analytics/
+    │   │   ├── build.gradle.kts
+    │   │   ├── consumer-rules.pro
+    │   │   ├── proguard-rules.pro
+    │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── analytics/
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── analytics/
+    │   │       │                       ├── AnalyticsTracker.kt
+    │   │       │                       ├── FirebaseAnalyticsTracker.kt
+    │   │       │                       └── di/
+    │   │       │                           └── AnalyticsModule.kt
+    │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── analytics/
+    │   │                               └── ExampleUnitTest.kt
+    │   ├── auth/
+    │   │   ├── build.gradle.kts
+    │   │   ├── consumer-rules.pro
+    │   │   ├── proguard-rules.pro
+    │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── auth/
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── auth/
+    │   │       │                       ├── data/
+    │   │       │                       │   └── repository/
+    │   │       │                       │       └── GoogleServiceImpl.kt
+    │   │       │                       ├── di/
+    │   │       │                       │   └── authModule.kt
+    │   │       │                       └── domain/
+    │   │       │                           └── repository/
+    │   │       │                               ├── GoogleService.kt
+    │   │       │                               └── WebClientId.kt
+    │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── auth/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── common/
     │   │   ├── build.gradle.kts
     │   │   └── src/
@@ -207,6 +334,7 @@ millia-connect/
     │   │               │               └── utils/
     │   │               │                   ├── DateUtils.kt
     │   │               │                   ├── Extensions.kt
+    │   │               │                   ├── FakeNetworkManager.kt
     │   │               │                   ├── IntentActions.kt
     │   │               │                   ├── NetworkManager.kt
     │   │               │                   ├── Resource.kt
@@ -214,6 +342,38 @@ millia-connect/
     │   │               └── constants/
     │   │                   ├── AppConstants.kt
     │   │                   └── NavigationRoute.kt
+    │   ├── config/
+    │   │   ├── build.gradle.kts
+    │   │   ├── consumer-rules.pro
+    │   │   ├── proguard-rules.pro
+    │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── config/
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── config/
+    │   │       │                       ├── AppVersionProvider.kt
+    │   │       │                       ├── AppViewModel.kt
+    │   │       │                       ├── ConfigModule.kt
+    │   │       │                       ├── FirebaseAppUpdateChecker.kt
+    │   │       │                       ├── ForceUpdateDialog.kt
+    │   │       │                       └── UpdateState.kt
+    │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── config/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── data/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
@@ -227,6 +387,7 @@ millia-connect/
     │   │       │                   └── data/
     │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
@@ -243,6 +404,34 @@ millia-connect/
     │   │                               └── ExampleUnitTest.kt
     │   ├── domain/
     │   │   └── build.gradle.kts
+    │   ├── firebase/
+    │   │   ├── build.gradle.kts
+    │   │   ├── consumer-rules.pro
+    │   │   ├── proguard-rules.pro
+    │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── firebase/
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── firebase/
+    │   │       │                       └── di/
+    │   │       │                           └── FirebaseModule.kt
+    │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── firebase/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── navigation/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
@@ -256,15 +445,34 @@ millia-connect/
     │   │       │                   └── navigation/
     │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── navigation/
+    │   │       │                       └── NavigationAction.kt
     │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── navigation/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── network/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
     │   │   ├── proguard-rules.pro
     │   │   └── src/
     │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── core/
+    │   │       │                   └── network/
+    │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
@@ -283,65 +491,113 @@ millia-connect/
     │   │       │                           ├── RequestTimeStore.kt
     │   │       │                           └── SSLTrustUtils.kt
     │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── network/
     │   │                               └── ExampleUnitTest.kt
     │   ├── notification/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
     │   │   ├── proguard-rules.pro
     │   │   └── src/
-    │   │       ├── main/
+    │   │       ├── androidTest/
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
     │   │       │               └── core/
     │   │       │                   └── notification/
-    │   │       │                       ├── NotificationModule.kt
-    │   │       │                       ├── manager/
-    │   │       │                       │   └── AppNotificationManager.kt
-    │   │       │                       ├── model/
-    │   │       │                       │   └── NotificationData.kt
-    │   │       │                       └── utils/
-    │   │       │                           ├── CreateNotificationChannel.kt
-    │   │       │                           └── NotificationConstant.kt
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   ├── java/
+    │   │       │   │   └── com/
+    │   │       │   │       └── reyaz/
+    │   │       │   │           └── core/
+    │   │       │   │               └── notification/
+    │   │       │   │                   ├── NotificationModule.kt
+    │   │       │   │                   ├── manager/
+    │   │       │   │                   │   └── AppNotificationManager.kt
+    │   │       │   │                   ├── model/
+    │   │       │   │                   │   └── NotificationData.kt
+    │   │       │   │                   └── utils/
+    │   │       │   │                       ├── CreateNotificationChannel.kt
+    │   │       │   │                       └── NotificationConstant.kt
+    │   │       │   └── res/
+    │   │       │       └── drawable/
+    │   │       │           └── ic_notification.xml
     │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── core/
+    │   │                           └── notification/
+    │   │                               └── ExampleUnitTest.kt
     │   └── ui/
     │       ├── build.gradle.kts
     │       ├── consumer-rules.pro
     │       ├── proguard-rules.pro
     │       └── src/
     │           ├── androidTest/
-    │           ├── main/
     │           │   └── java/
     │           │       └── com/
     │           │           └── reyaz/
     │           │               └── core/
     │           │                   └── ui/
-    │           │                       ├── components/
-    │           │                       │   ├── CustomBottomNavigationBar.kt
-    │           │                       │   ├── CustomListDivider.kt
-    │           │                       │   ├── CustomTopAppBar.kt
-    │           │                       │   ├── ErrorScreen.kt
-    │           │                       │   ├── ListItemWithTrailingIcon.kt
-    │           │                       │   ├── NavigationDrawerContent.kt
-    │           │                       │   ├── textWithIndicator.kt
-    │           │                       │   └── TranslucentLoader.kt
-    │           │                       ├── helper/
-    │           │                       │   ├── BrowserLinkOpener.kt
-    │           │                       │   └── getNoticeActionModel.kt
-    │           │                       ├── model/
-    │           │                       │   └── ListItemUiModel.kt
-    │           │                       ├── preview/
-    │           │                       │   └── ThemePreview.kt
-    │           │                       ├── screen/
-    │           │                       │   └── PdfViewerScreen.kt
-    │           │                       └── theme/
-    │           │                           ├── Color.kt
-    │           │                           ├── Theme.kt
-    │           │                           └── Type.kt
+    │           │                       └── ExampleInstrumentedTest.kt
+    │           ├── main/
+    │           │   ├── AndroidManifest.xml
+    │           │   ├── java/
+    │           │   │   └── com/
+    │           │   │       └── reyaz/
+    │           │   │           └── core/
+    │           │   │               └── ui/
+    │           │   │                   ├── components/
+    │           │   │                   │   ├── ConfettiEffect.kt
+    │           │   │                   │   ├── CustomBottomNavigationBar.kt
+    │           │   │                   │   ├── CustomListDivider.kt
+    │           │   │                   │   ├── CustomTopAppBar.kt
+    │           │   │                   │   ├── ErrorScreen.kt
+    │           │   │                   │   ├── ListItemWithTrailingIcon.kt
+    │           │   │                   │   ├── NavigationDrawerContent.kt
+    │           │   │                   │   ├── textWithIndicator.kt
+    │           │   │                   │   ├── TranslucentLoader.kt
+    │           │   │                   │   ├── button/
+    │           │   │                   │   │   ├── MCOutlineButton.kt
+    │           │   │                   │   │   └── MCPrimaryButton.kt
+    │           │   │                   │   └── text_field/
+    │           │   │                   │       ├── CustomCircularTextField.kt
+    │           │   │                   │       └── CustomSlimTextField.kt
+    │           │   │                   ├── helper/
+    │           │   │                   │   ├── BrowserLinkOpener.kt
+    │           │   │                   │   └── getNoticeActionModel.kt
+    │           │   │                   ├── model/
+    │           │   │                   │   └── ListItemUiModel.kt
+    │           │   │                   ├── preview/
+    │           │   │                   │   └── ThemePreview.kt
+    │           │   │                   ├── screen/
+    │           │   │                   │   └── PdfViewerScreen.kt
+    │           │   │                   └── theme/
+    │           │   │                       ├── Color.kt
+    │           │   │                       ├── Theme.kt
+    │           │   │                       └── Type.kt
+    │           │   └── res/
+    │           │       ├── drawable/
+    │           │       │   ├── ic_launcher_foreground.xml
+    │           │       │   ├── visibility_off_24.xml
+    │           │       │   ├── visibility_on_24.xml
+    │           │       │   ├── wifi_off.xml
+    │           │       │   └── wifi_on.xml
+    │           │       └── drawable-anydpi/
+    │           │           └── notification_icon.xml
     │           └── test/
-    ├── extraFiles/
-    │   ├── internetConnectedVector.zip
-    │   └── structureTree.md
+    │               └── java/
+    │                   └── com/
+    │                       └── reyaz/
+    │                           └── core/
+    │                               └── ui/
+    │                                   └── ExampleUnitTest.kt
     ├── feature/
     │   ├── attendance/
     │   │   ├── build.gradle.kts
@@ -349,7 +605,14 @@ millia-connect/
     │   │   ├── proguard-rules.pro
     │   │   └── src/
     │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── feature/
+    │   │       │                   └── attendance/
+    │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
@@ -393,13 +656,26 @@ millia-connect/
     │   │       │                                   ├── TaskComposable.kt
     │   │       │                                   └── TimePicker.kt
     │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── feature/
+    │   │                           └── attendance/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── notice/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
     │   │   ├── proguard-rules.pro
     │   │   └── src/
     │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── feature/
+    │   │       │                   └── notice/
+    │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
@@ -441,13 +717,26 @@ millia-connect/
     │   │       │                           ├── EntityToDomain.kt
     │   │       │                           └── ToNoticeEntity.kt
     │   │       └── test/
-    │   │        
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── feature/
+    │   │                           └── notice/
+    │   │                               └── ExampleUnitTest.kt
     │   ├── portal/
     │   │   ├── build.gradle.kts
     │   │   ├── consumer-rules.pro
     │   │   ├── proguard-rules.pro
     │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── feature/
+    │   │       │                   └── portal/
+    │   │       │                       └── ExampleInstrumentedTest.kt
     │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
     │   │       │   └── java/
     │   │       │       └── com/
     │   │       │           └── reyaz/
@@ -457,8 +746,11 @@ millia-connect/
     │   │       │                       │   ├── local/
     │   │       │                       │   │   └── PortalDataStore.kt
     │   │       │                       │   ├── remote/
-    │   │       │                       │   │   └── PortalScraper.kt
+    │   │       │                       │   │   ├── PortalScraper.kt
+    │   │       │                       │   │   └── model/
+    │   │       │                       │   │       └── PromoCardDto.kt
     │   │       │                       │   ├── repository/
+    │   │       │                       │   │   ├── MockPortalRepoImpl.kt
     │   │       │                       │   │   └── PortalRepositoryImpl.kt
     │   │       │                       │   └── worker/
     │   │       │                       │       └── AutoLoginWorker.kt
@@ -466,8 +758,12 @@ millia-connect/
     │   │       │                       │   └── PortalModule.kt
     │   │       │                       ├── domain/
     │   │       │                       │   ├── model/
-    │   │       │                       │   │   └── ConnectRequest.kt
+    │   │       │                       │   │   ├── ConnectRequest.kt
+    │   │       │                       │   │   ├── DynamicUiClickAction.kt
+    │   │       │                       │   │   ├── JmiWifiState.kt
+    │   │       │                       │   │   └── PromoCard.kt
     │   │       │                       │   ├── repository/
+    │   │       │                       │   │   ├── FirestorePromoRepository.kt
     │   │       │                       │   │   └── PortalRepository.kt
     │   │       │                       │   └── usecase/
     │   │       │                       │       ├── GetCredentialUseCase.kt
@@ -478,13 +774,81 @@ millia-connect/
     │   │       │                           ├── PortalUiState.kt
     │   │       │                           ├── PortalViewModel.kt
     │   │       │                           └── components/
-    │   │       │                               ├── CaptivePortalDialogContent.kt
     │   │       │                               ├── ConnectedComposable.kt
-    │   │       │                               ├── CustomTextField.kt
     │   │       │                               ├── gradientBrush.kt
+    │   │       │                               ├── GradientPromoCard.kt
     │   │       │                               ├── LoginFormComposable.kt
-    │   │       │                               └── NotJmiWifiComposable.kt
+    │   │       │                               ├── NotJmiWifiComposable.kt
+    │   │       │                               ├── PagerDots.kt
+    │   │       │                               └── PromoCarousel.kt
     │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── feature/
+    │   │                           └── portal/
+    │   │                               └── ExampleUnitTest.kt
+    │   ├── rent/
+    │   │   ├── build.gradle.kts
+    │   │   ├── consumer-rules.pro
+    │   │   ├── proguard-rules.pro
+    │   │   └── src/
+    │   │       ├── androidTest/
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── feature/
+    │   │       │                   └── rent/
+    │   │       │                       └── ExampleInstrumentedTest.kt
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   └── java/
+    │   │       │       └── com/
+    │   │       │           └── reyaz/
+    │   │       │               └── feature/
+    │   │       │                   └── rent/
+    │   │       │                       ├── data/
+    │   │       │                       │   ├── local/
+    │   │       │                       │   │   └── ImageApiService.kt
+    │   │       │                       │   └── repository/
+    │   │       │                       │       ├── ImageRepositoryImpl.kt
+    │   │       │                       │       └── PropertyRepositoryImpl.kt
+    │   │       │                       ├── di/
+    │   │       │                       │   └── RentModule.kt
+    │   │       │                       ├── domain/
+    │   │       │                       │   ├── model/
+    │   │       │                       │   │   ├── Property.kt
+    │   │       │                       │   │   └── UploadResponse.kt
+    │   │       │                       │   └── repository/
+    │   │       │                       │       ├── ImageRepository.kt
+    │   │       │                       │       └── PropertyRepository.kt
+    │   │       │                       ├── presentation/
+    │   │       │                       │   ├── property_detail_screen/
+    │   │       │                       │   │   └── PropertyDetailScreen.kt
+    │   │       │                       │   ├── property_list_screen/
+    │   │       │                       │   │   ├── PropertListScreen.kt
+    │   │       │                       │   │   ├── PropertyListUiState.kt
+    │   │       │                       │   │   ├── PropertyListViewModel.kt
+    │   │       │                       │   │   └── components/
+    │   │       │                       │   │       └── PropertyCard.kt
+    │   │       │                       │   └── property_post_screen/
+    │   │       │                       │       ├── CreatePostScreen.kt
+    │   │       │                       │       ├── CreatePostUiState.kt
+    │   │       │                       │       ├── CreatePostViewModel.kt
+    │   │       │                       │       └── components/
+    │   │       │                       │           ├── DescriptionField.kt
+    │   │       │                       │           ├── DropDownField.kt
+    │   │       │                       │           ├── MultiSelectField.kt
+    │   │       │                       │           └── TextField.kt
+    │   │       │                       └── util/
+    │   │       │                           └── ImgBBApiKey.kt
+    │   │       └── test/
+    │   │           └── java/
+    │   │               └── com/
+    │   │                   └── reyaz/
+    │   │                       └── feature/
+    │   │                           └── rent/
+    │   │                               └── ExampleUnitTest.kt
     │   └── result/
     │       ├── build.gradle.kts
     │       ├── consumer-rules.pro
@@ -498,6 +862,7 @@ millia-connect/
     │           │                   └── result/
     │           │                       └── ExampleInstrumentedTest.kt
     │           ├── main/
+    │           │   ├── AndroidManifest.xml
     │           │   └── java/
     │           │       └── com/
     │           │           └── reyaz/
@@ -507,6 +872,9 @@ millia-connect/
     │           │                       │   ├── ResultFetchWorker.kt
     │           │                       │   ├── ResultRepositoryImpl.kt
     │           │                       │   ├── local/
+    │           │                       │   │   ├── ResultDatabase.kt
+    │           │                       │   │   ├── converters/
+    │           │                       │   │   │   └── DateConverter.kt
     │           │                       │   │   ├── dao/
     │           │                       │   │   │   └── ResultDao.kt
     │           │                       │   │   ├── dto/
@@ -555,10 +923,17 @@ millia-connect/
     │           │                       └── worker/
     │           │                           └── ResultSyncWorker.kt
     │           └── test/
+    │               └── java/
+    │                   └── com/
+    │                       └── reyaz/
+    │                           └── feature/
+    │                               └── result/
+    │                                   └── ExampleUnitTest.kt
     └── gradle/
         ├── libs.versions.toml
         └── wrapper/
             └── gradle-wrapper.properties
+
 
 ```
 ## My Role

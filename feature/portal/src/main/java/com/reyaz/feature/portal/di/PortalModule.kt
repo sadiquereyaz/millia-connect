@@ -5,7 +5,9 @@ import com.reyaz.core.common.utils.FakeNetworkManager
 import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.NetworkManagerImpl
 import com.reyaz.feature.portal.data.local.PortalDataStore
+import com.reyaz.feature.portal.data.remote.MockPortalScraperImpl
 import com.reyaz.feature.portal.data.remote.PortalScraper
+import com.reyaz.feature.portal.data.remote.PortalScraperImpl
 import com.reyaz.feature.portal.data.repository.MockPortalRepoImpl
 import com.reyaz.feature.portal.data.repository.PortalRepositoryImpl
 import com.reyaz.feature.portal.domain.repository.FirestorePromoRepository
@@ -24,7 +26,13 @@ val portalModule = module {
     }
 
     single { PortalDataStore(get()) }
-    single { PortalScraper(get<NetworkManager>(), get()) }
+    single<PortalScraper> {
+        val env: AppEnvironment = get()
+        if (env.isDebug)
+            MockPortalScraperImpl(get(), get())
+        else
+            PortalScraperImpl(get<NetworkManager>(), get())
+    }
     viewModel { PortalViewModel(get(), get(), get(), get(), get()) }
     single<FirestorePromoRepository> { FirestorePromoRepository(get()) }
 

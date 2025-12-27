@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import androidx.annotation.RequiresPermission
 import androidx.core.net.toUri
-import com.reyaz.core.common.utils.NetworkManager
 import com.reyaz.core.common.utils.Resource
 import com.reyaz.core.notification.manager.AppNotificationManager
 import com.reyaz.core.notification.model.NotificationData
@@ -14,6 +13,7 @@ import com.reyaz.feature.portal.data.worker.AutoLoginWorker
 import com.reyaz.feature.portal.domain.model.ConnectRequest
 import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
+import com.reyaz.feature.portal.presentation.components.AutomationType
 import constants.NavigationRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -33,8 +33,7 @@ class MockPortalRepoImpl(
             val result =
                 dataStore.saveCredentials(
                     username = request.username,
-                    password = request.password,
-                    autoConnect = request.autoConnect
+                    password = request.password
                 )
             if (result.isSuccess) {
                 Result.success(Unit)
@@ -48,7 +47,7 @@ class MockPortalRepoImpl(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    override suspend fun connect(shouldNotify: Boolean): Flow<Resource<String>> = flow {
+    override suspend fun connect(shouldNotify: Boolean, shouldStartService: Boolean): Flow<Resource<String>> = flow {
         val username = dataStore.username.first()
         val password = dataStore.password.first()
         if (username != null && password != null) {
@@ -76,12 +75,15 @@ class MockPortalRepoImpl(
                             message = it.data ?: "Successfully wifi session restored!"
                         )
                     }
-                    if (dataStore.autoConnect.first())
+                    if (dataStore.automationTypeIndex.first() == AutomationType.WORK_MANAGER.ordinal)
                         AutoLoginWorker.scheduleOneTime(context)
                 }
 
                 is Resource.Loading -> {}
             }
+        } else {
+            Timber.d("Username or Password is NULL")
+            emit(Resource.Error("Username or Password is empty"))
         }
     }.flowOn(Dispatchers.IO)
 

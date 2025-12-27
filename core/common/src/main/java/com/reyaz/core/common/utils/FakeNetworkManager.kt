@@ -47,9 +47,9 @@ class FakeNetworkManager : NetworkManager {
 
     override fun resetNetworkBinding() = Unit
 
-    override fun observeWifiConnectivity(): Flow<Boolean> = wifi
+    override fun observeWifiState(): Flow<Boolean> = wifi
 
-    override fun observeMobileDataConnectivity(): Flow<Boolean> = mobile
+    override fun observeMobileDataState(): Flow<Boolean> = mobile
 
     override fun observeCaptivePortalConnectivity(): Flow<Boolean> = captivePortal
 

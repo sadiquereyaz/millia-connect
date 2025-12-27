@@ -5,4 +5,5 @@ import com.reyaz.milliaconnect1.BuildConfig
 
 class AppEnvironmentImpl : AppEnvironment {
     override val isDebug: Boolean = BuildConfig.DEBUG
+//    override val isDebug: Boolean = false
 }

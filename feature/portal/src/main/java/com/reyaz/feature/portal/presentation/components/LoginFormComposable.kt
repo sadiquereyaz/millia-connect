@@ -4,7 +4,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,15 +21,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -44,8 +39,6 @@ import androidx.core.content.ContextCompat
 import com.reyaz.core.ui.components.text_field.CustomSlimTextField
 import com.reyaz.feature.portal.presentation.PortalUiState
 import com.reyaz.feature.portal.presentation.PortalViewModel
-import kotlinx.coroutines.launch
-import java.util.jar.Manifest
 
 @Composable
 internal fun LoginFormComposable(
@@ -100,24 +93,24 @@ internal fun LoginFormComposable(
         )
 
         Row(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = (Arrangement.End)
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = if (uiState.autoConnect) "Your device will automatically connect when session expired." else "Auto Connect",
-                textAlign = TextAlign.End,
-                fontSize = 14.sp,
+                text = "Auto Login Method:",
+//                textAlign = TextAlign.End,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.secondary,
-                lineHeight = 14.sp
+                lineHeight = 20.sp
             )
-            Spacer(Modifier.width(16.dp))
-            Switch(
-                modifier = Modifier,
-                checked = uiState.autoConnect,
-                onCheckedChange = { viewModel.updateAutoConnect(it) },
-                colors = SwitchDefaults.colors()
+            Spacer(Modifier.width(8.dp))
+            // autologin buttons
+            SingleChoiceSegmentedButton(
+                selectedIndex = uiState.automationType.ordinal,
+                onSelectedIndexChanged = { viewModel.updateAutoConnectType(it) }
             )
         }
 

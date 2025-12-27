@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.reyaz.feature.login"
+    namespace = "com.reyaz.feature.portal"
     compileSdk = 35
 
     defaultConfig {

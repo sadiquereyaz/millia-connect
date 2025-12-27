@@ -2,12 +2,9 @@ package com.reyaz.feature.portal.data.worker
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -29,7 +26,7 @@ class AutoLoginWorker(
         return try {
             Timber.d( "Performing auto login by worker")
             var result: Result = Result.success()
-            portalRepository.connect(shouldNotify = true).collect {
+            portalRepository.connect(shouldNotify = true, shouldStartService = false).collect {
                 when(it){
                     is Resource.Error -> {
 //                        result = if(runAttemptCount<3)

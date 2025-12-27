@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ class PortalDataStore(private val context: Context) {
         val USERNAME = stringPreferencesKey("username")
         val PASSWORD = stringPreferencesKey("password")
         val LOGIN_STATUS = booleanPreferencesKey("status")
-        val AUTO_CONNECT = booleanPreferencesKey("auto_connect")
+        val AUTO_CONNECT_TYPE = intPreferencesKey("auto_connect_type")
     }
 
     // Get saved username
@@ -34,9 +35,9 @@ class PortalDataStore(private val context: Context) {
         }
 
     // Get Auto Connect Status
-    val autoConnect: Flow<Boolean> = context.dataStore.data
+    val automationTypeIndex: Flow<Int> = context.dataStore.data
         .map { preferences ->
-            preferences[AUTO_CONNECT] ?: true
+            preferences[AUTO_CONNECT_TYPE] ?: 0
         }
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data.map {
@@ -46,14 +47,12 @@ class PortalDataStore(private val context: Context) {
     // Save credentials
     suspend fun saveCredentials(
         username: String,
-        password: String,
-        autoConnect: Boolean
+        password: String
     ) : Result<Unit>{
         return try {
             context.dataStore.edit { preferences ->
                 preferences[USERNAME] = username
                 preferences[PASSWORD] = password
-                preferences[AUTO_CONNECT] = autoConnect
             }
             Result.success(Unit)
         } catch (e:Exception){
@@ -69,9 +68,9 @@ class PortalDataStore(private val context: Context) {
         }
     }
 
-    suspend fun setAutoConnect(autoConnect: Boolean) {
+    suspend fun setAutomationType(automationOrdinal: Int) {
         context.dataStore.edit { preferences ->
-            preferences[AUTO_CONNECT] = autoConnect
+            preferences[AUTO_CONNECT_TYPE] = automationOrdinal
         }
     }
 

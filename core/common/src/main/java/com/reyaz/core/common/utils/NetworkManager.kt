@@ -1,6 +1,5 @@
 package com.reyaz.core.common.utils
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -9,8 +8,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.util.Log
-import androidx.annotation.RequiresPermission
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -31,8 +28,8 @@ interface NetworkManager {
     fun resetNetworkBinding()
 
     /** Connectivity observation */
-    fun observeWifiConnectivity(): Flow<Boolean>
-    fun observeMobileDataConnectivity(): Flow<Boolean>
+    fun observeWifiState(): Flow<Boolean>
+    fun observeMobileDataState(): Flow<Boolean>
     fun observeCaptivePortalConnectivity(): Flow<Boolean>
     fun observeInternetConnectivity(): Flow<Boolean>
     fun observeAllNetworkType(): Flow<NetworkPreference>
@@ -121,10 +118,10 @@ class NetworkManagerImpl(context: Context) : NetworkManager {
         }
     }
 
-    override fun observeWifiConnectivity(): Flow<Boolean> =
+    override fun observeWifiState(): Flow<Boolean> =
         observeConnectivity(NetworkCapabilities.TRANSPORT_WIFI)
 
-    override fun observeMobileDataConnectivity(): Flow<Boolean> =
+    override fun observeMobileDataState(): Flow<Boolean> =
         observeConnectivity(NetworkCapabilities.TRANSPORT_CELLULAR)
 
     override fun observeCaptivePortalConnectivity(): Flow<Boolean> = callbackFlow {
@@ -203,9 +200,10 @@ class NetworkManagerImpl(context: Context) : NetworkManager {
 
         connectivityManager.registerNetworkCallback(request, callback)
 
-        // Get initial state more comprehensively
+        // sending initial state
         val connected = isAnyNetworkOfTypeAvailable(transportType)
         trySend(connected)
+
         Timber.tag(TAG).d("Initial state: $transportType = $connected")
 
         awaitClose {
@@ -215,8 +213,8 @@ class NetworkManagerImpl(context: Context) : NetworkManager {
     }.distinctUntilChanged()
 
     override fun observeAllNetworkType(): Flow<NetworkPreference> = combine(
-        observeWifiConnectivity(),
-        observeMobileDataConnectivity()
+        observeWifiState(),
+        observeMobileDataState()
     ) { isWifiConnected, isMobileDataConnected ->
         when {
             isWifiConnected && isMobileDataConnected -> {

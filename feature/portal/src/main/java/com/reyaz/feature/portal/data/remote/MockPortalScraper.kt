@@ -17,28 +17,14 @@ import timber.log.Timber
 import java.net.HttpURLConnection
 import java.net.URL
 
-interface PortalScraper {
-
-    fun performLogin(
-        username: String,
-        password: String
-    ): Flow<Resource<String>>
-
-    suspend fun performLogout(): Result<String>
-
-    suspend fun isJmiWifi(forceWifi: Boolean): Boolean
-
-    suspend fun isInternetAvailable(isCheckingForWifi: Boolean): Result<Boolean>
-}
-
-class PortalScraperImpl(
+class MockPortalScraperImpl(
     private val networkManager: NetworkManager,
     private val webClient: WebClient
 ) : PortalScraper {
 
     companion object {
-        private const val LOGIN_URL = "http://10.2.0.10:8090/login?dummy"
-        private const val LOGOUT_URL = "http://10.2.0.10:8090/logout?dummy"
+        private const val LOGIN_URL = "http://192.168.0.108:8000/login?dummy"
+        private const val LOGOUT_URL = "http://192.168.0.108:8000/logout?dummy"
 
         //private const val URL_204 = "http://www.gstatic.com/generate_204"
         private const val URL_204 = "http://clients3.google.com/generate_204"

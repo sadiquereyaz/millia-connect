@@ -9,6 +9,7 @@ import com.reyaz.feature.portal.data.local.PortalDataStore
 import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import com.reyaz.feature.portal.domain.repository.FirestorePromoRepository
+import com.reyaz.feature.portal.presentation.components.AutomationType
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,27 +38,27 @@ class PortalViewModel(
 
     init {
         loadPromos()
-        observeNetworkAndInitialize()
+        checkForegroundEligibility()
+        fetchCredentialAndObserveNetworksAndConnect()
     }
 
-    private fun loadPromos() {
-        viewModelScope.launch {
-            val remotePromoCards = promoRepository.getPromoCards()
-            _uiState.update {
-                it.copy(
-                    promoCard = remotePromoCards
-                )
-            }
+    private fun checkForegroundEligibility(){
+        // todo
+        if(false){
+            updateAutoConnectType(AutomationType.WORK_MANAGER)
         }
     }
 
-    private fun observeNetworkAndInitialize() {
+    private fun fetchCredentialAndObserveNetworksAndConnect() {
         try {
             // todo: Replace viewModelScope by globalScope
             viewModelScope.launch {
+
                 fetchStoredCredentials()
-                Timber.tag(TAG).d("observeNetworkAndInitialize: $uiState")
-                networkManager.observeWifiConnectivity().collect { isWifiConnected ->
+
+                Timber.tag(TAG).d("fetchCredentialAndObserveNetworksAndConnect: $uiState")
+
+                networkManager.observeWifiState().collect { isWifiConnected ->
                     if (isWifiConnected) {
                         _uiState.update { it.copy(isWifiOn = true) }
                         Timber.d("wifi connected")
@@ -70,7 +71,7 @@ class PortalViewModel(
                             mobileDataJob?.cancel()
 
                             mobileDataJob = launch {
-                                networkManager.observeMobileDataConnectivity()
+                                networkManager.observeMobileDataState()
                                     .collect { isMobileData ->
                                         if (!isMobileData) {
                                             Timber.d("mobile data off, stopping observation.")
@@ -108,7 +109,7 @@ class PortalViewModel(
                 }
             }
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "Error in observeNetworkAndInitialize")
+            Timber.tag(TAG).e(e, "Error in fetchCredentialAndObserveNetworksAndConnect")
         }
     }
 
@@ -117,7 +118,8 @@ class PortalViewModel(
             it.copy(
                 username = userPreferences.username.first() ?: "",
                 password = userPreferences.password.first() ?: "",
-                autoConnect = userPreferences.autoConnect.first()
+                automationType = AutomationType.entries.getOrNull(userPreferences.automationTypeIndex.first())
+                    ?: AutomationType.WORK_MANAGER
             )
         }
     }
@@ -173,7 +175,7 @@ class PortalViewModel(
         }
         if (uiState.value.loginBtnEnabled) {
             // username and password are not empty
-            repository.connect(shouldNotify = false).collect { result ->
+            repository.connect(shouldNotify = false, shouldStartService = true).collect { result ->
                 Timber.tag(TAG).d("performLogin Result: $result")
                 when (result) {
                     is Resource.Loading -> {
@@ -207,7 +209,7 @@ class PortalViewModel(
                             mapOf(
                                 "username" to _uiState.value.username,
                                 "wifi_primary" to _uiState.value.isWifiPrimary.toString(),
-                                "auto_connect" to _uiState.value.autoConnect.toString(),
+                                "auto_connect" to _uiState.value.automationType.toString(),
                                 "error_msg" to result.message.toString(),
                                 "loading_msg" to _uiState.value.loadingMessage.toString()
                             )
@@ -269,10 +271,10 @@ class PortalViewModel(
         _uiState.update { it.copy(password = password) }
     }
 
-    fun updateAutoConnect(autoConnect: Boolean) {
+    fun updateAutoConnectType(type: AutomationType) {
         viewModelScope.launch {
-            _uiState.update { it.copy(autoConnect = autoConnect) }
-            userPreferences.setAutoConnect(autoConnect)
+            _uiState.update { it.copy(automationType = type) }
+            userPreferences.setAutomationType(type.ordinal)
         }
     }
 
@@ -280,9 +282,18 @@ class PortalViewModel(
         viewModelScope.launch {
             userPreferences.saveCredentials(
                 username = _uiState.value.username,
-                password = _uiState.value.password,
-                autoConnect = _uiState.value.autoConnect
+                password = _uiState.value.password
             )
+        }
+    }
+    private fun loadPromos() {
+        viewModelScope.launch {
+            val remotePromoCards = promoRepository.getPromoCards()
+            _uiState.update {
+                it.copy(
+                    promoCard = remotePromoCards
+                )
+            }
         }
     }
 }

@@ -16,6 +16,8 @@ import com.reyaz.feature.portal.data.worker.AutoLoginWorker
 import com.reyaz.feature.portal.domain.model.ConnectRequest
 import com.reyaz.feature.portal.domain.model.JmiWifiState
 import com.reyaz.feature.portal.domain.repository.PortalRepository
+import com.reyaz.feature.portal.presentation.components.AutomationType
+import com.reyaz.feature.portal.service.WifiCaptivePortalObserver
 import constants.NavigationRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -37,8 +39,7 @@ class PortalRepositoryImpl(
             val result =
                 dataStore.saveCredentials(
                     username = request.username,
-                    password = request.password,
-                    autoConnect = request.autoConnect
+                    password = request.password
                 )
             if (result.isSuccess) {
                 Result.success(Unit)
@@ -52,7 +53,7 @@ class PortalRepositoryImpl(
     }
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    override suspend fun connect(shouldNotify: Boolean): Flow<Resource<String>> = flow {
+    override suspend fun connect(shouldNotify: Boolean, shouldStartService: Boolean): Flow<Resource<String>> = flow {
         val username = dataStore.username.first()
         val password = dataStore.password.first()
         if (username != null && password != null) {
@@ -82,8 +83,14 @@ class PortalRepositoryImpl(
                             )
                         }
                         networkManager.reportCaptivePortalDismissed()
-                        if (dataStore.autoConnect.first())
+                        if (dataStore.automationTypeIndex.first() == AutomationType.WORK_MANAGER.ordinal) {
+                            WifiCaptivePortalObserver(context).stop()  // todo
                             AutoLoginWorker.scheduleOneTime(context)
+                        }
+                        else if (shouldStartService){
+                            AutoLoginWorker.cancelOneTime(context)
+                            WifiCaptivePortalObserver(context).start()
+                        }
                     }
 
                     is Resource.Loading -> {}
