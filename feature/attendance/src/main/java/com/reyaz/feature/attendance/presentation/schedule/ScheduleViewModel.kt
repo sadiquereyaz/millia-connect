@@ -2,14 +2,19 @@ package com.reyaz.feature.attendance.presentation.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
-class ScheduleViewModel: ViewModel() {
+class ScheduleViewModel(
+    private val scheduleRepository: ScheduleRepository
+): ViewModel() {
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
 
@@ -20,7 +25,10 @@ class ScheduleViewModel: ViewModel() {
                 overAllPer = 91
             )
         }
+        // Load lectures for today by default
+        loadLecturesForDate(_uiState.value.todayDate)
     }
+
     fun onDateSelected(selectedDate: LocalDate) {
         viewModelScope.launch {
             _uiState.update {
@@ -28,7 +36,18 @@ class ScheduleViewModel: ViewModel() {
                     selectedDate = selectedDate
                 )
             }
+            loadLecturesForDate(selectedDate)
         }
+    }
+
+    private fun loadLecturesForDate(date: LocalDate) {
+        scheduleRepository.observeLecturesForDate(date)
+            .onEach { lectures ->
+                _uiState.update {
+                    it.copy(lectures = lectures)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     companion object {

@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,11 +43,15 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ScheduleScreen(
-    viewModel: ScheduleViewModel = koinViewModel()
+    viewModel: ScheduleViewModel = koinViewModel(),
+    navigateToAddSchedule: ()->Unit
 
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column {
+        Text("Add Schedule", Modifier.clickable{
+            navigateToAddSchedule()
+        })
         HorizontalCalendar(
             selectedDate = uiState.selectedDate ?: uiState.todayDate,
             onDateSelected = {
@@ -58,33 +61,55 @@ fun ScheduleScreen(
             targetPer = uiState.targetPer,
             todayDate = uiState.todayDate
         )
-        LectureList()
+        LectureList(
+            lectures = uiState.lectures,
+            onAttendanceTypeSelected = { lectureId, presentType ->
+                // TODO: Handle attendance type selection
+            }
+        )
     }
 }
 
 @Composable
-fun LectureList(modifier: Modifier = Modifier) {
+fun LectureList(
+    lectures: List<com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject>,
+    onAttendanceTypeSelected: (Long, PresentType) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier.padding(8.dp)
     ) {
-        items(5) {
-            LectureItem()
+        items(
+            count = lectures.size,
+            key = { index -> lectures[index].lecture.lectureId }
+        ) { index ->
+            LectureItem(
+                lectureData = lectures[index],
+                onAttendanceTypeSelected = onAttendanceTypeSelected
+            )
         }
     }
 }
 
 @Composable
 fun LectureItem(
+    lectureData: com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject,
+    onAttendanceTypeSelected: (Long, PresentType) -> Unit,
     modifier: Modifier = Modifier,
-//    lectureInfo: LectureInfo,
 ) {
     val attendancePerColor = MaterialTheme.colorScheme.primary
     val task: String? = null
-    val locationName: String? = "Faculty of Engg. & Technology"
+    val locationName: String? = null // TODO: Add location support
     val taskColor = MaterialTheme.colorScheme.outline
     val warningColor = MaterialTheme.colorScheme.primary
     val isDarkMode = isSystemInDarkTheme()
-    val selectedAttendanceType = PresentType.PRESENT
+
+    // Convert AttendanceStatus to PresentType
+    val selectedAttendanceType = lectureData.attendance?.status?.toPresentType() ?: PresentType.NOT_COUNTED
+
+    // Convert minutes to time string
+    val startTime = minutesToTimeString(lectureData.lecture.startTimeMinutes)
+    val endTime = minutesToTimeString(lectureData.lecture.endTimeMinutes)
 
     Row(
         modifier = modifier
@@ -93,8 +118,7 @@ fun LectureItem(
     ) {
         // times
         Text(
-//                modifier = Modifier.align(Alignment.TopStart),
-            text = "9:35 am\n-\n10:37 pm",
+            text = "$startTime\n-\n$endTime",
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             lineHeight = 12.sp
@@ -167,7 +191,7 @@ fun LectureItem(
                         Modifier.padding(horizontal = 8.dp)
                     ) {
                         SingleLineText(
-                            text = "Engg. Mathematics III",
+                            text = lectureData.subject.name,
                             fontSize = 18.sp
                         )
                         // location
@@ -241,7 +265,7 @@ fun LectureItem(
 //                                            shape = RoundedCornerShape(50)
                                     )
                                     .clickable {
-
+                                        onAttendanceTypeSelected(lectureData.lecture.lectureId, type)
                                     }
                                     .border(
                                         width = 1.dp,
@@ -278,17 +302,7 @@ fun LectureItem(
 
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun LectureItemPreview() {
-    Column(Modifier.padding(16.dp)) {
-        LectureItem()
-        LectureItem()
-    }
-}
+// Preview removed - LectureItem requires database objects that can't be easily mocked
 
 data class LectureInfo(
     val id: Int = 0,
@@ -346,5 +360,26 @@ enum class PresentType(
 
     fun getDisplayText(isCompact: Boolean): String {
         return if (isCompact) title.first().toString() else title
+    }
+}
+
+// Helper functions
+private fun minutesToTimeString(minutes: Int): String {
+    val hour = minutes / 60
+    val minute = minutes % 60
+    val period = if (hour < 12) "am" else "pm"
+    val displayHour = when {
+        hour == 0 -> 12
+        hour > 12 -> hour - 12
+        else -> hour
+    }
+    return String.format("%d:%02d %s", displayHour, minute, period)
+}
+
+private fun com.reyaz.feature.attendance.data.local.model.AttendanceStatus.toPresentType(): PresentType {
+    return when (this) {
+        com.reyaz.feature.attendance.data.local.model.AttendanceStatus.PRESENT -> PresentType.PRESENT
+        com.reyaz.feature.attendance.data.local.model.AttendanceStatus.ABSENT -> PresentType.ABSENT
+        com.reyaz.feature.attendance.data.local.model.AttendanceStatus.CANCELLED -> PresentType.CANCELLED
     }
 }

@@ -1,20 +1,48 @@
 package com.reyaz.feature.attendance.di
 
-
-import com.reyaz.feature.attendance.add_schedule.presentation.AddScheduleViewModel
+import androidx.room.Room
+import com.reyaz.feature.attendance.data.local.AttendanceDatabase
+import com.reyaz.feature.attendance.data.repository.ScheduleRepositoryImpl
+import com.reyaz.feature.attendance.presentation.add_schedule.presentation.UpdateScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
-import com.reyaz.feature.attendance.schedule.presentation.ScheduleViewModelOld
+import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val attendanceModule = module {
+    // Database
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AttendanceDatabase::class.java,
+            AttendanceDatabase.DATABASE_NAME
+        )
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+    }
+
+    // DAOs
+    single { get<AttendanceDatabase>().subjectDao() }
+    single { get<AttendanceDatabase>().lectureSlotDao() }
+    single { get<AttendanceDatabase>().attendanceDao() }
+    single { get<AttendanceDatabase>().scheduleDao() }
+    single { get<AttendanceDatabase>().attendanceSummaryDao() }
+
+    // Repository
+    single<ScheduleRepository> {
+        ScheduleRepositoryImpl(
+            scheduleDao = get(),
+            lectureSlotDao = get(),
+            subjectDao = get()
+        )
+    }
+
+    // ViewModels
     viewModel {
-        AddScheduleViewModel(get())
+        ScheduleViewModel(get())
     }
     viewModel {
-        ScheduleViewModel()
-    }
-    viewModel {
-        ScheduleViewModelOld()
+        UpdateScheduleViewModel(get(), get())
     }
 }
