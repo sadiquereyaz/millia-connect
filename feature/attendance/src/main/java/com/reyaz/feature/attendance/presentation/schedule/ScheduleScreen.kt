@@ -16,13 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Task
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,15 +58,19 @@ fun ScheduleScreen(
             targetPer = uiState.targetPer,
             todayDate = uiState.todayDate
         )
-
-
+        LectureList()
     }
 }
 
 @Composable
-fun LectureList(modifier: Modifier) {
-    LectureItem()
-
+fun LectureList(modifier: Modifier = Modifier) {
+    LazyColumn(
+        modifier.padding(8.dp)
+    ) {
+        items(5) {
+            LectureItem()
+        }
+    }
 }
 
 @Composable
@@ -95,6 +96,8 @@ fun LectureItem(
 //                modifier = Modifier.align(Alignment.TopStart),
             text = "9:35 am\n-\n10:37 pm",
             textAlign = TextAlign.Center,
+            fontSize = 12.sp,
+            lineHeight = 12.sp
         )
 
         // line left space
@@ -169,7 +172,7 @@ fun LectureItem(
                         )
                         // location
                         locationName?.let {
-                            Spacer(Modifier.height(4.dp))
+//                            Spacer(Modifier.height(4.dp))
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -179,7 +182,7 @@ fun LectureItem(
                                     contentDescription = "task icon",
                                     tint = taskColor,
                                 )
-                                Spacer(Modifier.width(4.dp))
+//                                Spacer(Modifier.width(4.dp))
                                 SingleLineText(
                                     text = it,
                                     color = taskColor,
@@ -187,12 +190,13 @@ fun LectureItem(
                                 )
                             }
                         }
-                        Spacer(Modifier.height(4.dp))
+//                        Spacer(Modifier.height(4.dp))
                         // warning
                         SingleLineText(
                             text = "You can miss this lecture",
                             color = warningColor,
                             fontSize = 12.sp,
+                            lineHeight = 12.sp,
                             modifier = Modifier.padding(start = 4.dp)
                         )
                     }
@@ -293,13 +297,12 @@ data class LectureInfo(
     val subjectName: String,
     val locationName: String,
     val attendancePer: Int,
-    val attendanceStatus: String,
-    val task: TaskItem,
+//    val task: TaskItem,
     val reminder: List<LocalDateTime>,
     val presentType: PresentType,
 ) {
-    val currentTime = LocalTime
-//    val isHappening: Boolean = if (currentTime.>= startTime && currentTime <= endTime)
+    val attendanceWarning: String = "You can miss this lecture"
+    val isHappening: Boolean = true
 }
 
 data class TaskItem(
@@ -313,16 +316,10 @@ enum class PresentType(
     val darkColor: Color,
     val title: String
 ) {
-    PRESENT(
-        lightColor = Color(0xFF2E7D32),   // Green 800
-        darkColor = Color(0xFF81C784),    // Light Green
-        title = "Present"
-    ),
-
-    ABSENT(
-        lightColor = Color(0xFFC62828),   // Red 800
-        darkColor = Color(0xFFEF9A9A),    // Light Red
-        title = "Absent"
+    NOT_COUNTED(
+        lightColor = Color(0xFF616161),   // Grey 700
+        darkColor = Color(0xFFBDBDBD),    // Light Grey
+        title = "Not Counted"
     ),
 
     CANCELLED(
@@ -331,10 +328,16 @@ enum class PresentType(
         title = "Cancelled"
     ),
 
-    NOT_COUNTED(
-        lightColor = Color(0xFF616161),   // Grey 700
-        darkColor = Color(0xFFBDBDBD),    // Light Grey
-        title = "Not Counted"
+    ABSENT(
+        lightColor = Color(0xFFC62828),   // Red 800
+        darkColor = Color(0xFFEF9A9A),    // Light Red
+        title = "Absent"
+    ),
+
+    PRESENT(
+    lightColor = Color(0xFF2E7D32),   // Green 800
+    darkColor = Color(0xFF81C784),    // Light Green
+    title = "Present"
     );
 
     fun getColor(isDark: Boolean): Color {
