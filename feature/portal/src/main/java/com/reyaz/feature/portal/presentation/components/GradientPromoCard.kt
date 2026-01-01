@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.reyaz.core.ui.components.text.ReadMoreText
 import com.reyaz.feature.portal.domain.model.DynamicUiClickAction
 import com.reyaz.feature.portal.domain.model.PromoCard
 
@@ -57,12 +58,9 @@ fun GradientPromoCard(
 
             // Body
             promoCard.bodyText?.let {
-                Text(
+                ReadMoreText(
                     text = it,
-                    color = Color.White.copy(alpha = 0.95f),
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    textAlign = TextAlign.Justify
+                    collapsedMaxLines = 4,
                 )
             }
 
