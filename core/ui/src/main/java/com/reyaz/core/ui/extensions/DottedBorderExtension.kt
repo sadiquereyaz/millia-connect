@@ -1,12 +1,13 @@
-package com.reyaz.core.ui.components.text
+package com.reyaz.core.ui.extensions
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 /**
  * Extension function to add a dotted border to any composable element
@@ -25,7 +26,7 @@ import androidx.compose.ui.unit.Dp
  * ```
  */
 fun Modifier.dottedBorder(
-    color: Color = Color.Gray,
+    color: Color = Color.Companion.Gray,
     strokeWidth: Dp = 1.dp,
     cornerRadius: Dp = 12.dp,
     dashOn: Float = 10f,
@@ -35,7 +36,7 @@ fun Modifier.dottedBorder(
         color = color,
         style = Stroke(
             width = strokeWidth.toPx(),
-            pathEffect = PathEffect.dashPathEffect(
+            pathEffect = PathEffect.Companion.dashPathEffect(
                 floatArrayOf(dashOn, dashOff)
             )
         ),

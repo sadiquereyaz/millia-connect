@@ -33,8 +33,9 @@ import com.reyaz.core.ui.components.SingleChoiceSegmentedButton
 import com.reyaz.core.ui.components.SingleLineText
 import com.reyaz.core.ui.components.text.DottedBorderText
 import com.reyaz.core.ui.components.text.DottedUnderlineText
-import com.reyaz.core.ui.components.text.dottedBorder
+import com.reyaz.core.ui.extensions.dottedBorder
 import com.reyaz.core.ui.components.text_field.CustomCircularTextField
+import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import kotlinx.datetime.DayOfWeek
 import org.koin.androidx.compose.koinViewModel
@@ -254,15 +255,15 @@ fun DaySelectorNew(
         DayOfWeek.SUNDAY
     )
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val itemSpacing = 8.dp
-    val visibleItems = 5
-    val horizontalPadding = 32.dp
-    val itemWidth =
-        (screenWidth - horizontalPadding - (itemSpacing * (visibleItems - 1))) / visibleItems
+    // Use the extension function to calculate item dimensions
+    val dimensions = calculateHorizontalItemDimensions(
+        visibleItems = 5,
+        itemSpacing = 8.dp,
+        horizontalPadding = 32.dp
+    )
 
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+        horizontalArrangement = Arrangement.spacedBy(dimensions.itemSpacing),
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ) {
         items(
@@ -272,7 +273,7 @@ fun DaySelectorNew(
                 day = getDayAbbreviation(day),
                 isSelected = day == selectedDay,
                 onClick = { onDaySelected(day) },
-                modifier = Modifier.width(itemWidth)
+                modifier = Modifier.width(dimensions.itemWidth)
             )
         }
     }
@@ -463,7 +464,7 @@ fun LocationFieldNew(
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "location",
-                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                    tint = Color.White.copy(alpha = 0.9f),
                     modifier = Modifier.size(28.dp)
                 )
                 Spacer(Modifier.width(16.dp))
@@ -475,14 +476,14 @@ fun LocationFieldNew(
                         text = "Locate Classroom",
                         maxLine = 1,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                     SingleLineText(
                         text = "powered by Mappls",
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = Color.White,
                         fontStyle = FontStyle.Italic,
 
                         )
@@ -494,12 +495,12 @@ fun LocationFieldNew(
                         .size(32.dp)
                         .border(
                             width = 1.dp,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+                            color = Color.White.copy(alpha = 0.5f),
                             shape = CircleShape
                         ),
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = "location",
-                    tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                    tint = Color.White.copy(alpha = 0.9f),
                 )
             }
         }

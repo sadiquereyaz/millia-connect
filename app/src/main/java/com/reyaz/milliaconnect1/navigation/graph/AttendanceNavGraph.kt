@@ -15,11 +15,6 @@ internal fun NavGraphBuilder.attendanceNavGraph(
     snackbarHostState: SnackbarHostState,
 ) {
 
-    // Add/Update Schedule Screen
-    composable(route = constants.NavigationRoute.AddSchedule.route) {
-        UpdateScheduleScreenNew()
-    }
-
     // Schedule Screen
     composable(route = constants.NavigationRoute.Schedule.route) {
         ScheduleScreen(
@@ -27,6 +22,11 @@ internal fun NavGraphBuilder.attendanceNavGraph(
                 navController.navigate(constants.NavigationRoute.AddSchedule.route)
             }
         )
+    }
+
+    // Add/Update Schedule Screen
+    composable(route = constants.NavigationRoute.AddSchedule.route) {
+        UpdateScheduleScreenNew()
     }
 }
 

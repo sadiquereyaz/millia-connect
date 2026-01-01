@@ -11,21 +11,30 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.ModeStandby
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,22 +45,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reyaz.core.ui.components.SingleLineText
+import com.reyaz.core.ui.extensions.dottedBorder
 import com.reyaz.feature.attendance.presentation.components.HorizontalCalendar
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import org.koin.androidx.compose.koinViewModel
+import kotlin.random.Random
 
 @Composable
 fun ScheduleScreen(
     viewModel: ScheduleViewModel = koinViewModel(),
-    navigateToAddSchedule: ()->Unit
+    navigateToAddSchedule: () -> Unit
 
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column {
-        Text("Add Schedule", Modifier.clickable{
-            navigateToAddSchedule()
-        })
         HorizontalCalendar(
             selectedDate = uiState.selectedDate ?: uiState.todayDate,
             onDateSelected = {
@@ -65,7 +73,8 @@ fun ScheduleScreen(
             lectures = uiState.lectures,
             onAttendanceTypeSelected = { lectureId, presentType ->
                 // TODO: Handle attendance type selection
-            }
+            },
+            onAddSchedule = navigateToAddSchedule
         )
     }
 }
@@ -74,19 +83,94 @@ fun ScheduleScreen(
 fun LectureList(
     lectures: List<com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject>,
     onAttendanceTypeSelected: (Long, PresentType) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAddSchedule: () -> Unit,
 ) {
-    LazyColumn(
-        modifier.padding(8.dp)
-    ) {
-        items(
-            count = lectures.size,
-            key = { index -> lectures[index].lecture.lectureId }
-        ) { index ->
-            LectureItem(
-                lectureData = lectures[index],
-                onAttendanceTypeSelected = onAttendanceTypeSelected
-            )
+    if (lectures.isEmpty()) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize(0.8f)
+                    .dottedBorder()
+                    .clickable {
+                        onAddSchedule()
+                    },
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    "add schedule",
+                    modifier = Modifier
+                        .size(68.dp)
+                        .border(1.dp, color = MaterialTheme.colorScheme.onSurface, CircleShape),
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    modifier = Modifier,
+                    text = "No Schedule found for this day,\nClick to add.",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+    } else {
+        val listState = rememberLazyListState()
+
+        // Check if the last item is visible
+        val isLastItemVisible by remember {
+            derivedStateOf {
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                lastVisibleItemIndex != null && lastVisibleItemIndex >= lectures.size - 1
+            }
+        }
+
+        Box(modifier = modifier.fillMaxSize()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.padding(16.dp, 8.dp)
+            ) {
+                items(
+                    count = lectures.size,
+                    key = { index -> lectures[index].lecture.lectureId }
+                ) { index ->
+                    LectureItem(
+                        lectureData = lectures[index],
+                        onAttendanceTypeSelected = onAttendanceTypeSelected
+                    )
+                }
+                item {
+                    Spacer(Modifier.height(ButtonDefaults.MinHeight + 32.dp))
+                }
+            }
+
+            // Show FAB when last item is visible
+            if (isLastItemVisible) {
+                SmallFloatingActionButton(
+                    onClick = onAddSchedule,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(16.dp, 16.dp)
+                    ) {
+                        Text(text = "Edit/Modify", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Modify schedule"
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -97,15 +181,20 @@ fun LectureItem(
     onAttendanceTypeSelected: (Long, PresentType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val attendancePerColor = MaterialTheme.colorScheme.primary
+    val attendancePerColor =
+        if (Random.nextBoolean()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
     val task: String? = null
-    val locationName: String? = null // TODO: Add location support
+//    val locationName: String? = null // TODO: Add location support
+    val locationName: String? =
+        "Faculty of Engineering and Technology" // TODO: Add location support
     val taskColor = MaterialTheme.colorScheme.outline
-    val warningColor = MaterialTheme.colorScheme.primary
+    val warningColor =
+        if (Random.nextBoolean()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
     val isDarkMode = isSystemInDarkTheme()
 
     // Convert AttendanceStatus to PresentType
-    val selectedAttendanceType = lectureData.attendance?.status?.toPresentType() ?: PresentType.NOT_COUNTED
+    val selectedAttendanceType =
+        lectureData.attendance?.status?.toPresentType() ?: PresentType.NOT_COUNTED
 
     // Convert minutes to time string
     val startTime = minutesToTimeString(lectureData.lecture.startTimeMinutes)
@@ -121,7 +210,10 @@ fun LectureItem(
             text = "$startTime\n-\n$endTime",
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
-            lineHeight = 12.sp
+            lineHeight = 12.sp,
+            modifier = Modifier
+//                .background(Color.Red)
+                .width(60.dp)
         )
 
         // line left space
@@ -204,25 +296,36 @@ fun LectureItem(
                                     modifier = Modifier.size(12.dp),
                                     imageVector = Icons.Default.LocationOn,
                                     contentDescription = "task icon",
-                                    tint = taskColor,
+                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                                 )
-//                                Spacer(Modifier.width(4.dp))
+                                Spacer(Modifier.width(4.dp))
                                 SingleLineText(
                                     text = it,
-                                    color = taskColor,
                                     fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                                 )
                             }
                         }
 //                        Spacer(Modifier.height(4.dp))
                         // warning
-                        SingleLineText(
-                            text = "You can miss this lecture",
-                            color = warningColor,
-                            fontSize = 12.sp,
-                            lineHeight = 12.sp,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(12.dp),
+                                imageVector = Icons.Default.ModeStandby,
+                                contentDescription = "task icon",
+                                tint = warningColor,
+                            )
+                            Spacer(Modifier.width(2.dp))
+                            SingleLineText(
+                                text = "You can miss this lecture",
+                                color = warningColor,
+                                fontSize = 12.sp,
+                                lineHeight = 12.sp,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
                     }
                     Spacer(Modifier.weight(1f))
                     /*Icon(
@@ -265,7 +368,10 @@ fun LectureItem(
 //                                            shape = RoundedCornerShape(50)
                                     )
                                     .clickable {
-                                        onAttendanceTypeSelected(lectureData.lecture.lectureId, type)
+                                        onAttendanceTypeSelected(
+                                            lectureData.lecture.lectureId,
+                                            type
+                                        )
                                     }
                                     .border(
                                         width = 1.dp,
@@ -293,13 +399,11 @@ fun LectureItem(
                             }
                         }
                     }
-
                 }
+                Spacer(Modifier.height(4.dp))
             }
         }
-
     }
-
 }
 
 // Preview removed - LectureItem requires database objects that can't be easily mocked
@@ -349,9 +453,9 @@ enum class PresentType(
     ),
 
     PRESENT(
-    lightColor = Color(0xFF2E7D32),   // Green 800
-    darkColor = Color(0xFF81C784),    // Light Green
-    title = "Present"
+        lightColor = Color(0xFF2E7D32),   // Green 800
+        darkColor = Color(0xFF81C784),    // Light Green
+        title = "Present"
     );
 
     fun getColor(isDark: Boolean): Color {

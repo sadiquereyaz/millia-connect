@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.common.utils.extensions.toCapSmall
+import com.reyaz.core.ui.components.SingleLineText
+import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel.Companion.CENTER_INDEX
 import kotlinx.datetime.DateTimeUnit
@@ -39,6 +42,11 @@ fun HorizontalCalendar(
     targetPer: Int?,
     todayDate: LocalDate    // todo: remove
 ) {
+    val dimensions = calculateHorizontalItemDimensions(
+        visibleItems = 5,
+        itemSpacing = 8.dp,
+        horizontalPadding = 64.dp
+    )
     val baseDate = remember { todayDate }
     val listState =
         rememberLazyListState(initialFirstVisibleItemIndex = CENTER_INDEX - 2)
@@ -84,24 +92,24 @@ fun HorizontalCalendar(
                     }
                 }
             }
-
             Spacer(Modifier.height(16.dp))
+
+            // calendar
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 state = listState,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(dimensions.itemSpacing),
             ) {
                 items(ScheduleViewModel.TOTAL_ITEMS) { index ->
-
                     val date = remember(index) {
                         baseDate.plus(index - CENTER_INDEX, DateTimeUnit.DAY)
                     }
-
                     CalendarItem(
                         isSelected = date == selectedDate,
                         isToday = date == todayDate,
                         date = date,
-                        onDateSelected = { onDateSelected(date) }
+                        onDateSelected = { onDateSelected(date) },
+                        modifier = Modifier.width(dimensions.itemWidth)
                     )
                 }
             }
