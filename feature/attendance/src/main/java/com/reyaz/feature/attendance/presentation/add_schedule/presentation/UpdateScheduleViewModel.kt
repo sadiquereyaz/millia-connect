@@ -6,7 +6,7 @@ import com.reyaz.core.location.api.LocationProvider
 import com.reyaz.core.location.model.MyLocationResult
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
-import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
+import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

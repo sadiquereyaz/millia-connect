@@ -5,7 +5,7 @@ import com.reyaz.feature.attendance.data.local.AttendanceDatabase
 import com.reyaz.feature.attendance.data.repository.ScheduleRepositoryImpl
 import com.reyaz.feature.attendance.presentation.add_schedule.presentation.UpdateScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
-import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
+import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.presentation.components
+package com.reyaz.feature.attendance.presentation.schedule.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.common.utils.extensions.toCapSmall
-import com.reyaz.core.ui.components.SingleLineText
 import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel.Companion.CENTER_INDEX

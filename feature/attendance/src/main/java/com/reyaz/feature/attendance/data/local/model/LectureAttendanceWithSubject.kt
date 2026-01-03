@@ -3,16 +3,6 @@ package com.reyaz.feature.attendance.data.local.model
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class LectureAttendanceUiModel(
-    @Embedded val lecture: LectureSlotEntity,
-
-    @Relation(
-        parentColumn = "lectureId",
-        entityColumn = "lectureId"
-    )
-    val attendance: AttendanceEntity?
-)
-
 data class LectureAttendanceWithSubject(
     @Embedded val lecture: LectureSlotEntity,
 
@@ -26,5 +16,11 @@ data class LectureAttendanceWithSubject(
         parentColumn = "lectureId",
         entityColumn = "lectureId"
     )
-    val attendance: AttendanceEntity?
+    val attendance: AttendanceEntity?,
+
+    @Relation(
+        parentColumn = "locationId",
+        entityColumn = "locationId"
+    )
+    val location: LocationEntity?
 )

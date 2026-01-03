@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.presentation.components
+package com.reyaz.feature.attendance.presentation.schedule.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column

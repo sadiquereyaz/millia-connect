@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 
 @Entity(
     tableName = "attendance",
@@ -30,5 +31,5 @@ data class AttendanceEntity(
     // Store as epochDay (LocalDate.toEpochDay())
     val date: Long,
 
-    val status: AttendanceStatus
+    var status: AttendanceStatus
 )

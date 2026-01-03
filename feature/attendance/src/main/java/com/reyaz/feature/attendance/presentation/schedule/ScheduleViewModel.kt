@@ -2,7 +2,8 @@ package com.reyaz.feature.attendance.presentation.schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
+import com.reyaz.feature.attendance.domain.model.AttendanceStatus
+import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,9 +15,14 @@ import kotlinx.datetime.LocalDate
 
 class ScheduleViewModel(
     private val scheduleRepository: ScheduleRepository
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
+
+    companion object {
+        const val TOTAL_ITEMS = 200
+        const val CENTER_INDEX = TOTAL_ITEMS / 2
+    }
 
     init {
         _uiState.update {
@@ -50,8 +56,20 @@ class ScheduleViewModel(
             .launchIn(viewModelScope)
     }
 
-    companion object {
-         const val TOTAL_ITEMS = 200
-         const val CENTER_INDEX = TOTAL_ITEMS / 2
+    fun onAttendanceSelected(lectureId: Long, type: AttendanceStatus) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    lectures = it.lectures.map { lectureItem ->
+                        val id = lectureItem.lecture.lectureId
+                        if (id == lectureId) {
+                            lectureItem.attendance?.status = type
+                        } else
+                            lectureItem
+                        return@map lectureItem
+                    }
+                )
+            }
+        }
     }
 }

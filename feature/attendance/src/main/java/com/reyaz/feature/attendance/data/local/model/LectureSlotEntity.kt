@@ -17,13 +17,13 @@ import androidx.room.PrimaryKey
             parentColumns = ["subjectId"],
             childColumns = ["subjectId"],
             onDelete = ForeignKey.CASCADE
-        )/*,
+        ),
         ForeignKey(
             entity = LocationEntity::class,
             parentColumns = ["locationId"],
             childColumns = ["locationId"],
             onDelete = ForeignKey.CASCADE
-        )*/
+        )
     ]
 )
 data class LectureSlotEntity(
@@ -31,13 +31,13 @@ data class LectureSlotEntity(
     val lectureId: Long = 0L,
 
     val subjectId: Long,
+    
+    val locationId: Long,
 
     // 1 = Monday … 7 = Sunday
     val dayOfWeek: Int,
 
 //    val isRepeatReminder: Boolean,
-
-//    val locationId: Long,
 
     // minutes since midnight (optimized & indexable)
     val startTimeMinutes: Int,

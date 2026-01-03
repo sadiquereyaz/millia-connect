@@ -1,7 +1,7 @@
 package com.reyaz.feature.attendance.data.local.converters
 
 import androidx.room.TypeConverter
-import com.reyaz.feature.attendance.data.local.model.AttendanceStatus
+import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 
 class AttendanceStatusConverter {
     @TypeConverter

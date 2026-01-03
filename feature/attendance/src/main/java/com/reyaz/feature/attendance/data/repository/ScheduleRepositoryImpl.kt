@@ -7,7 +7,7 @@ import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubjec
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
-import com.reyaz.feature.attendance.presentation.schedule.domain.ScheduleRepository
+import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
