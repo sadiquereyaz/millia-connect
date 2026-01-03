@@ -1,6 +1,7 @@
 [versions]
 
 coilCompose = "2.7.0"
+mapplsBom = "2.0.0"
 pdfViewer = "2.3.7"
 room = "2.7.1"
 ksp = "2.0.0-1.0.24"        # kotlin version of this project - kotlin compatible ksp version
@@ -216,7 +217,7 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 # Material Design 3 components implementation for Jetpack Compose
 # Provides modern Material You design system components and theming for your Compose UI.
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-material-icons-extended = {  group = "androidx.compose.material", name = "material-icons-extended"}
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 # Core Compose UI runtime and fundamental composable functions
 # Foundation for all Compose UI elements including layouts, modifiers, and state management
@@ -294,6 +295,11 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 # Industry standard for REST API communication and general network requests.
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 
+# MAPPLS
+mappls-bom = { group = "com.mappls.sdk", name = "mappls-bom", version.ref = "mapplsBom" }
+mappls-android-sdk = { group = "com.mappls.sdk", name = "mappls-android-sdk" }
+place-widget = { group = "com.mappls.sdk", name = "place-widget" }
+
 # BACKWARD COMPATIBILITY
 # Provides backward compatibility for newer Android APIs on older devices
 # Essential for maintaining consistent UI/UX and functionality across different Android versions.
@@ -318,8 +324,8 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 
 #firebase authorisation
-firebase-bom={group="com.google.firebase",name ="firebase-bom",version.ref= "firebase-bom"}
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth"}
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }

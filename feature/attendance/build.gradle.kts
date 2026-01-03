@@ -98,4 +98,19 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.core)
 
+    implementation(platform(libs.mappls.bom))
+    // Maps SDK
+    implementation(libs.mappls.android.sdk)
+
+    // Optional (search / place picker)
+    implementation(libs.place.widget)
+//    implementation("com.mappls.sdk:nearby-ui")
+
+
+        // Core Map SDK
+//        implementation("com.mappls.sdk:maps:1.6.11")
+//
+//        // Place / search widget (optional)
+//        implementation("com.mappls.sdk:place-widget:1.6.11")
+
 }

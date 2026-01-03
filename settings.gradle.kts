@@ -9,6 +9,9 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+//        maven(url = "https://maven.mappls.com/repository/mappls/")
+        maven { url = uri("https://maven.mappls.com/repository/mappls/")}
+//        maven { url = uri("https://maven.mapmyindia.com/repository/mapmyindia/") }
     }
 }
 plugins {
@@ -19,6 +22,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+//        maven(url = "https://maven.mappls.com/repository/mappls/")
+        maven { url = uri("https://maven.mappls.com/repository/mappls/")}
+//        maven { url = uri("https://maven.mapmyindia.com/repository/mapmyindia/") }
+
+
     }
 }
 

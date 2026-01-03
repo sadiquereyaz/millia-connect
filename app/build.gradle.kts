@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    // Add the Mappls services Gradle plugin
+    id("com.mappls.services.android")
 }
 
 android {
@@ -21,7 +23,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix =  ".debug"
+            applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
         }
         release {
