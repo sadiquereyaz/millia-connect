@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
-import com.reyaz.feature.attendance.presentation.map.MapPickerScreen
+import com.reyaz.feature.attendance.presentation.map.MapScreen
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleScreen
 import constants.NavigationRoute
 import timber.log.Timber
@@ -38,7 +38,7 @@ internal fun NavGraphBuilder.attendanceNavGraph(
 
     // Mappls Map Screen
     composable(route = NavigationRoute.MapplsRoute.route) {
-        MapPickerScreen(
+        MapScreen(
             onConfirm = { lat, lng ->
                 Timber.d("lat: $lat, lng: $lng")
                  navController.previousBackStackEntry?.savedStateHandle?.set("lat", lat)
