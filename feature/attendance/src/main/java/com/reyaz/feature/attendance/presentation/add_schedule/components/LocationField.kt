@@ -34,7 +34,7 @@ import com.reyaz.core.ui.components.text.DottedUnderlineText
 
 @Composable
 fun LocationField(
-    modifier: Modifier = Modifier.Companion,
+    modifier: Modifier = Modifier,
     locationName: String,
     onLocationClick: () -> Unit,
 ) {
@@ -51,6 +51,7 @@ fun LocationField(
                 .clip(RoundedCornerShape(50))
                 .clickable {
                     // open map
+                    onLocationClick()
                 }
                 .background(gradientBrush)
                 .padding(horizontal = 24.dp, vertical = 12.dp),
@@ -84,8 +85,8 @@ fun LocationField(
                         color = Color.Companion.White,
                         fontStyle = FontStyle.Companion.Italic,
 
-                        )
-                }
+                            )
+                    }
 
                 Icon(
                     modifier = Modifier.Companion
@@ -122,6 +123,7 @@ fun LocationField(
                 underlineColor = MaterialTheme.colorScheme.primary,
                 onClick = {
                     // open mapplse map screen
+                    onLocationClick()
                 }
             )
         }

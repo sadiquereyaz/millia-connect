@@ -17,6 +17,7 @@ sealed class NavigationRoute(val route: String) {
     // Attendance Feature Routes
     data object Schedule : NavigationRoute("attendance/schedule")
     data object AddSchedule : NavigationRoute("attendance/add_schedule")
+    data object MapplsRoute : NavigationRoute("attendance/mappls_route")
     data object AttendanceHistory : NavigationRoute("attendance/history")
 
     // Property Feature Routes

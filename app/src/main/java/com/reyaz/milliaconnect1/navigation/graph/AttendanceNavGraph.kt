@@ -4,8 +4,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.UpdateScheduleScreenNew
+import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
+import com.reyaz.feature.attendance.presentation.map.MapPickerScreen
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleScreen
+import constants.NavigationRoute
+import timber.log.Timber
 
 /**
  * Attendance feature navigation graph
@@ -16,17 +19,31 @@ internal fun NavGraphBuilder.attendanceNavGraph(
 ) {
 
     // Schedule Screen
-    composable(route = constants.NavigationRoute.Schedule.route) {
+    composable(route = NavigationRoute.Schedule.route) {
         ScheduleScreen(
             navigateToAddSchedule = {
-                navController.navigate(constants.NavigationRoute.AddSchedule.route)
+                navController.navigate(NavigationRoute.AddSchedule.route)
             }
         )
     }
 
     // Add/Update Schedule Screen
-    composable(route = constants.NavigationRoute.AddSchedule.route) {
-        UpdateScheduleScreenNew()
+    composable(route = NavigationRoute.AddSchedule.route) {
+        UpdateScheduleScreen(
+            navigateToMapView = {
+                navController.navigate(NavigationRoute.MapplsRoute.route)
+            }
+        )
+    }
+
+    // Mappls Map Screen
+    composable(route = NavigationRoute.MapplsRoute.route) {
+        MapPickerScreen(
+            onConfirm = { lat, lng ->
+                Timber.d("lat: $lat, lng: $lng")
+                 navController.previousBackStackEntry?.savedStateHandle?.set("lat", lat)
+            }
+        )
     }
 }
 

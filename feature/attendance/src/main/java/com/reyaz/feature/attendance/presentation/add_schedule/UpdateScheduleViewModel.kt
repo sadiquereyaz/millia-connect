@@ -1,10 +1,11 @@
-package com.reyaz.feature.attendance.presentation.add_schedule.presentation
+package com.reyaz.feature.attendance.presentation.add_schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reyaz.core.location.api.LocationProvider
 import com.reyaz.core.location.model.MyLocationResult
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
+import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
 import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,6 +108,7 @@ class UpdateScheduleViewModel(
             try {
                 val lectureSlot = LectureSlotEntity(
                     subjectId = state.selectedSubjectId,
+                    locationId = state.locationId,
                     dayOfWeek = state.selectedDayOfWeek.value,
                     startTimeMinutes = state.startTimeMinutes,
                     endTimeMinutes = state.endTimeMinutes
@@ -138,7 +140,7 @@ class UpdateScheduleViewModel(
         }
     }
 
-    fun deleteLectureSlot(lecture: com.reyaz.feature.attendance.data.local.model.LectureWithSubject) {
+    fun deleteLectureSlot(lecture: LectureWithSubject) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 

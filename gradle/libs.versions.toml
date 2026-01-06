@@ -298,7 +298,19 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 # MAPPLS
 mappls-bom = { group = "com.mappls.sdk", name = "mappls-bom", version.ref = "mapplsBom" }
 mappls-android-sdk = { group = "com.mappls.sdk", name = "mappls-android-sdk" }
-place-widget = { group = "com.mappls.sdk", name = "place-widget" }
+mappls-annotation-plugin = { group = "com.mappls.sdk", name = "annotation-plugin" }
+mappls-category-search-ui = { module = "com.mappls.sdk:category-search-ui"}
+mappls-directions-plugin = { module = "com.mappls.sdk:directions-plugin" }
+mappls-direction-ui = { module = "com.mappls.sdk:direction-ui" }
+mappls-driving-range-plugin = { module = "com.mappls.sdk:driving-range-plugin" }
+mappls-feedback-ui = { module = "com.mappls.sdk:feedback-ui" }
+mappls-geoanalytics-plugin = { module = "com.mappls.sdk:geoanalytics-plugin" }
+mappls-geofence-ui = { module = "com.mappls.sdk:geofence-ui" }
+mappls-markerview-plugin = { module = "com.mappls.sdk:markerview-plugin" }
+mappls-nearby-ui = { module = "com.mappls.sdk:nearby-ui" }
+mappls-place-widget = { module = "com.mappls.sdk:place-widget" }
+mappls-raster-catalogue-plugin = { module = "com.mappls.sdk:raster-catalogue-plugin" }
+mappls-scalebar-plugin = { module = "com.mappls.sdk:scalebar-plugin" }
 
 # BACKWARD COMPATIBILITY
 # Provides backward compatibility for newer Android APIs on older devices

@@ -102,15 +102,18 @@ dependencies {
     // Maps SDK
     implementation(libs.mappls.android.sdk)
 
-    // Optional (search / place picker)
-    implementation(libs.place.widget)
-//    implementation("com.mappls.sdk:nearby-ui")
-
-
-        // Core Map SDK
-//        implementation("com.mappls.sdk:maps:1.6.11")
-//
-//        // Place / search widget (optional)
-//        implementation("com.mappls.sdk:place-widget:1.6.11")
+    implementation(libs.mappls.driving.range.plugin)
+    implementation(libs.mappls.scalebar.plugin)
+    implementation(libs.mappls.directions.plugin)
+    implementation(libs.mappls.markerview.plugin)
+    implementation(libs.mappls.annotation.plugin)
+    implementation(libs.mappls.place.widget)
+    implementation(libs.mappls.nearby.ui)
+    implementation(libs.mappls.category.search.ui)
+    implementation(libs.mappls.direction.ui)
+    implementation(libs.mappls.geoanalytics.plugin)
+    implementation(libs.mappls.raster.catalogue.plugin)
+    implementation(libs.mappls.geofence.ui)
+    implementation(libs.mappls.feedback.ui)
 
 }

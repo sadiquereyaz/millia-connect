@@ -1,6 +1,7 @@
 package com.reyaz.feature.attendance.utils.mapper
 
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
+import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.model.LectureItem
 
 fun LectureAttendanceWithSubject.toDomain(): LectureItem {
@@ -15,6 +16,6 @@ fun LectureAttendanceWithSubject.toDomain(): LectureItem {
         location = this.location?.locationName,
         warning = "this is warning text",
         percentage = 66,
-        status = attendance.status,
+        status = attendance?.status ?: AttendanceStatus.NOT_COUNTED,
     )
 }

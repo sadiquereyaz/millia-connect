@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.presentation.add_schedule.presentation
+package com.reyaz.feature.attendance.presentation.add_schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,19 +16,24 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.components.AddSubjectDialog
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.components.AutomationToggleNew
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.components.DaySelector
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.components.SubjectDropdownNew
-import com.reyaz.feature.attendance.presentation.add_schedule.presentation.components.TimeSelector
+import com.reyaz.feature.attendance.domain.model.TimePickerType
+import com.reyaz.feature.attendance.presentation.add_schedule.components.AddSubjectDialog
+import com.reyaz.feature.attendance.presentation.add_schedule.components.AutomationToggleNew
+import com.reyaz.feature.attendance.presentation.add_schedule.components.DaySelector
+import com.reyaz.feature.attendance.presentation.add_schedule.components.SimpleTimePickerDialog
+import com.reyaz.feature.attendance.presentation.add_schedule.components.SubjectDropdownNew
+import com.reyaz.feature.attendance.presentation.add_schedule.components.TimeSelector
+import com.reyaz.feature.attendance.presentation.add_schedule.presentation.LectureCard
+import com.reyaz.feature.attendance.presentation.add_schedule.presentation.LocationField
 import com.reyaz.feature.attendance.utils.getDayName
 import org.koin.androidx.compose.koinViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateScheduleScreenNew(
-    viewModel: UpdateScheduleViewModel = koinViewModel()
+fun UpdateScheduleScreen(
+    viewModel: UpdateScheduleViewModel = koinViewModel(),
+    navigateToMapView: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var subjectExpanded by remember { mutableStateOf(false) }
@@ -126,9 +131,10 @@ fun UpdateScheduleScreenNew(
 //                        locationName = "Faculty of Engineering & Technology",
                         locationName = uiState.locationName,
                         onLocationClick = {
-                            scope.launch {
+                            navigateToMapView()
+                            /*scope.launch {
                                 viewModel.getCurrentLocation()
-                            }
+                            }*/
                         }
                     )
                 }

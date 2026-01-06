@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey
     tableName = "lecture_slots",
     indices = [
         Index("subjectId"),
-        Index("dayOfWeek")
+        Index("dayOfWeek"),
+        Index("locationId")
     ],
     foreignKeys = [
         ForeignKey(

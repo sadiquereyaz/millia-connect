@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.presentation.add_schedule.presentation.components
+package com.reyaz.feature.attendance.presentation.add_schedule.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,6 +1,7 @@
 package com.reyaz.milliaconnect1
 
 import android.app.Application
+import com.mappls.sdk.maps.Mappls
 import com.reyaz.core.analytics.di.analyticsModule
 import com.reyaz.core.auth.di.authModule
 import com.reyaz.core.config.configModule
@@ -53,6 +54,7 @@ class BaseApplication : Application() {
                 attendanceModule,
             )
         }
+        Mappls.getInstance(this)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

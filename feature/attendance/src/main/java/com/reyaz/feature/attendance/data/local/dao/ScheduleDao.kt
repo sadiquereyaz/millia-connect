@@ -3,7 +3,6 @@ package com.reyaz.feature.attendance.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceUiModel
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +25,7 @@ interface ScheduleDao {
         SELECT
             ls.lectureId,
             ls.subjectId,
+            ls.locationId,
             ls.dayOfWeek,
             ls.startTimeMinutes,
             ls.endTimeMinutes,

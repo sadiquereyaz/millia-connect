@@ -124,4 +124,8 @@ dependencies {
 
     // splash
     implementation(libs.androidx.core.splashscreen)
+
+    // Mappls SDK
+    implementation(platform(libs.mappls.bom))
+    implementation(libs.mappls.android.sdk)
 }

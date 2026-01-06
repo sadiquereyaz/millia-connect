@@ -7,5 +7,6 @@ fun AttendanceStatus.toPresentType(): AttendanceStatus {
         AttendanceStatus.PRESENT -> AttendanceStatus.PRESENT
         AttendanceStatus.ABSENT -> AttendanceStatus.ABSENT
         AttendanceStatus.CANCELLED -> AttendanceStatus.CANCELLED
+        AttendanceStatus.NOT_COUNTED -> AttendanceStatus.NOT_COUNTED
     }
 }
