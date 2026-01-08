@@ -7,6 +7,7 @@ import com.reyaz.feature.attendance.data.local.converters.AttendanceStatusConver
 import com.reyaz.feature.attendance.data.local.dao.AttendanceDao
 import com.reyaz.feature.attendance.data.local.dao.AttendanceSummaryDao
 import com.reyaz.feature.attendance.data.local.dao.LectureSlotDao
+import com.reyaz.feature.attendance.data.local.dao.LocationDao
 import com.reyaz.feature.attendance.data.local.dao.ScheduleDao
 import com.reyaz.feature.attendance.data.local.dao.SubjectDao
 import com.reyaz.feature.attendance.data.local.model.AttendanceEntity
@@ -21,12 +22,13 @@ import com.reyaz.feature.attendance.data.local.model.SubjectEntity
         AttendanceEntity::class,
         LocationEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(AttendanceStatusConverter::class)
 abstract class AttendanceDatabase : RoomDatabase() {
     abstract fun subjectDao(): SubjectDao
+    abstract fun locationDao(): LocationDao
     abstract fun lectureSlotDao(): LectureSlotDao
     abstract fun attendanceDao(): AttendanceDao
     abstract fun scheduleDao(): ScheduleDao

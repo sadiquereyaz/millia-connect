@@ -27,7 +27,7 @@ import com.reyaz.feature.attendance.data.local.model.SubjectEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubjectDropdownNew(
+fun SubjectDropdown(
     selectedSubject: String,
     subjects: List<SubjectEntity>,
     expanded: Boolean,

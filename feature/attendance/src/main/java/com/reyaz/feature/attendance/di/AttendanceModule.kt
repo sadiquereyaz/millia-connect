@@ -24,6 +24,7 @@ val attendanceModule = module {
 
     // DAOs
     single { get<AttendanceDatabase>().subjectDao() }
+    single { get<AttendanceDatabase>().locationDao() }
     single { get<AttendanceDatabase>().lectureSlotDao() }
     single { get<AttendanceDatabase>().attendanceDao() }
     single { get<AttendanceDatabase>().scheduleDao() }
@@ -34,7 +35,8 @@ val attendanceModule = module {
         ScheduleRepositoryImpl(
             scheduleDao = get(),
             lectureSlotDao = get(),
-            subjectDao = get()
+            subjectDao = get(),
+            locationDao = get()
         )
     }
 

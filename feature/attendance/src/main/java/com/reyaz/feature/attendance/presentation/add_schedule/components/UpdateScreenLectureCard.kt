@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.presentation.add_schedule.presentation
+package com.reyaz.feature.attendance.presentation.add_schedule.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,39 +15,53 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.extensions.dottedBorder
-import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
+import com.reyaz.feature.attendance.domain.model.LectureItem
+import com.reyaz.feature.attendance.utils.TimeUtils.formatMinutesToTime
 
 @Composable
-fun LectureCard(
-    lecture: LectureWithSubject,
-    onDelete: () -> Unit
+fun UpdateScreenLectureCard(
+    lecture: LectureItem,
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
+    isInConflict: Boolean
 ) {
     Row(
-        modifier = Modifier.Companion
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .dottedBorder()
+            .then(
+                if (isInConflict) {
+                    Modifier.dottedBorder(
+                        color = MaterialTheme.colorScheme.error,
+                        strokeWidth = 2.dp,
+                        dashOff = 0f,
+                    )
+                } else {
+                    Modifier.dottedBorder()
+                }
+            )
             .padding(horizontal = 16.dp, 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Companion.CenterVertically
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.Companion.weight(1f)) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                lecture.subject.name, fontWeight = FontWeight.Companion.SemiBold, fontSize = 16.sp
+                text = lecture.title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
             )
             Text(
-                "${formatMinutesToTime(lecture.lecture.startTimeMinutes)} - ${
+                "${formatMinutesToTime(lecture.startTimeMinute)} - ${
                     formatMinutesToTime(
-                        lecture.lecture.endTimeMinutes
+                        lecture.endTimeMinute
                     )
                 }",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.outline,
-                fontWeight = FontWeight.Companion.Medium,
+                fontWeight = FontWeight.Medium,
             )
         }
         Row {

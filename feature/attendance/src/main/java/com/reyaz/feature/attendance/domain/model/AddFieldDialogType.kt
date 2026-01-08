@@ -1,5 +1,8 @@
 package com.reyaz.feature.attendance.domain.model
 
+import com.reyaz.core.common.utils.extensions.StringUtils.toCapSmall
+
+
 enum class AddFieldDialogType(
     val label: String
 ){
@@ -8,5 +11,8 @@ enum class AddFieldDialogType(
     ),
     LOCATION(
         label = "FET Building"
-    )
+    );
+
+    val displayName: String
+        get() = name.toCapSmall()
 }

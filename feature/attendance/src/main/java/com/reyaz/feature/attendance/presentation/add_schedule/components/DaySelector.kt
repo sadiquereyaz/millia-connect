@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
+import com.reyaz.core.ui.helper.debounceClickable
 import com.reyaz.feature.attendance.presentation.add_schedule.presentation.getDayAbbreviation
 import kotlinx.datetime.DayOfWeek
 

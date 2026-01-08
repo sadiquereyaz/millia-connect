@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.SingleLineText
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
-import com.reyaz.feature.attendance.utils.time.minutesToTimeString
+import com.reyaz.feature.attendance.utils.TimeUtils.minutesToTimeString
 import com.reyaz.feature.attendance.utils.toPresentType
 import kotlin.random.Random
 

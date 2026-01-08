@@ -1,6 +1,7 @@
 package com.reyaz.feature.attendance.utils.mapper
 
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
+import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.model.LectureItem
 

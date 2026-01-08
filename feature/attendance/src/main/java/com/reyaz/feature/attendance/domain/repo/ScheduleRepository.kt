@@ -3,7 +3,9 @@ package com.reyaz.feature.attendance.domain.repo
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
+import com.reyaz.feature.attendance.data.local.model.LocationEntity
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
+import com.reyaz.feature.attendance.domain.model.LocationModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -15,7 +17,8 @@ interface ScheduleRepository {
     suspend fun insertLectureSlot(slot: LectureSlotEntity): Long
     suspend fun deleteLectureSlot(slot: LectureSlotEntity)
     suspend fun insertSubject(subject: SubjectEntity): Long
-}
 
-interface AddAttendanceRepository {
+    suspend fun insertLocation(location: LocationEntity): Long
+    fun observeAllLocations(): Flow<List<LocationModel>>
+
 }

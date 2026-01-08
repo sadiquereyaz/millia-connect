@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -36,7 +37,8 @@ fun CustomCircularTextField(
     readOnly: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
     outlinedTextFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
-    imeAction: ImeAction = ImeAction.Unspecified
+    imeAction: ImeAction = ImeAction.Unspecified,
+    capitalisation: KeyboardCapitalization = KeyboardCapitalization.Sentences
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -63,7 +65,8 @@ fun CustomCircularTextField(
         maxLines = maxLines,
         shape = cornerRadius?.let { RoundedCornerShape(it.dp) } ?: RoundedCornerShape(50),
         keyboardOptions = KeyboardOptions(
-            imeAction = imeAction
+            imeAction = imeAction,
+            capitalization = capitalisation
         ),
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() },

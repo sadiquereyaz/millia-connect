@@ -1,6 +1,5 @@
 package com.reyaz.feature.attendance.presentation.add_schedule.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,14 +41,14 @@ import com.reyaz.core.ui.components.text.DottedUnderlineText
 import com.reyaz.feature.attendance.domain.model.LocationModel
 
 @Composable
-fun LocationField(
+fun LocationComponents(
     modifier: Modifier = Modifier,
     selectedId: Long?,
     locationList: List<LocationModel>,
     onLocationSelect: (Long) -> Unit,
     navigateToPicker: () -> Unit
 ) {
-    val gradientBrush = Brush.Companion.linearGradient(
+    val gradientBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF6B73FF), Color(0xFF784BA0)
         )
@@ -59,6 +57,7 @@ fun LocationField(
         Box(
             modifier = modifier
                 .fillMaxWidth()
+                .padding(top = 12.dp)
                 .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(50))
                 .clickable {
@@ -69,33 +68,33 @@ fun LocationField(
                 .padding(horizontal = 24.dp, vertical = 12.dp),
         ) {
             Row(
-                modifier = Modifier.Companion.fillMaxSize(),
-                verticalAlignment = Alignment.Companion.CenterVertically,
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "location",
-                    tint = Color.Companion.White.copy(alpha = 0.9f),
-                    modifier = Modifier.Companion.size(28.dp)
+                    tint = Color.White.copy(alpha = 0.9f),
+                    modifier = Modifier.size(28.dp)
                 )
-                Spacer(Modifier.Companion.width(16.dp))
+                Spacer(Modifier.width(16.dp))
                 Column(
-                    modifier = Modifier.Companion.weight(1f)
+                    modifier = Modifier.weight(1f)
                 ) {
                     SingleLineText(
-                        modifier = Modifier.Companion.padding(end = 16.dp),
+                        modifier = Modifier.padding(end = 16.dp),
                         text = "Locate Classroom",
                         maxLines = 1,
                         fontSize = 18.sp,
-                        color = Color.Companion.White,
-                        fontWeight = FontWeight.Companion.Bold
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
                     SingleLineText(
                         text = "powered by Mappls",
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
-                        color = Color.Companion.White,
-                        fontStyle = FontStyle.Companion.Italic,
+                        color = Color.White,
+                        fontStyle = FontStyle.Italic,
 
                         )
                 }
@@ -106,20 +105,21 @@ fun LocationField(
                         .size(32.dp)
                         .border(
                             width = 1.dp,
-                            color = Color.Companion.White.copy(alpha = 0.5f),
+                            color = Color.White.copy(alpha = 0.5f),
                             shape = CircleShape
                         ),
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = "location",
-                    tint = Color.Companion.White.copy(alpha = 0.9f),
+                    tint = Color.White.copy(alpha = 0.9f),
                 )
             }
         }
     } else {
         Column {
+            Spacer(Modifier.height(12.dp))
             Text(
                 "Select Location:",
-                fontWeight = FontWeight.Companion.Medium, fontSize = 20.sp,
+                fontWeight = FontWeight.Medium, fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,7 +162,7 @@ fun LocationField(
             }
             Spacer(Modifier.height(16.dp))
             Row(
-                verticalAlignment = Alignment.Companion.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = modifier
                     .fillMaxWidth()
@@ -178,7 +178,7 @@ fun LocationField(
                         navigateToPicker()
                     }
                 )
-                Spacer(Modifier.Companion.width(8.dp))
+                Spacer(Modifier.width(8.dp))
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowForward,
                     "",

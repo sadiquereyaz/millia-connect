@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.reyaz.core.common.utils.extensions.toCapSmall
+import com.reyaz.core.common.utils.extensions.StringUtils.toCapSmall
 import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel.Companion.CENTER_INDEX

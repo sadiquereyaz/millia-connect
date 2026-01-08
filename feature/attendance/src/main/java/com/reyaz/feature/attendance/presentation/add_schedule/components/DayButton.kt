@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.reyaz.core.ui.helper.debounceClickable
 
 @Composable
 fun DayButton(
-    day: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier.Companion
+    day: String, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -31,7 +32,7 @@ fun DayButton(
                 color = if (isSelected) Color.Companion.Transparent else MaterialTheme.colorScheme.outline,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
             )
-            .clickable(onClick = onClick), contentAlignment = Alignment.Companion.Center
+            .debounceClickable(onClick = onClick, debounceInterval = 1500), contentAlignment = Alignment.Companion.Center
     ) {
         Text(
             text = day,

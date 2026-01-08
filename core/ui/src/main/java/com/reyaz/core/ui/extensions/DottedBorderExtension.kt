@@ -1,5 +1,7 @@
 package com.reyaz.core.ui.extensions
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -25,18 +27,19 @@ import androidx.compose.ui.unit.dp
  * }
  * ```
  */
+@Composable
 fun Modifier.dottedBorder(
-    color: Color = Color.Companion.Gray,
+    color: Color = MaterialTheme.colorScheme.outline,
     strokeWidth: Dp = 1.dp,
     cornerRadius: Dp = 12.dp,
     dashOn: Float = 10f,
-    dashOff: Float = 8f
+    dashOff: Float = 8f,
 ): Modifier = this.drawBehind {
     drawRoundRect(
         color = color,
         style = Stroke(
             width = strokeWidth.toPx(),
-            pathEffect = PathEffect.Companion.dashPathEffect(
+            pathEffect = PathEffect.dashPathEffect(
                 floatArrayOf(dashOn, dashOff)
             )
         ),
