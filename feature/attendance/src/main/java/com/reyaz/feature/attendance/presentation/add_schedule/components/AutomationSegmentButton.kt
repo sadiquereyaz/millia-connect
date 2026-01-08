@@ -8,10 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
@@ -22,10 +18,10 @@ import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.SingleChoiceSegmentedButton
 
 @Composable
-fun AutomationToggleNew(
-    enabled: Boolean, onToggle: (Boolean) -> Unit
+fun AutomationSegmentButton(
+    onSelected: (Int) -> Unit,
+    selectedIndex: Int?
 ) {
-    var selectedIndex: Int? by remember { mutableStateOf(null) }
     Column {
         Row(
             modifier = Modifier.Companion.fillMaxWidth().padding(horizontal = 16.dp),
@@ -34,9 +30,9 @@ fun AutomationToggleNew(
         ) {
             Text("Enable Automation:", fontWeight = FontWeight.Companion.Medium, fontSize = 20.sp)
             SingleChoiceSegmentedButton(
-                options = listOf("Yes", "No"), onOptionSelect = {
-                    selectedIndex = it
-                }, selectedIndex = selectedIndex
+                options = listOf("Yes", "No"),
+                onOptionSelect = { onSelected(it) },
+                selectedIndex = selectedIndex
             )
         }
         Text(

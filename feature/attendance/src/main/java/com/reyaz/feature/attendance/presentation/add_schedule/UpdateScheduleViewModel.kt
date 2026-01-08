@@ -15,7 +15,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import timber.log.Timber
 
 class UpdateScheduleViewModel(
     private val scheduleRepository: ScheduleRepository,
@@ -47,8 +51,18 @@ class UpdateScheduleViewModel(
         _uiState.update { it.copy(endTimeMinutes = minutes) }
     }
 
-    fun onAutomationToggled(enabled: Boolean) {
-        _uiState.update { it.copy(automationEnabled = enabled) }
+    fun onAutomationSelected(index: Int) {
+        _uiState.update { it.copy(automationSegSelectedIndex = index) }
+    }
+
+    fun onLocationSelected(locationId: Long) {
+        _uiState.update { it.copy(selectedLocationId = locationId) }
+    }
+    fun updateStartTime(min: Int) {
+        _uiState.update { it.copy(startTimeMinutes = min) }
+    }
+    fun updateEndTime(min: Int) {
+        _uiState.update { it.copy(endTimeMinutes = min) }
     }
 
     fun onLocationNameChanged(locationName: String) {
@@ -98,6 +112,11 @@ class UpdateScheduleViewModel(
                 return@launch
             }
 
+            if (state.selectedLocationId == null) {
+                _uiState.update { it.copy(errorMessage = "Please select a location") }
+                return@launch
+            }
+
             if (state.startTimeMinutes >= state.endTimeMinutes) {
                 _uiState.update { it.copy(errorMessage = "End time must be after start time") }
                 return@launch
@@ -108,8 +127,8 @@ class UpdateScheduleViewModel(
             try {
                 val lectureSlot = LectureSlotEntity(
                     subjectId = state.selectedSubjectId,
-                    locationId = state.locationId,
-                    dayOfWeek = state.selectedDayOfWeek.value,
+                    locationId = state.selectedLocationId,
+                    dayOfWeek = state.selectedDayOfWeek.ordinal + 1,
                     startTimeMinutes = state.startTimeMinutes,
                     endTimeMinutes = state.endTimeMinutes
                 )
@@ -122,6 +141,7 @@ class UpdateScheduleViewModel(
                         successMessage = "Lecture slot saved successfully",
                         // Reset form
                         selectedSubjectId = null,
+                        selectedLocationId = null,
                         startTimeMinutes = 540,
                         endTimeMinutes = 600,
                         locationName = ""

@@ -1,4 +1,4 @@
-package com.reyaz.feature.attendance.utils
+package com.reyaz.feature.attendance.utils.time
 
 // Helper functions
 fun minutesToTimeString(minutes: Int): String {

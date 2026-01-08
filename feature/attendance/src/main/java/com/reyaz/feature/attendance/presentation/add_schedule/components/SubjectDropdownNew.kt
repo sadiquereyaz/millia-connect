@@ -49,6 +49,7 @@ fun SubjectDropdownNew(
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 label = "Subject",
+                placeholder = "Select Subject",
                 modifier = Modifier.Companion.menuAnchor(type = MenuAnchorType.Companion.PrimaryNotEditable),
                 imeAction = imeAction
             )

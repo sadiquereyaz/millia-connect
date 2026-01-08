@@ -1,8 +1,6 @@
 package com.reyaz.feature.attendance.domain.model
 
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.reyaz.feature.attendance.utils.time.minutesToAmPmString
 
 data class LectureItem(
     val id: Long,
@@ -14,25 +12,5 @@ data class LectureItem(
     val percentage: Int,
     val status: AttendanceStatus
 ) {
-    val timeText: String = "${minutesToAmPm(startTimeMinute)}\n—\n${minutesToAmPm(endTimeMinute)}"
-}
-
-private fun getAmPmString(hour: Float): String {
-    return if (hour > 12) "pm" else "am"
-}
-
-fun minutesToAmPm(
-    timeInMinutes: Int,
-    locale: Locale = Locale.getDefault()
-): String {
-    val hour = timeInMinutes / 60
-    val minute = timeInMinutes % 60
-
-    val calendar = Calendar.getInstance(locale).apply {
-        set(Calendar.HOUR_OF_DAY, hour)
-        set(Calendar.MINUTE, minute)
-    }
-
-    val formatter = SimpleDateFormat("hh:mm a", locale)
-    return formatter.format(calendar.time)
+    val timeText: String = "${minutesToAmPmString(startTimeMinute)}\n—\n${minutesToAmPmString(endTimeMinute)}"
 }

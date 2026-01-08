@@ -22,7 +22,7 @@ fun SingleLineText(
     fontStyle: FontStyle? = null,
     isUnderline: Boolean = false,
     textAlign: TextAlign? = null,
-    maxLine: Int = 1,
+    maxLines: Int = 1,
 ) {
     Text(
         text = text,
@@ -33,7 +33,7 @@ fun SingleLineText(
         fontWeight = fontWeight,
         lineHeight = lineHeight,
         overflow = TextOverflow.Ellipsis,
-        maxLines = maxLine,
+        maxLines = maxLines,
         textDecoration = if (isUnderline) TextDecoration.Underline else null,
         fontStyle = fontStyle
     )

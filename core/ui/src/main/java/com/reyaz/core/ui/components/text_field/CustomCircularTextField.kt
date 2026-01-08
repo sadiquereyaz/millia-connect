@@ -15,6 +15,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,13 +38,15 @@ fun CustomCircularTextField(
     outlinedTextFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
     imeAction: ImeAction = ImeAction.Unspecified
 ) {
+    val focusManager = LocalFocusManager.current
+
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
-        placeholder = placeholder?.let { { Text(placeholder) } },
-        label = label?.let { { Text(it) } },
+        placeholder = placeholder?.let { { Text(placeholder, color = MaterialTheme.colorScheme.outline) } },
+        label = label?.let { { Text(it, color = MaterialTheme.colorScheme.outline) } },
         readOnly = readOnly,
         trailingIcon = trailingIcon,
         enabled = enabled,
@@ -61,6 +64,12 @@ fun CustomCircularTextField(
         shape = cornerRadius?.let { RoundedCornerShape(it.dp) } ?: RoundedCornerShape(50),
         keyboardOptions = KeyboardOptions(
             imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = { focusManager.clearFocus() },
+            onNext = { focusManager.clearFocus() },
+            onGo = { focusManager.clearFocus() },
+            onSearch = { focusManager.clearFocus() }
         )
     )
 }
