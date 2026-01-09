@@ -39,8 +39,8 @@ class UpdateScheduleViewModel(
         viewModelScope.launch {
             _uiState.value = UpdateScheduleUiState(
                 selectedDayOfWeek = dayIndex,
-                subjects = uiState.value.subjects,
                 selectedSubjectId = uiState.value.selectedSubjectId,
+                subjects = uiState.value.subjects,
                 isLoading = false,
             )
             _uiState.value.selectedDayOfWeek?.let { dayOfWeek ->
@@ -49,7 +49,7 @@ class UpdateScheduleViewModel(
                 ).collect { lecturesWithAttendanceSubject ->
                     _uiState.update { state ->
                         state.copy(
-                            lecturesForDay = lecturesWithAttendanceSubject
+                            lecturesForDay = lecturesWithAttendanceSubject,
                         )
                     }
                 }
@@ -58,7 +58,7 @@ class UpdateScheduleViewModel(
     }
 
     fun onSubjectSelected(subjectId: Long) {
-        _uiState.update { it.copy(selectedSubjectId = subjectId) }
+        _uiState.update { it.copy(selectedSubjectId = subjectId,) }
         val currStartMin = uiState.value.startTimeMinutes
         if (currStartMin == null) {
             onStartTimeChanged(
@@ -84,20 +84,15 @@ class UpdateScheduleViewModel(
                     // conflict detected
                     if (isAutoUpdating) {
                         _uiState.update {
-                            it.copy(
-                                isStartTimeError = false,
-                                errorMessage = null,
-                                conflictLecId = null,
-                                startTimeMinutes = null
-                            )
+                            it.copy()
                         }
                     } else {
                         _uiState.update {
                             it.copy(
+                                startTimeMinutes = startMin,
+                                isStartTimeError = true,
                                 errorMessage = "Start time conflicts with \"${lec.subject.name}\"",
                                 conflictLecId = lec.lecture.lectureId,
-                                isStartTimeError = true,
-                                startTimeMinutes = startMin
                             )
                         }
                     }
@@ -108,10 +103,7 @@ class UpdateScheduleViewModel(
             // No conflict - update start time
             _uiState.update {
                 it.copy(
-                    errorMessage = null,
                     startTimeMinutes = startMin,
-                    conflictLecId = null,
-                    isStartTimeError = false
                 )
             }
             onEndTimeChanged(startMin + 60, true)
@@ -123,9 +115,9 @@ class UpdateScheduleViewModel(
             if (endMin <= startMin) {
                 _uiState.update {
                     it.copy(
+                        endTimeMinutes = endMin,
                         isEndTimeError = true,
                         errorMessage = "End time must be after start time",
-                        endTimeMinutes = endMin
                     )
                 }
                 return
@@ -145,20 +137,15 @@ class UpdateScheduleViewModel(
                     // conflict detected
                     if (isAutoUpdating) {
                         _uiState.update {
-                            it.copy(
-                                isEndTimeError = false,
-                                errorMessage = null,
-                                conflictLecId = null,
-                                endTimeMinutes = null
-                            )
+                            it.copy()
                         }
                     } else {
                         _uiState.update {
                             it.copy(
+                                endTimeMinutes = endMin,
                                 isEndTimeError = true,
                                 errorMessage = "Time overlaps with ${lec.subject.name}",
                                 conflictLecId = lec.lecture.lectureId,
-                                endTimeMinutes = endMin
                             )
                         }
                     }
@@ -169,47 +156,44 @@ class UpdateScheduleViewModel(
             // No conflict - update end time
             _uiState.update {
                 it.copy(
-                    isEndTimeError = false,
-                    errorMessage = null,
-                    conflictLecId = null,
-                    endTimeMinutes = endMin
+                    endTimeMinutes = endMin,
                 )
             }
         }
     }
 
     fun clearUiMessages() {
-        _uiState.update { it.copy(errorMessage = null, successMessage = null) }
+        _uiState.update { it.copy() }
     }
 
     fun onAutomationSelected(index: Int) {
-        _uiState.update { it.copy(automationSegSelectedIndex = index) }
+        _uiState.update { it.copy(automationSegSelectedIndex = index,) }
     }
 
     fun onUpdateLocationPermission(isGranted: Boolean) {
-        _uiState.update { it.copy(isLocationPermissionGranted = isGranted) }
+        _uiState.update { it.copy(isLocationPermissionGranted = isGranted,) }
     }
 
     fun onLocationSelected(locationId: Long) {
-        _uiState.update { it.copy(selectedLocationId = locationId) }
+        _uiState.update { it.copy(selectedLocationId = locationId,) }
     }
 
     fun onLocationPicked(lat: Double?, lng: Double?) {
         val latLong = Pair(lat ?: 28.56180232032942, lng ?: 77.2814836859149)
-        _uiState.update { it.copy(pickedLocationCoordinates = latLong) }
+        _uiState.update { it.copy(pickedLocationCoordinates = latLong,) }
     }
 
     private fun loadLocations() {
         scheduleRepository.observeAllLocations()
             .onEach { locations ->
-                _uiState.update { it.copy(locationList = locations) }
+                _uiState.update { it.copy(locationList = locations,) }
             }
             .launchIn(viewModelScope)
     }
 
     fun addNewLocation(locationName: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy() }
 
             try {
                 uiState.value.pickedLocationCoordinates?.let {
@@ -222,9 +206,9 @@ class UpdateScheduleViewModel(
 
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
                             selectedLocationId = newLocationId,
-                            successMessage = "Location added successfully"
+                            isLoading = false,
+                            successMessage = "Location added successfully",
                         )
                     }
                 } ?: run {
@@ -235,7 +219,7 @@ class UpdateScheduleViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Failed to add location: ${e.message}"
+                        errorMessage = "Failed to add location: ${e.message}",
                     )
                 }
             }
@@ -245,27 +229,27 @@ class UpdateScheduleViewModel(
     fun onEditLectureSlot(lecture: LectureAttendanceWithSubject) {
         _uiState.update {
             it.copy(
+                selectedLectureId = lecture.lecture.lectureId,
                 selectedSubjectId = lecture.subject.subjectId,
                 startTimeMinutes = lecture.lecture.startTimeMinutes,
                 endTimeMinutes = lecture.lecture.endTimeMinutes,
                 selectedLocationId = lecture.lecture.locationId,
-                selectedLectureId = lecture.lecture.lectureId
             )
         }
     }
 
     fun deleteLectureSlot(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy() }
 
             try {
 //                scheduleRepository.deleteLectureSlot(lecture.lecture)
 
                 _uiState.update { currUiState ->
                     currUiState.copy(
+                        lecturesForDay = currUiState.lecturesForDay.filter { it.lecture.lectureId != id },
                         isLoading = false,
                         successMessage = "Lecture deleted successfully",
-                        lecturesForDay = currUiState.lecturesForDay.filter { it.lecture.lectureId != id }
                     )
                 }
             } catch (e: Exception) {
@@ -273,7 +257,7 @@ class UpdateScheduleViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Failed to delete lecture: ${e.message}"
+                        errorMessage = "Failed to delete lecture: ${e.message}",
                     )
                 }
             }
@@ -282,17 +266,14 @@ class UpdateScheduleViewModel(
 
     fun clearMessages() {
         _uiState.update {
-            it.copy(
-                errorMessage = null,
-                successMessage = null
-            )
+            it.copy()
         }
     }
 
     fun loadSubjects() {
         scheduleRepository.observeAllSubjects()
             .onEach { subjects ->
-                _uiState.update { it.copy(subjects = subjects) }
+                _uiState.update { it.copy(subjects = subjects,) }
             }
             .launchIn(viewModelScope)
     }
@@ -300,11 +281,11 @@ class UpdateScheduleViewModel(
     fun addNewSubject(subjectName: String) {
         viewModelScope.launch {
             if (subjectName.isBlank()) {
-                _uiState.update { it.copy(errorMessage = "Subject name cannot be empty") }
+                _uiState.update { it.copy(errorMessage = "Subject name cannot be empty",) }
                 return@launch
             }
 
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy() }
 
             try {
                 val subject = SubjectEntity(name = subjectName)
@@ -312,16 +293,16 @@ class UpdateScheduleViewModel(
 
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
                         selectedSubjectId = subjectId,
-                        successMessage = "Subject added successfully"
+                        isLoading = false,
+                        successMessage = "Subject added successfully",
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Failed to add subject: ${e.message}"
+                        errorMessage = "Failed to add subject: ${e.message}",
                     )
                 }
             }
@@ -333,11 +314,11 @@ class UpdateScheduleViewModel(
             val state = _uiState.value
 
             if (state.selectedSubjectId == null) {
-                _uiState.update { it.copy(errorMessage = "Please select a subject") }
+                _uiState.update { it.copy(errorMessage = "Please select a subject",) }
                 return@launch
             }
 
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy() }
 
             try {
                 val lectureSlot = LectureSlotEntity(
@@ -355,6 +336,7 @@ class UpdateScheduleViewModel(
                     it.copy(
                         isLoading = false,
                         successMessage = "Lecture saved successfully",
+                        shouldNavigateBack = true,
                         // Reset form
                         selectedLocationId = null,
                         startTimeMinutes = null,
@@ -371,7 +353,7 @@ class UpdateScheduleViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = "Failed to save lecture: ${e.message}"
+                        errorMessage = "Failed to save lecture: ${e.message}",
                     )
                 }
             }

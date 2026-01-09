@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import com.reyaz.core.common.utils.extensions.StringUtils.capitalizeWordLevel
 import com.reyaz.core.ui.components.dialog.MacDialog
 import com.reyaz.core.ui.components.text_field.AutoSuggestExposedDropdown
 import com.reyaz.feature.attendance.domain.model.AddFieldDialogType
@@ -60,7 +61,7 @@ fun AddTextFieldDialog(
                     val notPresent = suggestOptions.none { it.equals(fieldValue, ignoreCase = true) }
                     if (fieldValue.isNotBlank()) {
                         if (notPresent)
-                            onConfirm(fieldValue.trim())
+                            onConfirm(fieldValue.trim().capitalizeWordLevel())
                         onDismiss()
                     } else {
                         isError = true

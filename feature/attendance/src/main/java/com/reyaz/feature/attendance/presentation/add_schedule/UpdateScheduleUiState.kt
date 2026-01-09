@@ -34,6 +34,7 @@ data class UpdateScheduleUiState(
     val errorMessage: String? = null,
     val successMessage: String? = null,
     val conflictLecId: Long? = null,
+    val shouldNavigateBack: Boolean = false,
 //    val locationList: List<LocationModel> = emptyList(),
 ) {
     val selectedSubject: SubjectEntity?
@@ -61,6 +62,6 @@ data class UpdateScheduleUiState(
                 hasValidLocation &&
                 conflictLecId == null &&
                 automationSegSelectedIndex != null &&
-                selectedLocationId != null &&
+                (automationSegSelectedIndex == 1 || selectedLocationId != null) &&      // if automation is selected is "No", then locationId is not needed
                 !isLoading
 }

@@ -73,7 +73,8 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScheduleScreen(
-    viewModel: UpdateScheduleViewModel = koinViewModel()
+    viewModel: UpdateScheduleViewModel = koinViewModel(),
+    navigateToBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var subjectExpanded by remember { mutableStateOf(false) }
@@ -116,7 +117,7 @@ fun UpdateScheduleScreen(
                 showAddLocationNameDialog = if (place?.poi.isNullOrBlank()) {
                     true
                 } else {
-                    place.poi?.let { viewModel.addNewLocation(it) }
+                    place.poi?.let { viewModel.addNewLocation(place.formattedAddress ?: it) }
                     false
                     // placeName = place.formattedAddress ?: place.poi
                 }
@@ -133,6 +134,11 @@ fun UpdateScheduleScreen(
             )
             viewModel.clearUiMessages()
         }
+    }
+
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack)
+            navigateToBack()
     }
 
     LaunchedEffect(uiState.automationSegSelectedIndex) {
@@ -395,7 +401,7 @@ fun UpdateScheduleScreen(
             onDismiss = { showAddLocationNameDialog = false },
             type = AddFieldDialogType.LOCATION,
             onConfirm = { locationName ->
-                viewModel.addNewLocation(locationName.capitalizeWordLevel())
+                viewModel.addNewLocation(locationName)
             },
             suggestOptions = uiState.locationList.map { it.name }
         )

@@ -29,7 +29,11 @@ internal fun NavGraphBuilder.attendanceNavGraph(
 
     // Add/Update Schedule Screen
     composable(route = NavigationRoute.AddSchedule.route) {
-        UpdateScheduleScreen()
+        UpdateScheduleScreen(
+            navigateToBack = {
+                navController.popBackStack()
+            }
+        )
     }
 
     // Mappls Map Screen
