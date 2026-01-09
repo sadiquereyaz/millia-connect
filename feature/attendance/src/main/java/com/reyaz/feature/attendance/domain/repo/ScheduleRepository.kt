@@ -12,7 +12,7 @@ import kotlinx.datetime.LocalDate
 
 interface ScheduleRepository {
     fun observeLecturesForDate(date: LocalDate): Flow<List<LectureAttendanceWithSubject>>
-    fun observeLecturesWithSubjectForDay(dayOfWeek: DayOfWeek): Flow<List<LectureWithSubject>>
+    fun observeLecturesWithSubjectForDay(dayOfWeek: DayOfWeek): Flow<List<LectureAttendanceWithSubject>>
     fun observeAllSubjects(): Flow<List<SubjectEntity>>
     suspend fun insertLectureSlot(slot: LectureSlotEntity): Long
     suspend fun deleteLectureSlot(slot: LectureSlotEntity)

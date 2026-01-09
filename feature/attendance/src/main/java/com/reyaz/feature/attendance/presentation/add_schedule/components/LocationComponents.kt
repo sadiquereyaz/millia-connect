@@ -141,9 +141,10 @@ fun LocationComponents(
                             onLocationSelect(location.id)
                         },
                         label = {
-                            Text(
+                            SingleLineText(
                                 text = location.name,
-                                modifier = Modifier
+                                maxLines = 2,
+                                modifier = Modifier.padding(2.dp),
                             )
                         },
                         leadingIcon = if (location.id == selectedId) {

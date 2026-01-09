@@ -18,7 +18,7 @@ interface ScheduleDao {
     """)
     fun observeLecturesWithSubject(
         dayOfWeek: Int
-    ): Flow<List<LectureWithSubject>>
+    ): Flow<List<LectureAttendanceWithSubject>>
 
     @Transaction
     @Query("""

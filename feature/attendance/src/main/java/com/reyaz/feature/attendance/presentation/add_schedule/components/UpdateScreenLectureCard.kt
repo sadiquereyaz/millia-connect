@@ -15,17 +15,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.extensions.dottedBorder
-import com.reyaz.feature.attendance.domain.model.LectureItem
+import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.utils.TimeUtils.formatMinutesToTime
 
 @Composable
 fun UpdateScreenLectureCard(
-    lecture: LectureItem,
+    lecSlot: LectureAttendanceWithSubject,
+    onUpdate: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
     isInConflict: Boolean
@@ -51,12 +51,12 @@ fun UpdateScreenLectureCard(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = lecture.title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
+                text = lecSlot.subject.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
             )
             Text(
-                "${formatMinutesToTime(lecture.startTimeMinute)} - ${
+                "${formatMinutesToTime(lecSlot.lecture.startTimeMinutes)} - ${
                     formatMinutesToTime(
-                        lecture.endTimeMinute
+                        lecSlot.lecture.endTimeMinutes
                     )
                 }",
                 fontSize = 14.sp,
@@ -65,7 +65,7 @@ fun UpdateScreenLectureCard(
             )
         }
         Row {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onUpdate) {
                 Icon(
                     Icons.Default.Edit,
                     contentDescription = "Edit",

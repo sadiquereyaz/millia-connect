@@ -41,6 +41,6 @@ data class LectureSlotEntity(
 //    val isRepeatReminder: Boolean,
 
     // minutes since midnight (optimized & indexable)
-    val startTimeMinutes: Int,
-    val endTimeMinutes: Int
+    val startTimeMinutes: Int,      // todo: rename to startTimeMinute (remove s)
+    val endTimeMinutes: Int ///  // todo: rename to endTimeMinute (remove s)
 )

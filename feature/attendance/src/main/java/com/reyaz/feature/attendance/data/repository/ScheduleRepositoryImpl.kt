@@ -30,7 +30,7 @@ class ScheduleRepositoryImpl(
         return scheduleDao.observeLectureAttendanceForDate(dayOfWeek, epochDay.toLong())
     }
 
-    override fun observeLecturesWithSubjectForDay(dayOfWeek: DayOfWeek): Flow<List<LectureWithSubject>> {
+    override fun observeLecturesWithSubjectForDay(dayOfWeek: DayOfWeek): Flow<List<LectureAttendanceWithSubject>> {
         return scheduleDao.observeLecturesWithSubject(dayOfWeek.value)
     }
 

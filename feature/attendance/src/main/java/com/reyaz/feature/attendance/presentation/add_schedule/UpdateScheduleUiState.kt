@@ -1,5 +1,6 @@
 package com.reyaz.feature.attendance.presentation.add_schedule
 
+import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
 import com.reyaz.feature.attendance.domain.model.LectureItem
 import com.reyaz.feature.attendance.domain.model.LocationModel
@@ -9,10 +10,12 @@ data class UpdateScheduleUiState(
 
     val selectedDayOfWeek: DayOfWeek? = null,
 
+    val selectedLectureId: Long? = null,
+
     val selectedSubjectId: Long? = null,
     val subjects: List<SubjectEntity> = emptyList(),
 
-    val lecturesForDay: List<LectureItem> = emptyList(),
+    val lecturesForDay: List<LectureAttendanceWithSubject> = emptyList(),
 
     val startTimeMinutes: Int? = null,
     val isStartTimeError: Boolean = false,

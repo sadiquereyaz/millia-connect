@@ -59,8 +59,6 @@ import com.mappls.sdk.plugins.places.placepicker.PlacePicker
 import com.mappls.sdk.plugins.places.placepicker.model.PlacePickerOptions
 import com.reyaz.core.common.utils.extensions.StringUtils.capitalizeWordLevel
 import com.reyaz.feature.attendance.domain.model.AddFieldDialogType
-import com.reyaz.feature.attendance.domain.model.dummyLectures
-import com.reyaz.feature.attendance.domain.model.dummyLocations
 import com.reyaz.feature.attendance.presentation.add_schedule.components.AddTextFieldDialog
 import com.reyaz.feature.attendance.presentation.add_schedule.components.AutomationSegmentButton
 import com.reyaz.feature.attendance.presentation.add_schedule.components.DaySelector
@@ -69,7 +67,6 @@ import com.reyaz.feature.attendance.presentation.add_schedule.components.Subject
 import com.reyaz.feature.attendance.presentation.add_schedule.components.TimeSelector
 import com.reyaz.feature.attendance.presentation.add_schedule.components.UpdateScreenLectureCard
 import com.reyaz.feature.attendance.utils.TimeUtils.getDayName
-import com.reyaz.feature.attendance.utils.toDetailedString
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
@@ -91,8 +88,10 @@ fun UpdateScheduleScreen(
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val fineLocationGranted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseLocationGranted = permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        val fineLocationGranted =
+            permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted =
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
         if (fineLocationGranted || coarseLocationGranted) {
             Timber.d("Location permission granted")
@@ -111,7 +110,7 @@ fun UpdateScheduleScreen(
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val place = PlacePicker.getPlace(result.data!!)
-                    viewModel.onLocationPicked(place?.lat, place?.lng)
+                viewModel.onLocationPicked(place?.lat, place?.lng)
                 // update location coordinates in viewmodel/uiState and save in location table
 //                Timber.d(place?.toDetailedString() ?: "Place is null")
                 showAddLocationNameDialog = if (place?.poi.isNullOrBlank()) {
@@ -124,14 +123,15 @@ fun UpdateScheduleScreen(
             }
         }
 
-    LaunchedEffect(uiState.errorMessage) {
-        uiState.errorMessage?.let { message ->
+    LaunchedEffect(uiState.errorMessage, uiState.successMessage) {
+        val msg = uiState.errorMessage ?: uiState.successMessage
+        msg?.let { message ->
             snackbarHostState.showSnackbar(
                 message = message,
                 withDismissAction = true,
                 duration = SnackbarDuration.Long
             )
-            viewModel.clearError()
+            viewModel.clearUiMessages()
         }
     }
 
@@ -167,7 +167,7 @@ fun UpdateScheduleScreen(
 
     LaunchedEffect(uiState.conflictLecId) {
         val index = uiState.lecturesForDay
-            .indexOfFirst { it.id == uiState.conflictLecId }
+            .indexOfFirst { it.lecture.lectureId == uiState.conflictLecId }
 
         if (index != -1) {
             listState.animateScrollToItem(header + index)
@@ -191,7 +191,7 @@ fun UpdateScheduleScreen(
                 uiState.selectedDayOfWeek?.let {
                     DaySelector(
                         selectedDay = it,
-                        onDaySelected = { viewModel.loadLecturesForSelectedDay(it) }
+                        onDaySelected = { viewModel.onDaySelect(it) }
                     )
                 }
                 Spacer(Modifier.height(20.dp))
@@ -322,15 +322,18 @@ fun UpdateScheduleScreen(
 
             // lecture list
             items(
-                key = { it.id },
+                key = { it.lecture.lectureId },
                 items = uiState.lecturesForDay
-            ) { lecture ->
+            ) { lecSlot ->
                 UpdateScreenLectureCard(
-                    lecture = lecture,
-                    onDelete = {
-                        //viewModel.deleteLectureSlot(lecture)
+                    lecSlot = lecSlot,
+                    onUpdate = {
+                        viewModel.onEditLectureSlot(lecSlot)
                     },
-                    isInConflict = lecture.id == uiState.conflictLecId
+                    onDelete = {
+                        viewModel.deleteLectureSlot(lecSlot.lecture.lectureId)
+                    },
+                    isInConflict = lecSlot.lecture.lectureId == uiState.conflictLecId
                 )
                 Spacer(Modifier.height(16.dp))
             }
