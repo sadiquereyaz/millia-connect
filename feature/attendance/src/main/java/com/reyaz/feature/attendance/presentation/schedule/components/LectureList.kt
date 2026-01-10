@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -39,14 +40,14 @@ import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 @Composable
 fun LectureList(
     lectures: List<LectureAttendanceWithSubject>,
-    onAttendanceTypeSelected: (Long, AttendanceStatus) -> Unit,
-    modifier: Modifier = Modifier.Companion,
+    onAttendanceTypeSelected: (Long?, Long, AttendanceStatus) -> Unit,
+    modifier: Modifier = Modifier,
     onAddSchedule: () -> Unit,
 ) {
     if (lectures.isEmpty()) {
         Box(
             modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Companion.Center
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = modifier
@@ -56,21 +57,21 @@ fun LectureList(
                         onAddSchedule()
                     },
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Companion.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
                     Icons.Default.Add,
                     "add schedule",
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .size(68.dp)
                         .border(1.dp, color = MaterialTheme.colorScheme.onSurface, CircleShape),
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
-                Spacer(Modifier.Companion.height(16.dp))
+                Spacer(Modifier.height(16.dp))
                 Text(
-                    modifier = Modifier.Companion,
+                    modifier = Modifier,
                     text = "No Schedule found for this day,\nClick to add.",
-                    textAlign = TextAlign.Companion.Center,
+                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -89,19 +90,21 @@ fun LectureList(
         Box(modifier = modifier.fillMaxSize()) {
             LazyColumn(
                 state = listState,
-                modifier = Modifier.Companion.padding(16.dp, 8.dp)
+                modifier = Modifier.padding(16.dp, 8.dp)
             ) {
                 items(
-                    count = lectures.size,
-                    key = { index -> lectures[index].lecture.lectureId }
-                ) { index ->
+                    items = lectures,
+                    key = { it.lecture.lectureId }      // todo: lecture id is not changing when attendance is updated
+                ) { lecSlot ->
                     LectureItemComponents(
-                        lectureData = lectures[index],
-                        onAttendanceTypeSelected = onAttendanceTypeSelected
+                        lectureData = lecSlot,
+                        onAttendanceTypeSelected = { status->
+                            onAttendanceTypeSelected(lecSlot.attendance?.attendanceId, lecSlot.lecture.lectureId, status)
+                        }
                     )
                 }
                 item {
-                    Spacer(Modifier.Companion.height(ButtonDefaults.MinHeight + 32.dp))
+                    Spacer(Modifier.height(ButtonDefaults.MinHeight + 32.dp))
                 }
             }
 
@@ -109,20 +112,20 @@ fun LectureList(
             if (isLastItemVisible) {
                 SmallFloatingActionButton(
                     onClick = onAddSchedule,
-                    modifier = Modifier.Companion
-                        .align(Alignment.Companion.BottomEnd)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
                         .padding(16.dp),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
                     Row(
-                        verticalAlignment = Alignment.Companion.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.Companion.padding(16.dp, 16.dp)
+                        modifier = Modifier.padding(16.dp, 16.dp)
                     ) {
                         Text(
                             text = "Edit/Modify",
-                            fontWeight = FontWeight.Companion.SemiBold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp
                         )
                         Icon(

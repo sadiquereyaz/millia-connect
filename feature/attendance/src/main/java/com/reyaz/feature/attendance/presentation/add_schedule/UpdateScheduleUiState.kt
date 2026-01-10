@@ -4,11 +4,12 @@ import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubjec
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
 import com.reyaz.feature.attendance.domain.model.LectureItem
 import com.reyaz.feature.attendance.domain.model.LocationModel
+import com.reyaz.feature.attendance.utils.TimeUtils
 import kotlinx.datetime.DayOfWeek
 
 data class UpdateScheduleUiState(
 
-    val selectedDayOfWeek: DayOfWeek? = null,
+    val selectedDayOfWeek: DayOfWeek = TimeUtils.currentDayOfWeek(),
 
     val selectedLectureId: Long? = null,
 
@@ -23,9 +24,8 @@ data class UpdateScheduleUiState(
     val endTimeMinutes: Int? = null,
     val isEndTimeError: Boolean = false,
 
-    val automationSegSelectedIndex: Int? = null,
+    val automationSegSelectedIndex: Int = 0,
     val isLocationPermissionGranted: Boolean = false,
-    val currentLocationCoordinates: String? = null,
     val selectedLocationId: Long? = null,
     val pickedLocationCoordinates: Pair<Double, Double>? = null,
     val locationList: List<LocationModel> = emptyList(),
@@ -34,8 +34,6 @@ data class UpdateScheduleUiState(
     val errorMessage: String? = null,
     val successMessage: String? = null,
     val conflictLecId: Long? = null,
-    val shouldNavigateBack: Boolean = false,
-//    val locationList: List<LocationModel> = emptyList(),
 ) {
     val selectedSubject: SubjectEntity?
         get() = subjects.firstOrNull { it.subjectId == selectedSubjectId }
@@ -56,12 +54,9 @@ data class UpdateScheduleUiState(
         !isLocationRequired || selectedLocationId != null
 
     val isSaveEnabled: Boolean =
-        selectedDayOfWeek != null &&
                 selectedSubject != null &&
                 hasValidTimeRange &&
                 hasValidLocation &&
                 conflictLecId == null &&
-                automationSegSelectedIndex != null &&
-                (automationSegSelectedIndex == 1 || selectedLocationId != null) &&      // if automation is selected is "No", then locationId is not needed
                 !isLoading
 }

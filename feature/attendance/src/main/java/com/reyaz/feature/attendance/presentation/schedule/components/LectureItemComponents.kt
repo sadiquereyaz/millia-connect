@@ -35,15 +35,15 @@ import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.SingleLineText
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
-import com.reyaz.feature.attendance.utils.TimeUtils.minutesToTimeString
+import com.reyaz.feature.attendance.utils.TimeUtils
 import com.reyaz.feature.attendance.utils.toPresentType
 import kotlin.random.Random
 
 @Composable
 fun LectureItemComponents(
     lectureData: LectureAttendanceWithSubject,
-    onAttendanceTypeSelected: (Long, AttendanceStatus) -> Unit,
-    modifier: Modifier = Modifier.Companion,
+    onAttendanceTypeSelected: (AttendanceStatus) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val attendancePerColor =
         if (Random.Default.nextBoolean()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
@@ -58,11 +58,11 @@ fun LectureItemComponents(
 
     // Convert AttendanceStatus to PresentType
     val selectedAttendanceType =
-        lectureData.attendance?.status?.toPresentType() ?: AttendanceStatus.NOT_COUNTED
+        lectureData?.attendance?.status?.toPresentType() ?: AttendanceStatus.NOT_COUNTED
 
     // Convert minutes to time string
-    val startTime = minutesToTimeString(lectureData.lecture.startTimeMinutes)
-    val endTime = minutesToTimeString(lectureData.lecture.endTimeMinutes)
+    val startTime = TimeUtils.formatMinutesTo12Hour(lectureData?.lecture?.startTimeMinutes ?: 0)
+    val endTime = TimeUtils.formatMinutesTo12Hour(lectureData?.lecture?.endTimeMinutes ?: 0)
 
     Row(
         modifier = modifier
@@ -72,22 +72,22 @@ fun LectureItemComponents(
         // times
         Text(
             text = "$startTime\n-\n$endTime",
-            textAlign = TextAlign.Companion.Center,
+            textAlign = TextAlign.Center,
             fontSize = 12.sp,
             lineHeight = 12.sp,
-            modifier = Modifier.Companion
+            modifier = Modifier
 //                .background(Color.Red)
                 .width(60.dp)
         )
 
         // line left space
-        Spacer(Modifier.Companion.width(4.dp))
+        Spacer(Modifier.width(4.dp))
 
         Column(
-            horizontalAlignment = Alignment.Companion.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .clip(CircleShape)
                     .size(6.dp)
                     .background(MaterialTheme.colorScheme.onBackground)
@@ -95,7 +95,7 @@ fun LectureItemComponents(
 
             // vertical line
             Box(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .fillMaxHeight()
                     .width(0.6.dp)
                     .background(MaterialTheme.colorScheme.onBackground)
@@ -103,17 +103,17 @@ fun LectureItemComponents(
 
         }
         // line right space
-        Spacer(Modifier.Companion.width(8.dp))
+        Spacer(Modifier.width(8.dp))
 
         // subject info box
         Box(
-            Modifier.Companion.padding(
+            Modifier.padding(
                 bottom = 16.dp
             )
 
         ) {
             Column(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         width = 0.5.dp,
@@ -123,46 +123,48 @@ fun LectureItemComponents(
                     .padding(10.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.Companion.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     // attendance percent circle
                     Box(
-                        modifier = Modifier.Companion
+                        modifier = Modifier
                             .clip(CircleShape)
                             .size(48.dp)
                             .background(attendancePerColor.copy(alpha = 0.25f)),
-                        contentAlignment = Alignment.Companion.Center,
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "64%",
-                            fontWeight = FontWeight.Companion.Bold,
+                            fontWeight = FontWeight.Bold,
                             color = attendancePerColor
                         )
                     }
 
 //                        Spacer(Modifier.weight(1f))
-                    Spacer(Modifier.Companion.width(4.dp))
+                    Spacer(Modifier.width(4.dp))
 
                     Column(
-                        Modifier.Companion.padding(horizontal = 8.dp)
+                        Modifier.padding(horizontal = 8.dp)
                     ) {
-                        SingleLineText(
-                            text = lectureData.subject.name,
-                            fontSize = 18.sp
-                        )
+                        lectureData?.subject?.name?.let {
+                            SingleLineText(
+                                text = it,
+                                fontSize = 18.sp
+                            )
+                        }
                         // location
                         locationName?.let {
 //                            Spacer(Modifier.height(4.dp))
                             Row(
-                                verticalAlignment = Alignment.Companion.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    modifier = Modifier.Companion.size(12.dp),
+                                    modifier = Modifier.size(12.dp),
                                     imageVector = Icons.Default.LocationOn,
                                     contentDescription = "task icon",
                                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                                 )
-                                Spacer(Modifier.Companion.width(4.dp))
+                                Spacer(Modifier.width(4.dp))
                                 SingleLineText(
                                     text = it,
                                     fontSize = 12.sp,
@@ -173,25 +175,25 @@ fun LectureItemComponents(
 //                        Spacer(Modifier.height(4.dp))
                         // warning
                         Row(
-                            verticalAlignment = Alignment.Companion.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                modifier = Modifier.Companion.size(12.dp),
+                                modifier = Modifier.size(12.dp),
                                 imageVector = Icons.Default.ModeStandby,
                                 contentDescription = "task icon",
                                 tint = warningColor,
                             )
-                            Spacer(Modifier.Companion.width(2.dp))
+                            Spacer(Modifier.width(2.dp))
                             SingleLineText(
                                 text = "You can miss this lecture",
                                 color = warningColor,
                                 fontSize = 12.sp,
                                 lineHeight = 12.sp,
-                                modifier = Modifier.Companion.padding(start = 4.dp)
+                                modifier = Modifier.padding(start = 4.dp)
                             )
                         }
                     }
-                    Spacer(Modifier.Companion.weight(1f))
+                    Spacer(Modifier.weight(1f))
                     /*Icon(
                         modifier = Modifier.size(20.dp),
                         imageVector = Icons.Default.Notifications,
@@ -200,11 +202,11 @@ fun LectureItemComponents(
 
                 }
 
-                Spacer(Modifier.Companion.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
                 // task
                 Row(
-                    verticalAlignment = Alignment.Companion.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     /*Icon(
                         modifier = Modifier.size(16.dp),
@@ -218,24 +220,21 @@ fun LectureItemComponents(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )*/
-                    Spacer(Modifier.Companion.weight(1f))
+                    Spacer(Modifier.weight(1f))
                     // atttemdance types
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.Companion.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         AttendanceStatus.entries.forEach { type ->
                             Box(
-                                modifier = Modifier.Companion
+                                modifier = Modifier
                                     .clip(
                                         shape = CircleShape
 //                                            shape = RoundedCornerShape(50)
                                     )
                                     .clickable {
-                                        onAttendanceTypeSelected(
-                                            lectureData.lecture.lectureId,
-                                            type
-                                        )
+                                        onAttendanceTypeSelected(type)
                                     }
                                     .border(
                                         width = 1.dp,
@@ -244,15 +243,15 @@ fun LectureItemComponents(
                                     )
                                     .then(
                                         if (type == selectedAttendanceType) {
-                                            Modifier.Companion
+                                            Modifier
                                                 .height(24.dp)
                                                 .background(type.getColor(isDarkMode))
                                                 .padding(horizontal = 8.dp)
                                         } else {
-                                            Modifier.Companion.size(24.dp)
+                                            Modifier.size(24.dp)
                                         }
                                     ),
-                                contentAlignment = Alignment.Companion.Center,
+                                contentAlignment = Alignment.Center,
                             ) {
                                 SingleLineText(
                                     text = type.getDisplayText(selectedAttendanceType != type),
@@ -264,7 +263,7 @@ fun LectureItemComponents(
                         }
                     }
                 }
-                Spacer(Modifier.Companion.height(4.dp))
+                Spacer(Modifier.height(4.dp))
             }
         }
     }

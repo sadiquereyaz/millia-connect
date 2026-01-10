@@ -29,11 +29,11 @@ import androidx.room.PrimaryKey
 )
 data class LectureSlotEntity(
     @PrimaryKey(autoGenerate = true)
-    val lectureId: Long = 0L,
+    val lectureId: Long = 0L,           // todo: ensure that deleting lecture doesn't mean deleting all its related data. explore cascading
 
     val subjectId: Long,
     
-    val locationId: Long,
+    val locationId: Long?,
 
     // 1 = Monday … 7 = Sunday
     val dayOfWeek: Int,

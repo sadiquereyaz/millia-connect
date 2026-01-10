@@ -3,8 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     // Add the Mappls services Gradle plugin
     id("com.mappls.services.android")
+
 }
 
 android {
@@ -122,6 +124,7 @@ dependencies {
     // koin-Jetpack WorkManager
     implementation(libs.koin.androidx.workmanager)
 
+implementation(libs.firebase.crashlytics)
     // splash
     implementation(libs.androidx.core.splashscreen)
 

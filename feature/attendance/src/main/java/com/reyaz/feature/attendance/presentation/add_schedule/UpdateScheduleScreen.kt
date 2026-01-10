@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -52,12 +51,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mappls.sdk.maps.geometry.LatLng
 import com.mappls.sdk.maps.geometry.LatLngBounds
 import com.mappls.sdk.plugins.places.placepicker.PlacePicker
 import com.mappls.sdk.plugins.places.placepicker.model.PlacePickerOptions
-import com.reyaz.core.common.utils.extensions.StringUtils.capitalizeWordLevel
+import com.reyaz.core.ui.components.TopLinearLoader
 import com.reyaz.feature.attendance.domain.model.AddFieldDialogType
 import com.reyaz.feature.attendance.presentation.add_schedule.components.AddTextFieldDialog
 import com.reyaz.feature.attendance.presentation.add_schedule.components.AutomationSegmentButton
@@ -66,15 +66,14 @@ import com.reyaz.feature.attendance.presentation.add_schedule.components.Locatio
 import com.reyaz.feature.attendance.presentation.add_schedule.components.SubjectDropdown
 import com.reyaz.feature.attendance.presentation.add_schedule.components.TimeSelector
 import com.reyaz.feature.attendance.presentation.add_schedule.components.UpdateScreenLectureCard
-import com.reyaz.feature.attendance.utils.TimeUtils.getDayName
+import com.reyaz.feature.attendance.utils.TimeUtils.dayName
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScheduleScreen(
-    viewModel: UpdateScheduleViewModel = koinViewModel(),
-    navigateToBack: () -> Unit
+    viewModel: UpdateScheduleViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var subjectExpanded by remember { mutableStateOf(false) }
@@ -136,11 +135,6 @@ fun UpdateScheduleScreen(
         }
     }
 
-    LaunchedEffect(uiState.shouldNavigateBack) {
-        if (uiState.shouldNavigateBack)
-            navigateToBack()
-    }
-
     LaunchedEffect(uiState.automationSegSelectedIndex) {
         if (uiState.automationSegSelectedIndex == 0) {
             // Check if location permissions are already granted
@@ -194,12 +188,11 @@ fun UpdateScheduleScreen(
         ) {
             // days
             item {
-                uiState.selectedDayOfWeek?.let {
-                    DaySelector(
-                        selectedDay = it,
-                        onDaySelected = { viewModel.onDaySelect(it) }
-                    )
-                }
+                Spacer(Modifier.height(8.dp))
+                DaySelector(
+                    selectedDay = uiState.selectedDayOfWeek,
+                    onDaySelected = { viewModel.onDaySelect(it) }
+                )
                 Spacer(Modifier.height(20.dp))
             }
 
@@ -313,16 +306,18 @@ fun UpdateScheduleScreen(
                     Spacer(Modifier.height(24.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(24.dp))
-                    Text(
-                        text = "Lectures on ${getDayName(uiState.selectedDayOfWeek)}:",
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    )
-                    Spacer(Modifier.height(12.dp))
+                    uiState.selectedDayOfWeek?.let {
+                        Text(
+                            text = "Lectures on ${dayName(it)}:",
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                    }
                 }
             }
 
@@ -352,6 +347,9 @@ fun UpdateScheduleScreen(
                 )
             }
         }
+
+        // loading bar
+        TopLinearLoader(isLoading = uiState.isLoading)
 
         // save button
         Surface(

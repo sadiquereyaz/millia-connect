@@ -45,6 +45,12 @@ dependencies {
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)        // todo: check how dependency is implemente when multimodule project is on
+    // crashlytics
+    implementation(libs.firebase.crashlytics)
+
+    // timber
+    implementation(libs.timber)
+
     // koin
     implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.core)

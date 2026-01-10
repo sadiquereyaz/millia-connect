@@ -31,8 +31,8 @@ interface LectureSlotDao {
     """)
     fun observeLecturesForSubject(subjectId: Long): Flow<List<LectureSlotEntity>>
 
-    @Delete
-    suspend fun deleteLectureSlot(slot: LectureSlotEntity)
+    @Query("DELETE FROM lecture_slots WHERE lectureId = :lectureId")
+    suspend fun deleteLectureSlot(lectureId: Long)
 
     @Query("DELETE FROM lecture_slots WHERE subjectId = :subjectId")
     suspend fun deleteLecturesForSubject(subjectId: Long)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
+import timber.log.Timber
 
 class ScheduleViewModel(
     private val scheduleRepository: ScheduleRepository
@@ -32,7 +34,7 @@ class ScheduleViewModel(
             )
         }
         // Load lectures for today by default
-        loadLecturesForDate(_uiState.value.todayDate)
+        loadLecturesForDate(_uiState.value.selectedDate)
     }
 
     fun onDateSelected(selectedDate: LocalDate) {
@@ -46,6 +48,7 @@ class ScheduleViewModel(
         }
     }
 
+    // todo: when this method is called again after init, does the previous subscription get cancelled? or there is the possibility of memory leak
     private fun loadLecturesForDate(date: LocalDate) {
         scheduleRepository.observeLecturesForDate(date)
             .onEach { lectures ->
@@ -56,19 +59,37 @@ class ScheduleViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun onAttendanceSelected(lectureId: Long, type: AttendanceStatus) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    lectures = it.lectures.map { lectureItem ->
-                        val id = lectureItem.lecture.lectureId
-                        if (id == lectureId) {
-                            lectureItem.attendance?.status = type
-                        } else
-                            lectureItem
-                        return@map lectureItem
-                    }
+    fun onAttendanceSelected(attendanceId: Long?, lectureId: Long, status: AttendanceStatus) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = true
+                    )
+                }
+
+                scheduleRepository.upsertLectureSlotAttendanceForDate(
+                    attendanceId = attendanceId,
+                    lectureId = lectureId,
+                    date = uiState.value.selectedDate.toEpochDays(),
+                    status = status
                 )
+
+                _uiState.update {
+                    it.copy(
+                        lectures = it.lectures.map { lectureItem ->
+                            val id = lectureItem.lecture.lectureId
+                            if (id == lectureId) {
+                                lectureItem.attendance?.status = status
+                            } else
+                                lectureItem
+                            return@map lectureItem
+                        }
+                    )
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.extensions.dottedBorder
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
-import com.reyaz.feature.attendance.utils.TimeUtils.formatMinutesToTime
+import com.reyaz.feature.attendance.utils.TimeUtils
 
 @Composable
 fun UpdateScreenLectureCard(
@@ -38,7 +38,7 @@ fun UpdateScreenLectureCard(
                 if (isInConflict) {
                     Modifier.dottedBorder(
                         color = MaterialTheme.colorScheme.error,
-                        strokeWidth = 2.dp,
+                        strokeWidth = 1.dp,
                         dashOff = 0f,
                     )
                 } else {
@@ -54,8 +54,8 @@ fun UpdateScreenLectureCard(
                 text = lecSlot.subject.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
             )
             Text(
-                "${formatMinutesToTime(lecSlot.lecture.startTimeMinutes)} - ${
-                    formatMinutesToTime(
+                "${TimeUtils.formatMinutesTo12Hour(lecSlot.lecture.startTimeMinutes)} - ${
+                    TimeUtils.formatMinutesTo12Hour(
                         lecSlot.lecture.endTimeMinutes
                     )
                 }",

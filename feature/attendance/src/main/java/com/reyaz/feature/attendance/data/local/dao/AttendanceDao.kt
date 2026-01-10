@@ -4,14 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.reyaz.feature.attendance.data.local.model.AttendanceEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AttendanceDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAttendance(attendance: AttendanceEntity)
+    @Upsert
+    suspend fun upsertAttendance(attendance: AttendanceEntity): Long
 
     @Query("""
         SELECT * FROM attendance

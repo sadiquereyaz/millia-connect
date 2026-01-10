@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reyaz.feature.attendance.presentation.schedule.components.HorizontalCalendar
 import com.reyaz.feature.attendance.presentation.schedule.components.LectureList
+import com.reyaz.feature.attendance.utils.TimeUtils
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -17,18 +18,22 @@ fun ScheduleScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column {
         HorizontalCalendar(
-            selectedDate = uiState.selectedDate ?: uiState.todayDate,
+            selectedDate = uiState.selectedDate,
             onDateSelected = {
                 viewModel.onDateSelected(it)
             },
             totalAttendancePer = uiState.overAllPer,
             targetPer = uiState.targetPer,
-            todayDate = uiState.todayDate
+            todayDate = TimeUtils.today()
         )
         LectureList(
             lectures = uiState.lectures,
-            onAttendanceTypeSelected = { lectureId, presentType ->
-                // TODO: Handle attendance type selection
+            onAttendanceTypeSelected = { attendanceId, lectureId, status ->
+                viewModel.onAttendanceSelected(
+                    attendanceId = attendanceId,
+                    lectureId = lectureId,
+                    status = status
+                )
             },
             onAddSchedule = navigateToAddSchedule
         )

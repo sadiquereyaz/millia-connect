@@ -28,8 +28,7 @@ data class AttendanceEntity(
 
     val lectureId: Long,
 
-    // Store as epochDay (LocalDate.toEpochDay())
-    val date: Long,
+    val date: Int,     // Store as epochDay (LocalDate.toEpochDay())
 
     var status: AttendanceStatus
 )

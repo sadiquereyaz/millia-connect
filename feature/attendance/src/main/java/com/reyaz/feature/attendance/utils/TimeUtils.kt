@@ -1,78 +1,95 @@
 package com.reyaz.feature.attendance.utils
 
-import com.reyaz.core.common.utils.extensions.StringUtils.toCapSmall
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import kotlinx.datetime.todayIn
+import timber.log.Timber
 import java.util.Locale
 
 object TimeUtils {
-    val currentLocalDateTime = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault())
 
-    val currentHourOfDay = currentLocalDateTime.hour
-    fun getHourInMinutesFromMidNight(): Int {
-        return currentHourOfDay * 60
+    /* -------------------- Core providers -------------------- */
+
+    private fun now(): LocalDateTime =
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+    fun today(): LocalDate =
+        Clock.System.todayIn(TimeZone.currentSystemDefault())
+
+    /* -------------------- Time calculations -------------------- */
+
+    fun currentHour(): Int = now().hour
+
+    fun currentMinute(): Int = now().minute
+
+    fun minutesFromMidnight(): Int {
+        val time = now()
+        return time.hour * 60 + time.minute
     }
 
-    val currentMinuteOfDay = currentHourOfDay * 60 + currentLocalDateTime.minute
+    fun currentDayOfWeek(): DayOfWeek =
+        now().dayOfWeek
 
-    fun getAllDaysOfWeak() = DayOfWeek.entries
+    fun allDaysOfWeek(): List<DayOfWeek> =
+        DayOfWeek.entries
 
-    fun getDayName(day: DayOfWeek?): String {
-        return day?.name?.toCapSmall() ?: "null"
-    }
+    /* -------------------- Formatting helpers -------------------- */
 
-    fun minutesToTimeString(minutes: Int): String {
-        val hour = minutes / 60
-        val minute = minutes % 60
-        val period = if (hour < 12) "am" else "pm"
-        val displayHour = when {
-            hour == 0 -> 12
-            hour > 12 -> hour - 12
-            else -> hour
+    fun formatMinutesTo12Hour(
+        minutesFromMidnight: Int,
+        uppercase: Boolean = true
+    ): String {
+        try {
+            val normalizedMinutes =
+                if (minutesFromMidnight >= 1440) 0 else minutesFromMidnight
+
+            require(normalizedMinutes in 0 until 1440) {
+                "Minutes must be between 0 and 1440"
+            }
+
+            val hour24 = normalizedMinutes / 60
+            val minute = normalizedMinutes % 60
+
+            val period = if (hour24 < 12) "AM" else "PM"
+            val hour12 = when {
+                hour24 == 0 -> 12
+                hour24 > 12 -> hour24 - 12
+                else -> hour24
+            }
+
+            val suffix = if (uppercase) period else period.lowercase(Locale.getDefault())
+
+            return String.format(
+                Locale.getDefault(),
+                "%d:%02d %s",
+                hour12,
+                minute,
+                suffix
+            )
+        } catch (e: Exception) {
+            Timber.e(e, "Error while formatting minutes to 12 hour")
+            return ""
         }
-        return String.format("%d:%02d %s", displayHour, minute, period)
     }
 
-    fun getCurrentDayOfWeek(): DayOfWeek {
-        return Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .dayOfWeek
+
+    fun amPmForHour(hour24: Int): String {
+        require(hour24 in 0..23)
+        return if (hour24 < 12) "AM" else "PM"
     }
 
-    fun minutesToAmPmString(
-        timeInMinutes: Int,
+    fun dayName(
+        dayOfWeek: DayOfWeek,
+        short: Boolean = false,
         locale: Locale = Locale.getDefault()
     ): String {
-        val hour = timeInMinutes / 60
-        val minute = timeInMinutes % 60
-
-        val calendar = Calendar.getInstance(locale).apply {
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
+        val name = dayOfWeek.name.lowercase(locale).replaceFirstChar {
+            it.titlecase(locale)
         }
-
-        val formatter = SimpleDateFormat("hh:mm a", locale)
-        return formatter.format(calendar.time)
-    }
-
-    fun getAmPmString(hour: Float): String {
-        return if (hour > 12) "pm" else "am"
-    }
-
-    fun formatMinutesToTime(minutes: Int): String {
-        val hour = minutes / 60
-        val minute = minutes % 60
-        val period = if (hour < 12) "AM" else "PM"
-        val displayHour = when {
-            hour == 0 -> 12
-            hour > 12 -> hour - 12
-            else -> hour
-        }
-        return String.format("%d:%02d %s", displayHour, minute, period)
+        return if (short) name.take(3) else name
     }
 }

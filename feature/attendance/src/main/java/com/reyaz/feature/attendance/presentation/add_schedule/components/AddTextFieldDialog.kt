@@ -61,7 +61,7 @@ fun AddTextFieldDialog(
                     val notPresent = suggestOptions.none { it.equals(fieldValue, ignoreCase = true) }
                     if (fieldValue.isNotBlank()) {
                         if (notPresent)
-                            onConfirm(fieldValue.trim().capitalizeWordLevel())
+                            onConfirm(fieldValue.capitalizeWordLevel())
                         onDismiss()
                     } else {
                         isError = true

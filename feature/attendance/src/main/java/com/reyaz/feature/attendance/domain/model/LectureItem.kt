@@ -1,6 +1,6 @@
 package com.reyaz.feature.attendance.domain.model
 
-import com.reyaz.feature.attendance.utils.TimeUtils.minutesToAmPmString
+import com.reyaz.feature.attendance.utils.TimeUtils.formatMinutesTo12Hour
 
 data class LectureItem(
     val id: Long,
@@ -12,7 +12,8 @@ data class LectureItem(
     val percentage: Int,
     val status: AttendanceStatus
 ) {
-    val timeText: String = "${minutesToAmPmString(startTimeMinute)}\n—\n${minutesToAmPmString(endTimeMinute)}"
+    // todo: remove
+    val timeText: String = "${formatMinutesTo12Hour(startTimeMinute)}\n—\n${formatMinutesTo12Hour(endTimeMinute)}"
 }
 
 val dummyLectures = listOf(

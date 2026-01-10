@@ -33,10 +33,11 @@ val attendanceModule = module {
     // Repository
     single<ScheduleRepository> {
         ScheduleRepositoryImpl(
-            scheduleDao = get(),
-            lectureSlotDao = get(),
-            subjectDao = get(),
-            locationDao = get()
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
 

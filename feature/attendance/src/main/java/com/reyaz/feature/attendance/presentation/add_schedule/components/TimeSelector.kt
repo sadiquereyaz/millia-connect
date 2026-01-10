@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.reyaz.core.ui.components.text_field.CustomCircularTextField
 import com.reyaz.core.ui.helper.debounceClickable
 import com.reyaz.feature.attendance.utils.TimeUtils
-import com.reyaz.feature.attendance.utils.TimeUtils.formatMinutesToTime
 
 @Composable
 fun TimeSelector(
@@ -46,7 +45,7 @@ fun TimeSelector(
                             val timeInMin = hour * 60 + minute
                             onTimeClick(timeInMin)
                         },
-                        timeMinutes?.div(60) ?: TimeUtils.currentHourOfDay,
+                        timeMinutes?.div(60) ?: TimeUtils.currentHour(),
                         0,
                         false
                     )
@@ -54,7 +53,7 @@ fun TimeSelector(
                 })
         ) {
             CustomCircularTextField(
-                value = timeMinutes?.let {formatMinutesToTime(it)} ?: "",
+                value = timeMinutes?.let { TimeUtils.formatMinutesTo12Hour(it)} ?: "",
                 onValueChange = {},
                 label = label,
 //                readOnly = true,

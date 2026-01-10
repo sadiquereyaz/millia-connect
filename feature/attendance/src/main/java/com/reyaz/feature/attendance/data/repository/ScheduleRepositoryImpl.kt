@@ -1,14 +1,17 @@
 package com.reyaz.feature.attendance.data.repository
 
+import com.reyaz.feature.attendance.data.local.dao.AttendanceDao
 import com.reyaz.feature.attendance.data.local.dao.LectureSlotDao
 import com.reyaz.feature.attendance.data.local.dao.LocationDao
 import com.reyaz.feature.attendance.data.local.dao.ScheduleDao
 import com.reyaz.feature.attendance.data.local.dao.SubjectDao
+import com.reyaz.feature.attendance.data.local.model.AttendanceEntity
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import com.reyaz.feature.attendance.data.local.model.LocationEntity
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
+import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.model.LocationModel
 import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import com.reyaz.feature.attendance.utils.mapper.toLocationDomain
@@ -21,7 +24,8 @@ class ScheduleRepositoryImpl(
     private val scheduleDao: ScheduleDao,
     private val lectureSlotDao: LectureSlotDao,
     private val subjectDao: SubjectDao,
-    private val locationDao: LocationDao
+    private val locationDao: LocationDao,
+    private val attendanceDao: AttendanceDao
 ) : ScheduleRepository {
 
     override fun observeLecturesForDate(date: LocalDate): Flow<List<LectureAttendanceWithSubject>> {
@@ -42,8 +46,8 @@ class ScheduleRepositoryImpl(
         return lectureSlotDao.insertLectureSlot(slot)
     }
 
-    override suspend fun deleteLectureSlot(slot: LectureSlotEntity) {
-        lectureSlotDao.deleteLectureSlot(slot)
+    override suspend fun deleteLectureSlot(lectureId: Long) {
+        lectureSlotDao.deleteLectureSlot(lectureId)
     }
 
     override suspend fun insertSubject(subject: SubjectEntity): Long {
@@ -58,5 +62,21 @@ class ScheduleRepositoryImpl(
         return locationDao.observeLocations().map { entities ->
             entities.map { it.toLocationDomain() }
         }
+    }
+
+    override suspend fun upsertLectureSlotAttendanceForDate(
+        attendanceId: Long?,
+        lectureId: Long,
+        date: Int,
+        status: AttendanceStatus
+    ): Long {
+        return attendanceDao.upsertAttendance(
+            AttendanceEntity(
+                attendanceId = attendanceId ?: 0L,
+                lectureId = lectureId,
+                date = date,
+                status = status,
+            )
+        )
     }
 }

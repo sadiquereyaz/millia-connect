@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
-import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import kotlinx.coroutines.flow.Flow
 
 @Dao
