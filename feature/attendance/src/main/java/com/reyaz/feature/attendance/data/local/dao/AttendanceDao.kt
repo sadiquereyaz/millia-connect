@@ -29,7 +29,7 @@ interface AttendanceDao {
 
     @Query("""
         DELETE FROM attendance
-        WHERE lectureId = :lectureId AND date = :epochDay
+        WHERE attendanceId = :attendanceId
     """)
-    suspend fun deleteAttendance(lectureId: Long, epochDay: Long)
+    suspend fun deleteAttendance(attendanceId: Long)
 }

@@ -19,12 +19,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.extensions.dottedBorder
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
+import com.reyaz.feature.attendance.domain.model.EditScheduleLectureModel
 import com.reyaz.feature.attendance.utils.TimeUtils
 
 @Composable
 fun UpdateScreenLectureCard(
-    lecSlot: LectureAttendanceWithSubject,
+    lecSlot: EditScheduleLectureModel,
     onUpdate: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -51,12 +51,12 @@ fun UpdateScreenLectureCard(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = lecSlot.subject.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
+                text = lecSlot.subjectName, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
             )
             Text(
-                "${TimeUtils.formatMinutesTo12Hour(lecSlot.lecture.startTimeMinutes)} - ${
+                "${TimeUtils.formatMinutesTo12Hour(lecSlot.startTimeMinute)} - ${
                     TimeUtils.formatMinutesTo12Hour(
-                        lecSlot.lecture.endTimeMinutes
+                        lecSlot.endTimeMinute
                     )
                 }",
                 fontSize = 14.sp,
