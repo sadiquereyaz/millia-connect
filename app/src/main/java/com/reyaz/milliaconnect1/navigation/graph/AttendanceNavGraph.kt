@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
 import com.reyaz.feature.attendance.presentation.map.MapScreen
+import com.reyaz.feature.attendance.presentation.records.components.LineChart
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleScreen
 import constants.NavigationRoute
 import timber.log.Timber
@@ -20,10 +21,12 @@ internal fun NavGraphBuilder.attendanceNavGraph(
 
     // Schedule Screen
     composable(route = NavigationRoute.Schedule.route) {
-        ScheduleScreen(
+        /*ScheduleScreen(
             navigateToAddSchedule = {
                 navController.navigate(NavigationRoute.AddSchedule.route)
             }
+        )*/
+        LineChart(
         )
     }
 
