@@ -32,4 +32,23 @@ object StringUtils {
             ""
         }
     }
+
+    fun String.getShortForm(maxLength: Int = Int.MAX_VALUE): String {
+        val trimmed = trim()
+        if (trimmed.isEmpty()) return this
+
+        val parts = trimmed.split(Regex("\\s+"))
+
+        return if (parts.size == 1) {
+            // single word → first 4 characters
+            parts[0]
+                .take(maxLength)
+                .uppercase(Locale.getDefault())
+        } else {
+            // multiple words → initials
+            parts.joinToString("") {
+                it.first().uppercase(Locale.getDefault())
+            }.take(maxLength)
+        }
+    }
 }

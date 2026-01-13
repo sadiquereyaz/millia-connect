@@ -5,9 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
+import com.reyaz.feature.attendance.presentation.graph.components.LineChart
 import com.reyaz.feature.attendance.presentation.map.MapScreen
-import com.reyaz.feature.attendance.presentation.records.components.LineChart
-import com.reyaz.feature.attendance.presentation.schedule.ScheduleScreen
 import constants.NavigationRoute
 import timber.log.Timber
 
