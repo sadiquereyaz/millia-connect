@@ -1,13 +1,15 @@
 package com.reyaz.milliaconnect1.navigation.graph
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
+import com.reyaz.feature.attendance.presentation.graph.components.DonutChart
 import com.reyaz.feature.attendance.presentation.graph.components.MultiLineChart
 import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
+import com.reyaz.feature.attendance.presentation.graph.model.sampleDonutChartData
 import com.reyaz.feature.attendance.presentation.map.MapScreen
 import constants.NavigationRoute
 import timber.log.Timber
@@ -27,9 +29,19 @@ internal fun NavGraphBuilder.attendanceNavGraph(
                 navController.navigate(NavigationRoute.AddSchedule.route)
             }
         )*/
-            MultiLineChart(
-                graphData = dummyGraphData1
-            )
+        LazyColumn() {
+            item {
+                MultiLineChart(
+                    graphData = dummyGraphData1
+                )
+            }
+
+            item {
+                DonutChart(
+                    data = sampleDonutChartData
+                )
+            }
+        }
     }
 
     // Add/Update Schedule Screen
@@ -42,7 +54,7 @@ internal fun NavGraphBuilder.attendanceNavGraph(
         MapScreen(
             onConfirm = { lat, lng ->
                 Timber.d("lat: $lat, lng: $lng")
-                 navController.previousBackStackEntry?.savedStateHandle?.set("lat", lat)
+                navController.previousBackStackEntry?.savedStateHandle?.set("lat", lat)
             }
         )
     }

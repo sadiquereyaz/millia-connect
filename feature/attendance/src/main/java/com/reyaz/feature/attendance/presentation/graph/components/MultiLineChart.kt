@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.core.graphics.withRotation
 import com.reyaz.core.common.utils.extensions.StringUtils.getShortForm
 import com.reyaz.feature.attendance.presentation.graph.model.GraphData
 import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
+import com.reyaz.feature.attendance.presentation.graph.utils.ColorUtils
 import com.reyaz.feature.attendance.presentation.graph.utils.buildSmoothPath
 
 @Composable
@@ -34,6 +36,7 @@ fun MultiLineChart(
     modifier: Modifier = Modifier,
     graphData: GraphData,
 ) {
+    val isSystemInDarkMode: Boolean = isSystemInDarkTheme()
     val outline = MaterialTheme.colorScheme.outline
     val onSurface = MaterialTheme.colorScheme.onSurface
     val error = MaterialTheme.colorScheme.error
@@ -119,13 +122,15 @@ fun MultiLineChart(
                 }
 
                 // ---------- DRAW LINES (one per month) ----------
-                dummyGraphData1.lineData.forEach {
-                    val points = it.percentages.mapIndexed { index, percentage ->
+                dummyGraphData1.lineData.forEachIndexed { lineIndex, lineData ->
+                    val points = lineData.percentages.mapIndexed { index, percentage ->
                         val p = pointFor(index, percentage)
 
                         // draw dot
                         drawCircle(
-                            color = it.lineColor, radius = 6f, center = p
+                            color = ColorUtils.getColor(isSystemInDarkMode, lineIndex),
+                            radius = 6f,
+                            center = p
                         )
 
                         // percent line label   (Todo: make it visible only when user clicks
@@ -137,10 +142,10 @@ fun MultiLineChart(
                             })
 
                         // month name
-                        if (index == it.percentages.lastIndex) {
+                        if (index == lineData.percentages.lastIndex) {
                             drawContext.canvas.nativeCanvas.drawText(
 //                            month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
-                                it.month, p.x + 30f, p.y + 8f, Paint().apply {
+                                lineData.month, p.x + 30f, p.y + 8f, Paint().apply {
                                     textAlign = Paint.Align.LEFT
                                     textSize = 22f
                                     color = onSurface.toArgb()
@@ -153,7 +158,9 @@ fun MultiLineChart(
                     val smoothPath = buildSmoothPath(points)
 
                     drawPath(
-                        path = smoothPath, color = it.lineColor, style = Stroke(
+                        path = smoothPath,
+                        color = ColorUtils.getColor(isSystemInDarkMode, lineIndex),
+                        style = Stroke(
                             width = 4f, cap = StrokeCap.Round, join = StrokeJoin.Round
                         )
                     )
