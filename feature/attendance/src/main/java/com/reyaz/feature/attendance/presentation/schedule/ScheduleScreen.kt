@@ -12,8 +12,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ScheduleScreen(
     viewModel: ScheduleViewModel = koinViewModel(),
-    navigateToAddSchedule: () -> Unit
-
+    navigateToAttendanceSummary: () -> Unit,
+    navigateToAddSchedule: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     Column {
@@ -22,6 +22,7 @@ fun ScheduleScreen(
             onDateSelected = {
                 viewModel.onDateSelected(it)
             },
+            onAttendanceSummary = navigateToAttendanceSummary,
             totalAttendancePer = uiState.overAllPer,
             targetPer = uiState.targetPer,
             todayDate = TimeUtils.today()

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.common.utils.extensions.StringUtils.toCapSmall
 import com.reyaz.core.ui.extensions.calculateHorizontalItemDimensions
+import com.reyaz.core.ui.helper.debounceClickable
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel.Companion.CENTER_INDEX
 import kotlinx.datetime.DateTimeUnit
@@ -36,6 +37,7 @@ import kotlinx.datetime.plus
 fun HorizontalCalendar(
     modifier: Modifier = Modifier,
     selectedDate: LocalDate,
+    onAttendanceSummary: () -> Unit,
     onDateSelected: (LocalDate) -> Unit,
     totalAttendancePer: Int?,
     targetPer: Int?,
@@ -73,6 +75,7 @@ fun HorizontalCalendar(
                     totalAttendancePer?.let {
                         Box(
                             modifier = Modifier
+                                .debounceClickable { onAttendanceSummary() }
                                 .border(
                                     shape = RoundedCornerShape(24),
                                     border = BorderStroke(

@@ -1,8 +1,5 @@
 package com.reyaz.feature.attendance.presentation.graph.model
 
-import androidx.compose.ui.graphics.Color
-import com.reyaz.feature.attendance.presentation.graph.utils.ColorUtils
-
 data class GraphData(
     val subjects: List<String>,            // x-axis
     val lineData: List<LineData>,          // y
@@ -14,7 +11,6 @@ data class GraphData(
 
 data class LineData(
     val month: String,
-    val lineColor: Color = ColorUtils.readableColor(true),
     val percentages: List<Float>,
 )
 
