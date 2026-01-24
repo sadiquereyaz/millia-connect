@@ -1,11 +1,13 @@
 package com.reyaz.milliaconnect1.navigation.graph
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
-import com.reyaz.feature.attendance.presentation.graph.components.LineChart
+import com.reyaz.feature.attendance.presentation.graph.components.MultiLineChart
+import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
 import com.reyaz.feature.attendance.presentation.map.MapScreen
 import constants.NavigationRoute
 import timber.log.Timber
@@ -25,8 +27,9 @@ internal fun NavGraphBuilder.attendanceNavGraph(
                 navController.navigate(NavigationRoute.AddSchedule.route)
             }
         )*/
-        LineChart(
-        )
+            MultiLineChart(
+                graphData = dummyGraphData1
+            )
     }
 
     // Add/Update Schedule Screen
