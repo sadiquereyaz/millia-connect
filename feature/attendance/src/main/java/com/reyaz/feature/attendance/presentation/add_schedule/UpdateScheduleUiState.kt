@@ -1,8 +1,7 @@
 package com.reyaz.feature.attendance.presentation.add_schedule
 
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
-import com.reyaz.feature.attendance.domain.model.LectureItem
+import com.reyaz.feature.attendance.domain.model.EditScheduleLectureModel
 import com.reyaz.feature.attendance.domain.model.LocationModel
 import com.reyaz.feature.attendance.utils.TimeUtils
 import kotlinx.datetime.DayOfWeek
@@ -16,7 +15,7 @@ data class UpdateScheduleUiState(
     val selectedSubjectId: Long? = null,
     val subjects: List<SubjectEntity> = emptyList(),
 
-    val lecturesForDay: List<LectureAttendanceWithSubject> = emptyList(),
+    val lecturesForDay: List<EditScheduleLectureModel> = emptyList(),
 
     val startTimeMinutes: Int? = null,
     val isStartTimeError: Boolean = false,
@@ -34,6 +33,8 @@ data class UpdateScheduleUiState(
     val errorMessage: String? = null,
     val successMessage: String? = null,
     val conflictLecId: Long? = null,
+
+    val attendancePercentageTarget: Int = 75,
 ) {
     val selectedSubject: SubjectEntity?
         get() = subjects.firstOrNull { it.subjectId == selectedSubjectId }

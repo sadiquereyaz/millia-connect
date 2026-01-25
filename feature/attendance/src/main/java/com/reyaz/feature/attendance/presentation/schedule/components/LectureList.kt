@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
@@ -34,17 +33,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.extensions.dottedBorder
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
+import com.reyaz.feature.attendance.domain.model.ScheduleLectureUiModel
 
 @Composable
 fun LectureList(
-    lectures: List<LectureAttendanceWithSubject>,
+    lectures: List<ScheduleLectureUiModel>,
     onAttendanceTypeSelected: (Long?, Long, AttendanceStatus) -> Unit,
     modifier: Modifier = Modifier,
-    onAddSchedule: () -> Unit,
+    navigateToAddSchedule: () -> Unit,
+    isLoading: Boolean
 ) {
-    if (lectures.isEmpty()) {
+    if (lectures.isEmpty() && !isLoading) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -54,7 +54,7 @@ fun LectureList(
                     .fillMaxSize(0.8f)
                     .dottedBorder()
                     .clickable {
-                        onAddSchedule()
+                        navigateToAddSchedule()
                     },
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,8 +82,8 @@ fun LectureList(
         // Check if the last item is visible
         val isLastItemVisible by remember {
             derivedStateOf {
-                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                lastVisibleItemIndex != null && lastVisibleItemIndex >= lectures.size - 1
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastIndex
+                lastVisibleItemIndex > lectures.size
             }
         }
 
@@ -94,24 +94,27 @@ fun LectureList(
             ) {
                 items(
                     items = lectures,
-                    key = { it.lecture.lectureId }      // todo: lecture id is not changing when attendance is updated
+                    key = { it.lectureId }      // todo: check lecture id is not changing when attendance is updated
                 ) { lecSlot ->
                     LectureItemComponents(
                         lectureData = lecSlot,
                         onAttendanceTypeSelected = { status->
-                            onAttendanceTypeSelected(lecSlot.attendance?.attendanceId, lecSlot.lecture.lectureId, status)
-                        }
+                            onAttendanceTypeSelected(lecSlot.attendanceId, lecSlot.lectureId, status)
+                        },
+                        isLastItem = lectures.last() == lecSlot
                     )
                 }
-                item {
-                    Spacer(Modifier.height(ButtonDefaults.MinHeight + 32.dp))
+                items(
+                    2
+                ){
+                    Spacer(Modifier.height(32.dp))
                 }
             }
 
             // Show FAB when last item is visible
             if (isLastItemVisible) {
                 SmallFloatingActionButton(
-                    onClick = onAddSchedule,
+                    onClick = navigateToAddSchedule,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(16.dp),

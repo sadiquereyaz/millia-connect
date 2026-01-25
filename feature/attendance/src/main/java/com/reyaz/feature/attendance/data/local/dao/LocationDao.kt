@@ -5,25 +5,22 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.reyaz.feature.attendance.data.local.model.LocationEntity
-import com.reyaz.feature.attendance.data.local.model.SubjectEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocationDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocation(location: LocationEntity): Long
+    @Delete
+    suspend fun deleteLocation(location: LocationEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocations(locations: List<LocationEntity>)
+    @Query("DELETE FROM location WHERE locationId = :locationId")
+    suspend fun deleteLocation(locationId: Long)
 
     @Query("SELECT * FROM location ORDER BY locationName ASC")
     fun observeLocations(): Flow<List<LocationEntity>>
 
-    @Query("SELECT * FROM location WHERE locationId = :id")
-    suspend fun getLocationById(id: Long): LocationEntity?
-
-    @Delete
-    suspend fun deleteLocation(location: LocationEntity)
+    @Upsert
+    suspend fun upsertLocation(location: LocationEntity): Long
 }

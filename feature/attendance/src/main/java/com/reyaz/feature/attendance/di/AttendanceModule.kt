@@ -2,9 +2,14 @@ package com.reyaz.feature.attendance.di
 
 import androidx.room.Room
 import com.reyaz.feature.attendance.data.local.AttendanceDatabase
-import com.reyaz.feature.attendance.data.repository.ScheduleRepositoryImpl
+import com.reyaz.feature.attendance.data.repository.AttendanceRepositoryImpl
+import com.reyaz.feature.attendance.data.repository.LectureRepositoryImpl
+import com.reyaz.feature.attendance.data.repository.LocationRepositoryImpl
+import com.reyaz.feature.attendance.domain.repo.AttendanceRepository
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
+import com.reyaz.feature.attendance.domain.repo.LectureRepository
+import com.reyaz.feature.attendance.domain.repo.LocationRepository
 import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import com.reyaz.feature.attendance.domain.usecase.GetAttendanceGraphUseCase
 import com.reyaz.feature.attendance.presentation.records.RecordsViewModel
@@ -27,20 +32,18 @@ val attendanceModule = module {
     // DAOs
     single { get<AttendanceDatabase>().subjectDao() }
     single { get<AttendanceDatabase>().locationDao() }
-    single { get<AttendanceDatabase>().lectureSlotDao() }
-    single { get<AttendanceDatabase>().attendanceDao() }
     single { get<AttendanceDatabase>().scheduleDao() }
-    single { get<AttendanceDatabase>().attendanceSummaryDao() }
+    single { get<AttendanceDatabase>().attendanceDao() }
 
     // Repository
-    single<ScheduleRepository> {
-        ScheduleRepositoryImpl(
-            get(),
-            get(),
-            get(),
-            get(),
-            get()
-        )
+    single<LectureRepository> {
+        LectureRepositoryImpl(get(), get())
+    }
+    single<AttendanceRepository> {
+        AttendanceRepositoryImpl(get(), get())
+    }
+    single<LocationRepository> {
+        LocationRepositoryImpl(get())
     }
 
     // usecase
@@ -48,10 +51,10 @@ val attendanceModule = module {
 
     // ViewModels
     viewModel {
-        ScheduleViewModel(get())
+        ScheduleViewModel(get(), get())
     }
     viewModel {
-        UpdateScheduleViewModel(get(), get())
+        UpdateScheduleViewModel(get(), get(),get())
     }
     viewModel {
         RecordsViewModel(get())

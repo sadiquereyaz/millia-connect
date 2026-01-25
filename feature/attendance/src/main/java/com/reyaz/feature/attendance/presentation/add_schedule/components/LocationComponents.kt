@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.SingleLineText
-import com.reyaz.core.ui.components.text.DottedUnderlineText
 import com.reyaz.feature.attendance.domain.model.LocationModel
 
 @Composable
@@ -136,18 +135,18 @@ fun LocationComponents(
             ) {
                 locationList.forEach { location ->
                     FilterChip(
-                        selected = location.id == selectedId,
+                        selected = location.locationId == selectedId,
                         onClick = {
-                            onLocationSelect(location.id)
+                            onLocationSelect(location.locationId)
                         },
                         label = {
                             SingleLineText(
-                                text = location.name,
+                                text = location.locationName,
                                 maxLines = 2,
                                 modifier = Modifier.padding(2.dp),
                             )
                         },
-                        leadingIcon = if (location.id == selectedId) {
+                        leadingIcon = if (location.locationId == selectedId) {
                             {
                                 Icon(
                                     imageVector = Icons.Default.Check,
@@ -162,31 +161,7 @@ fun LocationComponents(
                 }
             }
             Spacer(Modifier.height(16.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            ) {
-                DottedUnderlineText(
-                    text = "Add More Location",
-                    fontSize = 18.sp,
-                    textColor = MaterialTheme.colorScheme.primary,
-                    underlineColor = MaterialTheme.colorScheme.onSurface,
-                    onClick = {
-                        // open mapplse map screen
-                        navigateToPicker()
-                    }
-                )
-                Spacer(Modifier.width(8.dp))
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowForward,
-                    "",
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+            DottedUnderLineButtonWithIcon(modifier = modifier, onClick = navigateToPicker, text = "Add More Location")
         }
     }
 }
