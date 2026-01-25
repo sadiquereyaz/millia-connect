@@ -1,7 +1,6 @@
 package com.reyaz.feature.attendance.utils.mapper
 
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
-import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.model.LectureItem
 
@@ -11,7 +10,7 @@ fun LectureAttendanceWithSubject.toDomain(): LectureItem {
     val attendance = this.attendance
     return LectureItem(
         id = lec.lectureId,
-        title = sub.name,
+        title = sub.subjectName,
         startTimeMinute = lec.startTimeMinutes,
         endTimeMinute = lec.endTimeMinutes,
         location = this.location?.locationName,

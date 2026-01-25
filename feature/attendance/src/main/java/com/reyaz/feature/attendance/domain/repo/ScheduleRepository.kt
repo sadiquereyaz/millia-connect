@@ -1,5 +1,6 @@
 package com.reyaz.feature.attendance.domain.repo
 
+import com.reyaz.feature.attendance.data.local.model.AttendanceRecord
 import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
 import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
 import com.reyaz.feature.attendance.data.local.model.LectureWithSubject
@@ -25,5 +26,6 @@ interface ScheduleRepository {
     fun observeAllLocations(): Flow<List<LocationModel>>
 
     suspend fun upsertLectureSlotAttendanceForDate(attendanceId: Long?, lectureId: Long, date: Int, status: AttendanceStatus): Long
+    suspend fun getAttendanceRecord(): List<AttendanceRecord>
 
 }

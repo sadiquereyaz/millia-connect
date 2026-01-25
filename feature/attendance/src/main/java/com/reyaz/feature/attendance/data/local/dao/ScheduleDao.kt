@@ -20,7 +20,8 @@ interface ScheduleDao {
     ): Flow<List<LectureAttendanceWithSubject>>
 
     @Transaction
-    @Query("""
+    @Query(
+        """
         SELECT
             ls.lectureId,
             ls.subjectId,
@@ -29,7 +30,7 @@ interface ScheduleDao {
             ls.startTimeMinutes,
             ls.endTimeMinutes,
             s.subjectId as subject_subjectId,
-            s.name as subject_name,
+            s.subjectName as subject_name,
             a.attendanceId,
             a.lectureId as attendance_lectureId,
             a.date,
@@ -39,7 +40,8 @@ interface ScheduleDao {
         LEFT JOIN attendance a ON ls.lectureId = a.lectureId AND a.date = :epochDay
         WHERE ls.dayOfWeek = :dayOfWeek
         ORDER BY ls.startTimeMinutes
-    """)
+    """
+    )
     fun observeLectureAttendanceForDate(
         dayOfWeek: Int,
         epochDay: Long

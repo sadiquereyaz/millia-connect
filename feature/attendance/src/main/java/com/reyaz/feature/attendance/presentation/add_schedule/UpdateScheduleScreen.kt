@@ -198,7 +198,7 @@ fun UpdateScheduleScreen(
 
             item {
                 SubjectDropdown(
-                    selectedSubject = uiState.selectedSubject?.name ?: "",
+                    selectedSubject = uiState.selectedSubject?.subjectName ?: "",
                     subjects = uiState.subjects,
                     expanded = subjectExpanded,
                     onExpandedChange = { subjectExpanded = it },
@@ -390,7 +390,7 @@ fun UpdateScheduleScreen(
                 viewModel.addNewSubject(subjectName)
             },
             type = AddFieldDialogType.SUBJECT,
-            suggestOptions = uiState.subjects.map { it.name }
+            suggestOptions = uiState.subjects.map { it.subjectName }
         )
     }
     // Add Location Dialog

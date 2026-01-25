@@ -1,5 +1,7 @@
 package com.reyaz.feature.attendance.presentation.graph.model
 
+import kotlinx.datetime.Month
+
 data class GraphData(
     val subjects: List<String>,            // x-axis
     val lineData: List<LineData>,          // y
@@ -10,7 +12,7 @@ data class GraphData(
 }
 
 data class LineData(
-    val month: String,
+    val month: Month,
     val percentages: List<Float>,
 )
 
@@ -19,8 +21,8 @@ data class LineData(
 val dummyGraphData1 = GraphData(
     subjects = listOf("Kotlin", "Jetpack Compose", "Coroutines"),
     lineData = listOf(
-        LineData(month = "January", percentages = listOf(85f, 70f, 60f)),
-        LineData(month = "February", percentages = listOf(90f, 82f, 45f)),
-        LineData(month = "March", percentages = listOf(95f, 88f, 55f)),
+        LineData(month = Month(1), percentages = listOf(85f, 70f, 60f)),
+        LineData(month = Month(2), percentages = listOf(90f, 82f, 45f)),
+        LineData(month = Month(3), percentages = listOf(95f, 88f, 55f)),
     )
 )

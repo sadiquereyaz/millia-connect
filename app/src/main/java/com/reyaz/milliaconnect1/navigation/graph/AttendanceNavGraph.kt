@@ -1,17 +1,12 @@
 package com.reyaz.milliaconnect1.navigation.graph
 
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleScreen
-import com.reyaz.feature.attendance.presentation.graph.components.DonutChart
-import com.reyaz.feature.attendance.presentation.graph.components.MultiLineChart
-import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
-import com.reyaz.feature.attendance.presentation.graph.model.sampleDonutChartData
 import com.reyaz.feature.attendance.presentation.map.MapScreen
-import com.reyaz.feature.attendance.presentation.records.AttendanceSummaryScreen
+import com.reyaz.feature.attendance.presentation.records.RecordsScreen
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleScreen
 import constants.NavigationRoute
 import timber.log.Timber
@@ -53,7 +48,7 @@ internal fun NavGraphBuilder.attendanceNavGraph(
 
     // Summary
     composable(route = NavigationRoute.AttendanceHistory.route) {
-        AttendanceSummaryScreen(
+        RecordsScreen(
         )
     }
 }

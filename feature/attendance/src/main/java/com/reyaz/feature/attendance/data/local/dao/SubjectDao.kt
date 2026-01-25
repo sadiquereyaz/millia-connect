@@ -17,7 +17,7 @@ interface SubjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubjects(subjects: List<SubjectEntity>)
 
-    @Query("SELECT * FROM subjects ORDER BY name ASC")
+    @Query("SELECT * FROM subjects ORDER BY subjectName ASC")
     fun observeSubjects(): Flow<List<SubjectEntity>>
 
     @Query("SELECT * FROM subjects WHERE subjectId = :id")

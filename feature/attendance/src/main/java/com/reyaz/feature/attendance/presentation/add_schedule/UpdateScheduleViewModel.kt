@@ -67,7 +67,7 @@ class UpdateScheduleViewModel(
                 _uiState.update {
                     it.copy(
                         isStartTimeError = true,
-                        errorMessage = "Start time conflicts with \"${slot.subject.name}\"",
+                        errorMessage = "Start time conflicts with \"${slot.subject.subjectName}\"",
                         conflictLecId = lecture.lectureId,
                     )
                 }
@@ -107,7 +107,7 @@ class UpdateScheduleViewModel(
                     _uiState.update {
                         it.copy(
                             isEndTimeError = true,
-                            errorMessage = "Time overlaps with ${state.selectedSubject?.name}",
+                            errorMessage = "Time overlaps with ${state.selectedSubject?.subjectName}",
                             conflictLecId = lecture.lectureId
                         )
                     }
@@ -137,7 +137,7 @@ class UpdateScheduleViewModel(
                             startTimeMinutes = null,
                             endTimeMinutes = null,
                             isStartTimeError = true,
-                            errorMessage = "Start time conflicts with \"${lec.subject.name}\"",
+                            errorMessage = "Start time conflicts with \"${lec.subject.subjectName}\"",
                             conflictLecId = lec.lecture.lectureId,
                         )
                     }
@@ -189,7 +189,7 @@ class UpdateScheduleViewModel(
                             it.copy(
                                 endTimeMinutes = endMin,
                                 isEndTimeError = true,
-                                errorMessage = "Time overlaps with ${lec.subject.name}",
+                                errorMessage = "Time overlaps with ${lec.subject.subjectName}",
                                 conflictLecId = lec.lecture.lectureId,
                             )
                         }
@@ -330,7 +330,7 @@ class UpdateScheduleViewModel(
     fun addNewSubject(subjectName: String) {
         viewModelScope.launch {
             try {
-                val subject = SubjectEntity(name = subjectName)
+                val subject = SubjectEntity(subjectName = subjectName)
                 val subjectId = scheduleRepository.insertSubject(subject)
 
                 onSubjectSelected(subjectId)

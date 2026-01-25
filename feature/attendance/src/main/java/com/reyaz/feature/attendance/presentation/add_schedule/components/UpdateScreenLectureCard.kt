@@ -51,7 +51,7 @@ fun UpdateScreenLectureCard(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = lecSlot.subject.name, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
+                text = lecSlot.subject.subjectName, fontWeight = FontWeight.SemiBold, fontSize = 16.sp
             )
             Text(
                 "${TimeUtils.formatMinutesTo12Hour(lecSlot.lecture.startTimeMinutes)} - ${

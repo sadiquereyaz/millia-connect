@@ -30,6 +30,8 @@ import com.reyaz.feature.attendance.presentation.graph.model.GraphData
 import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
 import com.reyaz.feature.attendance.presentation.graph.utils.ColorUtils
 import com.reyaz.feature.attendance.presentation.graph.utils.buildSmoothPath
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun MultiLineChart(
@@ -144,8 +146,10 @@ fun MultiLineChart(
                         // month name
                         if (index == lineData.percentages.lastIndex) {
                             drawContext.canvas.nativeCanvas.drawText(
-//                            month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
-                                lineData.month, p.x + 30f, p.y + 8f, Paint().apply {
+                                lineData.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                                p.x + 30f,
+                                p.y + 8f,
+                                Paint().apply {
                                     textAlign = Paint.Align.LEFT
                                     textSize = 22f
                                     color = onSurface.toArgb()

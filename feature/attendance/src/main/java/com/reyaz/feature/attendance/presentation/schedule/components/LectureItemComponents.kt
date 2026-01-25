@@ -146,7 +146,7 @@ fun LectureItemComponents(
                     Column(
                         Modifier.padding(horizontal = 8.dp)
                     ) {
-                        lectureData?.subject?.name?.let {
+                        lectureData?.subject?.subjectName?.let {
                             SingleLineText(
                                 text = it,
                                 fontSize = 18.sp

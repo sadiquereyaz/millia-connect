@@ -22,7 +22,7 @@ import com.reyaz.feature.attendance.data.local.model.SubjectEntity
         AttendanceEntity::class,
         LocationEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(AttendanceStatusConverter::class)

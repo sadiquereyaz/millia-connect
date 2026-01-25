@@ -6,6 +6,8 @@ import com.reyaz.feature.attendance.data.repository.ScheduleRepositoryImpl
 import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleViewModel
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
+import com.reyaz.feature.attendance.domain.usecase.GetAttendanceGraphUseCase
+import com.reyaz.feature.attendance.presentation.records.RecordsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -41,11 +43,17 @@ val attendanceModule = module {
         )
     }
 
+    // usecase
+    single { GetAttendanceGraphUseCase(get()) }
+
     // ViewModels
     viewModel {
         ScheduleViewModel(get())
     }
     viewModel {
         UpdateScheduleViewModel(get(), get())
+    }
+    viewModel {
+        RecordsViewModel(get())
     }
 }

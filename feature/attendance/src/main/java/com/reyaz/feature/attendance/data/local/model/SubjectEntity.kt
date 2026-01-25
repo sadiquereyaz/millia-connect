@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class SubjectEntity(
     @PrimaryKey(autoGenerate = true)
     val subjectId: Long = 0L,
-    val name: String, // todo: rename to locationName
+    val subjectName: String,
 )
