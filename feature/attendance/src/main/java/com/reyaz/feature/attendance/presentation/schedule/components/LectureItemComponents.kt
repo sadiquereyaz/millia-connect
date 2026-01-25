@@ -110,6 +110,7 @@ fun LectureItemComponents(
                         )
                     )
             )
+
         }
         // line right space
         Spacer(Modifier.width(8.dp))
@@ -220,20 +221,19 @@ fun LectureItemComponents(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     /*Icon(
-                    modifier = Modifier.size(16.dp),
-                    imageVector = Icons.Default.Task, contentDescription = "task icon",
-                    tint = taskColor,
-                )
-                Spacer(Modifier.width(4.dp))
-                Text(
-                    text = task ?: "Add task...",
-                    color = taskColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )*/
+                        modifier = Modifier.size(16.dp),
+                        imageVector = Icons.Default.Task, contentDescription = "task icon",
+                        tint = taskColor,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = task ?: "Add task...",
+                        color = taskColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )*/
                     Spacer(Modifier.weight(1f))
-
-                    // attendance types
+                    // atttemdance types
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
