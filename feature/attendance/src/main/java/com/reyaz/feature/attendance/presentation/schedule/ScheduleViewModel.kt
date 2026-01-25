@@ -3,7 +3,8 @@ package com.reyaz.feature.attendance.presentation.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
-import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
+import com.reyaz.feature.attendance.domain.repo.AttendanceRepository
+import com.reyaz.feature.attendance.domain.repo.LectureRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,8 @@ import kotlinx.datetime.LocalDate
 import timber.log.Timber
 
 class ScheduleViewModel(
-    private val scheduleRepository: ScheduleRepository
+    private val lectureRepository: LectureRepository,
+    private val attendanceRepository: AttendanceRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
@@ -50,10 +52,11 @@ class ScheduleViewModel(
 
     // todo: when this method is called again after init, does the previous subscription get cancelled? or there is the possibility of memory leak
     private fun loadLecturesForDate(date: LocalDate) {
-        scheduleRepository.observeLecturesForDate(date)
+        Timber.d("date: $date")
+        lectureRepository.observeLecturesWithAttendance(date)
             .onEach { lectures ->
                 _uiState.update {
-                    it.copy(lectures = lectures)
+                    it.copy(lectureSlots = lectures)
                 }
             }
             .launchIn(viewModelScope)
@@ -63,29 +66,14 @@ class ScheduleViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = true
-                    )
-                }
-
-                scheduleRepository.upsertLectureSlotAttendanceForDate(
-                    attendanceId = attendanceId,
-                    lectureId = lectureId,
-                    date = uiState.value.selectedDate.toEpochDays(),
-                    status = status
-                )
-
-                _uiState.update {
-                    it.copy(
-                        lectures = it.lectures.map { lectureItem ->
-                            val id = lectureItem.lecture.lectureId
-                            if (id == lectureId) {
-                                lectureItem.attendance?.status = status
-                            } else
-                                lectureItem
-                            return@map lectureItem
-                        }
+                if (status == AttendanceStatus.NOT_COUNTED){
+                    attendanceId?.let { attendanceRepository.deleteAttendance(it) }
+                } else {
+                    attendanceRepository.upsertAttendance(
+                        attendanceId = attendanceId,
+                        lectureId = lectureId,
+                        date = uiState.value.selectedDate.toEpochDays(),
+                        status = status
                     )
                 }
             } catch (e: Exception) {

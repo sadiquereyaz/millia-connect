@@ -2,7 +2,6 @@ package com.reyaz.feature.attendance.presentation.schedule.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,42 +27,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.reyaz.core.ui.components.SingleLineText
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
+import com.reyaz.core.ui.helper.debounceClickable
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
+import com.reyaz.feature.attendance.domain.model.ScheduleLectureUiModel
 import com.reyaz.feature.attendance.utils.TimeUtils
-import com.reyaz.feature.attendance.utils.toPresentType
-import kotlin.random.Random
 
 @Composable
 fun LectureItemComponents(
-    lectureData: LectureAttendanceWithSubject,
+    lectureData: ScheduleLectureUiModel,
     onAttendanceTypeSelected: (AttendanceStatus) -> Unit,
     modifier: Modifier = Modifier,
+    isLastItem: Boolean = false
 ) {
-    val attendancePerColor =
-        if (Random.Default.nextBoolean()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-    val task: String? = null
-//    val locationName: String? = null // TODO: Add location support
-    val locationName: String? =
-        "Faculty of Engineering and Technology" // TODO: Add location support
-    val taskColor = MaterialTheme.colorScheme.outline
+    val percentage = lectureData.attendancePercentage
+    val statusColor =
+        if (percentage >= 75) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
     val warningColor =
-        if (Random.Default.nextBoolean()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+        if (percentage >= 75) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error        // todo: choose based on
     val isDarkMode = isSystemInDarkTheme()
 
-    // Convert AttendanceStatus to PresentType
-    val selectedAttendanceType =
-        lectureData?.attendance?.status?.toPresentType() ?: AttendanceStatus.NOT_COUNTED
+    val selectedAttendanceType = lectureData.attendanceStatus ?: AttendanceStatus.NOT_COUNTED
 
     // Convert minutes to time string
-    val startTime = TimeUtils.formatMinutesTo12Hour(lectureData?.lecture?.startTimeMinutes ?: 0)
-    val endTime = TimeUtils.formatMinutesTo12Hour(lectureData?.lecture?.endTimeMinutes ?: 0)
-
+    val startTime = TimeUtils.formatMinutesTo12Hour(lectureData.startTimeMinute)
+    val endTime = TimeUtils.formatMinutesTo12Hour(lectureData.endTimeMinute)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -98,9 +93,23 @@ fun LectureItemComponents(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(0.6.dp)
-                    .background(MaterialTheme.colorScheme.onBackground)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colorStops = if (isLastItem) {
+                                arrayOf(
+                                    0.0f to MaterialTheme.colorScheme.onBackground,
+                                    0.7f to MaterialTheme.colorScheme.onBackground,
+                                    1.0f to Color.Transparent
+                                )
+                            } else {
+                                arrayOf(
+                                    0.0f to MaterialTheme.colorScheme.onBackground,
+                                    1.0f to MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        )
+                    )
             )
-
         }
         // line right space
         Spacer(Modifier.width(8.dp))
@@ -130,13 +139,13 @@ fun LectureItemComponents(
                         modifier = Modifier
                             .clip(CircleShape)
                             .size(48.dp)
-                            .background(attendancePerColor.copy(alpha = 0.25f)),
+                            .background(statusColor.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "64%",
+                            text = "${percentage}%",
                             fontWeight = FontWeight.Bold,
-                            color = attendancePerColor
+                            color = statusColor
                         )
                     }
 
@@ -146,15 +155,15 @@ fun LectureItemComponents(
                     Column(
                         Modifier.padding(horizontal = 8.dp)
                     ) {
-                        lectureData?.subject?.name?.let {
+                        lectureData?.subjectName?.let {
                             SingleLineText(
                                 text = it,
                                 fontSize = 18.sp
                             )
                         }
-                        // location
-                        locationName?.let {
-//                            Spacer(Modifier.height(4.dp))
+                        // location name
+                        lectureData.locationName?.let {
+                            Spacer(Modifier.height(4.dp))
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -168,12 +177,14 @@ fun LectureItemComponents(
                                 SingleLineText(
                                     text = it,
                                     fontSize = 12.sp,
+                                    lineHeight = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                                 )
                             }
                         }
 //                        Spacer(Modifier.height(4.dp))
                         // warning
+                        Spacer(Modifier.height(4.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -185,7 +196,7 @@ fun LectureItemComponents(
                             )
                             Spacer(Modifier.width(2.dp))
                             SingleLineText(
-                                text = "You can miss this lecture",
+                                text = lectureData.attendanceWarning,
                                 color = warningColor,
                                 fontSize = 12.sp,
                                 lineHeight = 12.sp,
@@ -195,10 +206,10 @@ fun LectureItemComponents(
                     }
                     Spacer(Modifier.weight(1f))
                     /*Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Default.Notifications,
-                        contentDescription = "lecture reminder"
-                    )*/
+                    modifier = Modifier.size(20.dp),
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "lecture reminder"
+                )*/
 
                 }
 
@@ -209,19 +220,20 @@ fun LectureItemComponents(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     /*Icon(
-                        modifier = Modifier.size(16.dp),
-                        imageVector = Icons.Default.Task, contentDescription = "task icon",
-                        tint = taskColor,
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = task ?: "Add task...",
-                        color = taskColor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )*/
+                    modifier = Modifier.size(16.dp),
+                    imageVector = Icons.Default.Task, contentDescription = "task icon",
+                    tint = taskColor,
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    text = task ?: "Add task...",
+                    color = taskColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )*/
                     Spacer(Modifier.weight(1f))
-                    // atttemdance types
+
+                    // attendance types
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -233,7 +245,8 @@ fun LectureItemComponents(
                                         shape = CircleShape
 //                                            shape = RoundedCornerShape(50)
                                     )
-                                    .clickable {
+                                    .debounceClickable {
+                                        if (type == selectedAttendanceType) return@debounceClickable
                                         onAttendanceTypeSelected(type)
                                     }
                                     .border(

@@ -57,7 +57,7 @@ fun SubjectDropdown(
                 expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
                 subjects.forEach { subject ->
                     DropdownMenuItem(
-                        text = { Text(text = subject.name, fontSize = 16.sp) },
+                        text = { Text(text = subject.subjectName, fontSize = 16.sp) },
                         onClick = { onSubjectSelected(subject.subjectId) })
                 }
 

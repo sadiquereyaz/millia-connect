@@ -13,16 +13,16 @@ enum class AttendanceStatus(
     val darkColor: Color,
     val title: String
 ) {
-    NOT_COUNTED(
-        lightColor = Color(0xFF616161),   // Grey 700
-        darkColor = Color(0xFFBDBDBD),    // Light Grey
+    /*NOT_COUNTED(
+        lightColor = Color(0xFF414942),   // Grey 700
+        darkColor = Color(0xFFC0C9C0),    // Light Grey
         title = "Not Counted"
-    ),
+    ),*/
 
-    CANCELLED(
+    NOT_COUNTED(
         lightColor = Color(0xFFF9A825),   // Amber 800
         darkColor = Color(0xFFFFE082),    // Light Amber
-        title = "Cancelled"
+        title = "Not Counted"
     ),
 
     ABSENT(

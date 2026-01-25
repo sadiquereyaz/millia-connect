@@ -167,7 +167,7 @@ fun UpdateScheduleScreen(
 
     LaunchedEffect(uiState.conflictLecId) {
         val index = uiState.lecturesForDay
-            .indexOfFirst { it.lecture.lectureId == uiState.conflictLecId }
+            .indexOfFirst { it.lectureId == uiState.conflictLecId }
 
         if (index != -1) {
             listState.animateScrollToItem(header + index)
@@ -198,7 +198,7 @@ fun UpdateScheduleScreen(
 
             item {
                 SubjectDropdown(
-                    selectedSubject = uiState.selectedSubject?.name ?: "",
+                    selectedSubject = uiState.selectedSubject?.subjectName ?: "",
                     subjects = uiState.subjects,
                     expanded = subjectExpanded,
                     onExpandedChange = { subjectExpanded = it },
@@ -323,7 +323,7 @@ fun UpdateScheduleScreen(
 
             // lecture list
             items(
-                key = { it.lecture.lectureId },
+                key = { it.lectureId },
                 items = uiState.lecturesForDay
             ) { lecSlot ->
                 UpdateScreenLectureCard(
@@ -332,9 +332,9 @@ fun UpdateScheduleScreen(
                         viewModel.onEditLectureSlot(lecSlot)
                     },
                     onDelete = {
-                        viewModel.deleteLectureSlot(lecSlot.lecture.lectureId)
+                        viewModel.deleteLectureSlot(lecSlot.lectureId)
                     },
-                    isInConflict = lecSlot.lecture.lectureId == uiState.conflictLecId
+                    isInConflict = lecSlot.lectureId == uiState.conflictLecId
                 )
                 Spacer(Modifier.height(16.dp))
             }
@@ -360,7 +360,7 @@ fun UpdateScheduleScreen(
                 onClick = { viewModel.saveLectureSlot() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
@@ -379,6 +379,7 @@ fun UpdateScheduleScreen(
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter)
+                .padding(bottom = 48.dp)
         )
     }
 
@@ -390,7 +391,7 @@ fun UpdateScheduleScreen(
                 viewModel.addNewSubject(subjectName)
             },
             type = AddFieldDialogType.SUBJECT,
-            suggestOptions = uiState.subjects.map { it.name }
+            suggestOptions = uiState.subjects.map { it.subjectName }
         )
     }
     // Add Location Dialog
@@ -401,7 +402,7 @@ fun UpdateScheduleScreen(
             onConfirm = { locationName ->
                 viewModel.addNewLocation(locationName)
             },
-            suggestOptions = uiState.locationList.map { it.name }
+            suggestOptions = uiState.locationList.map { it.locationName }
         )
     }
 }

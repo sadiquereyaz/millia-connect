@@ -28,7 +28,7 @@ fun ScheduleScreen(
             todayDate = TimeUtils.today()
         )
         LectureList(
-            lectures = uiState.lectures,
+            lectures = uiState.lectureSlots,
             onAttendanceTypeSelected = { attendanceId, lectureId, status ->
                 viewModel.onAttendanceSelected(
                     attendanceId = attendanceId,
@@ -36,7 +36,8 @@ fun ScheduleScreen(
                     status = status
                 )
             },
-            onAddSchedule = navigateToAddSchedule
+            navigateToAddSchedule = navigateToAddSchedule,
+            isLoading = uiState.isLoading
         )
     }
 }

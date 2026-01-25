@@ -3,11 +3,12 @@ package com.reyaz.feature.attendance.presentation.add_schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reyaz.core.location.api.LocationProvider
-import com.reyaz.feature.attendance.data.local.model.LectureAttendanceWithSubject
-import com.reyaz.feature.attendance.data.local.model.LectureSlotEntity
+import com.reyaz.feature.attendance.data.local.model.LectureEntity
 import com.reyaz.feature.attendance.data.local.model.LocationEntity
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
-import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
+import com.reyaz.feature.attendance.domain.model.EditScheduleLectureModel
+import com.reyaz.feature.attendance.domain.repo.LectureRepository
+import com.reyaz.feature.attendance.domain.repo.LocationRepository
 import com.reyaz.feature.attendance.utils.TimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,8 @@ import kotlinx.datetime.DayOfWeek
 import timber.log.Timber
 
 class UpdateScheduleViewModel(
-    private val scheduleRepository: ScheduleRepository,
+    private val lectureRepository: LectureRepository,
+    private val locationRepository: LocationRepository,
     private val locationProvider: LocationProvider
 ) : ViewModel() {
 
@@ -39,7 +41,7 @@ class UpdateScheduleViewModel(
                 selectedDayOfWeek = dayOfWeek,
                 selectedSubjectId = uiState.value.selectedSubjectId
             )
-            scheduleRepository.observeLecturesWithSubjectForDay(dayOfWeek).collect { slots ->
+            lectureRepository.observeLecturesForDay(dayOfWeek).collect { slots ->
                 _uiState.update { state ->
                     state.copy(
                         lecturesForDay = slots,
@@ -55,19 +57,17 @@ class UpdateScheduleViewModel(
 
     private fun isStartTimeConflict(currStartMinutes: Int, ignoreLecId: Long? = null): Boolean {
 
-        val isConflict = uiState.value.lecturesForDay.any { slot ->
-
-            val lecture = slot.lecture
+        val isConflict = uiState.value.lecturesForDay.any { lecture ->
 
             val conflictedLecFound = lecture.lectureId != ignoreLecId &&
-                    currStartMinutes >= lecture.startTimeMinutes &&
-                    currStartMinutes < lecture.endTimeMinutes
+                    currStartMinutes >= lecture.startTimeMinute &&
+                    currStartMinutes < lecture.endTimeMinute
 
             if (conflictedLecFound) {
                 _uiState.update {
                     it.copy(
                         isStartTimeError = true,
-                        errorMessage = "Start time conflicts with \"${slot.subject.name}\"",
+                        errorMessage = "Start time conflicts with \"${lecture.subjectName}\"",
                         conflictLecId = lecture.lectureId,
                     )
                 }
@@ -95,19 +95,17 @@ class UpdateScheduleViewModel(
                 return true
             }
 
-            return uiState.value.lecturesForDay.any { slot ->
-
-                val lecture = slot.lecture
+            return uiState.value.lecturesForDay.any { lecture ->
 
                 val isOverlapping = lecture.lectureId != ignoreLecId &&
-                        currEndMinutes >= lecture.startTimeMinutes &&
-                        currEndMinutes < lecture.endTimeMinutes
+                        currEndMinutes >= lecture.startTimeMinute &&
+                        currEndMinutes < lecture.endTimeMinute
 
                 if (isOverlapping) {
                     _uiState.update {
                         it.copy(
                             isEndTimeError = true,
-                            errorMessage = "Time overlaps with ${state.selectedSubject?.name}",
+                            errorMessage = "Time overlaps with ${state.selectedSubject?.subjectName}",
                             conflictLecId = lecture.lectureId
                         )
                     }
@@ -120,89 +118,32 @@ class UpdateScheduleViewModel(
 
     fun onStartTimeChanged(startMin: Int) {
         viewModelScope.launch {
-            val lecToCheck = uiState.value.lecturesForDay
-                .filter { it.lecture.lectureId != uiState.value.selectedLectureId }
-
-            // Check if start time falls within any existing lecture
-            lecToCheck.forEach { lec ->
-                val lecStartMin = lec.lecture.startTimeMinutes
-                val lecEndMin = lec.lecture.startTimeMinutes
-
-                // Conflict if new start time is within existing lecture
-                // startMin >= lecStart AND startMin < lecEnd
-                if (startMin >= lecStartMin && startMin < lecEndMin) {  // conflict detected
-                    Timber.d("Conflict detected")
-                    _uiState.update {
-                        it.copy(
-                            startTimeMinutes = null,
-                            endTimeMinutes = null,
-                            isStartTimeError = true,
-                            errorMessage = "Start time conflicts with \"${lec.subject.name}\"",
-                            conflictLecId = lec.lecture.lectureId,
-                        )
-                    }
-                    return@launch
+            if (!isStartTimeConflict(startMin)) {
+                // no time conflict
+                _uiState.update {
+                    it.copy(
+                        startTimeMinutes = startMin,
+                        isStartTimeError = false,
+                        errorMessage = null,
+                        conflictLecId = null,
+                        endTimeMinutes = null,
+                    )
                 }
             }
-
-            // No conflict - update start time
-            _uiState.update {
-                it.copy(
-                    startTimeMinutes = startMin,
-                )
-            }
-            onEndTimeChanged(startMin + 60, true)
         }
     }
 
     fun onEndTimeChanged(endMin: Int, isAutoUpdating: Boolean = false) {
-        uiState.value.startTimeMinutes?.let { startMin ->
-            if (endMin <= startMin) {
+        viewModelScope.launch {
+            if (!isEndTimeConflict(endMin)){
                 _uiState.update {
                     it.copy(
                         endTimeMinutes = endMin,
-                        isEndTimeError = true,
-                        errorMessage = "End time must be after start time",
+                        isEndTimeError = false,
+                        errorMessage = null,
+                        conflictLecId = null,
                     )
                 }
-                return
-            }
-            val lecToCheck = uiState.value.lecturesForDay
-                .filter { it.lecture.lectureId != uiState.value.selectedLectureId }
-            // Check for overlaps with existing lectures
-            lecToCheck.forEach { lec ->
-                val lecStartMin = lec.lecture.startTimeMinutes
-                val lecEndMin = lec.lecture.endTimeMinutes
-
-                // Two intervals [startMin, endMin] and [lecStart, lecEnd] overlap if:
-                // startMin < lecEnd AND endMin > lecStart
-                val hasOverlap = startMin < lecEndMin && endMin > lecStartMin
-
-                if (hasOverlap) {
-                    // conflict detected
-                    if (isAutoUpdating) {
-                        _uiState.update {
-                            it.copy()
-                        }
-                    } else {
-                        _uiState.update {
-                            it.copy(
-                                endTimeMinutes = endMin,
-                                isEndTimeError = true,
-                                errorMessage = "Time overlaps with ${lec.subject.name}",
-                                conflictLecId = lec.lecture.lectureId,
-                            )
-                        }
-                    }
-                    return
-                }
-            }
-
-            // No conflict - update end time
-            _uiState.update {
-                it.copy(
-                    endTimeMinutes = endMin,
-                )
             }
         }
     }
@@ -234,7 +175,7 @@ class UpdateScheduleViewModel(
     }
 
     private fun loadLocations() {
-        scheduleRepository.observeAllLocations()
+        locationRepository.observeAllLocations()
             .onEach { locations ->
                 _uiState.update { it.copy(locationList = locations) }
             }
@@ -252,7 +193,7 @@ class UpdateScheduleViewModel(
                         latitude = it.first,
                         longitude = it.second
                     )
-                    val newLocationId = scheduleRepository.insertLocation(location)
+                    val newLocationId = locationRepository.insertLocation(location)
 
                     _uiState.update {
                         it.copy(
@@ -276,15 +217,14 @@ class UpdateScheduleViewModel(
         }
     }
 
-    fun onEditLectureSlot(slot: LectureAttendanceWithSubject) {
-        val lecture = slot.lecture
+    fun onEditLectureSlot(lecture: EditScheduleLectureModel) {
         resetForm(
             selectedLectureId = lecture.lectureId,
-            selectedSubjectId = slot.subject.subjectId,
-            startTimeMinutes = lecture.startTimeMinutes,
-            endTimeMinutes = lecture.endTimeMinutes,
+            selectedSubjectId = lecture.subjectId,
+            startTimeMinutes = lecture.startTimeMinute,
+            endTimeMinutes = lecture.endTimeMinute,
             selectedLocationId = lecture.locationId,
-            automationSegSelectedIndex = if (slot.location != null) 0 else 1
+            automationSegSelectedIndex = if (lecture.locationId != null) 0 else 1
         )
     }
 
@@ -299,10 +239,10 @@ class UpdateScheduleViewModel(
             }
 
             try {
-                scheduleRepository.deleteLectureSlot(id)
+                lectureRepository.deleteLectureSlot(id)
                 _uiState.update { currUiState ->
                     currUiState.copy(
-//                        lecturesForDay = currUiState.lecturesForDay.filter { it.lecture.lectureId != id },
+//                        lecturesForDay = currUiState.lecturesForDay.filter { it.lectureId != id },
                         isLoading = false,
                         successMessage = "Lecture deleted successfully",
                     )
@@ -320,7 +260,7 @@ class UpdateScheduleViewModel(
     }
 
     fun loadSubjects() {
-        scheduleRepository.observeAllSubjects()
+        lectureRepository.observeAllSubjects()
             .onEach { subjects ->
                 _uiState.update { it.copy(subjects = subjects) }
             }
@@ -330,8 +270,8 @@ class UpdateScheduleViewModel(
     fun addNewSubject(subjectName: String) {
         viewModelScope.launch {
             try {
-                val subject = SubjectEntity(name = subjectName)
-                val subjectId = scheduleRepository.insertSubject(subject)
+                val subject = SubjectEntity(subjectName = subjectName)
+                val subjectId = lectureRepository.upsertSubject(subject)
 
                 onSubjectSelected(subjectId)
 
@@ -364,16 +304,16 @@ class UpdateScheduleViewModel(
                 _uiState.update { it.copy(isLoading = true) }
 
 
-                val lectureSlot = LectureSlotEntity(
+                val lectureEntitySlot = LectureEntity(
                     lectureId = state.selectedLectureId ?: 0,
                     subjectId = state.selectedSubjectId,
                     locationId = state.selectedLocationId,
                     dayOfWeek = state.selectedDayOfWeek!!.value,
-                    startTimeMinutes = state.startTimeMinutes!!,
-                    endTimeMinutes = state.endTimeMinutes!!
+                    startTimeMinute = state.startTimeMinutes!!,
+                    endTimeMinute = state.endTimeMinutes!!
                 )
 
-                scheduleRepository.insertLectureSlot(lectureSlot)
+                lectureRepository.upsertLecture(lectureEntitySlot)
 
                 resetForm(
                     selectedSubjectId = uiState.value.selectedSubjectId,
