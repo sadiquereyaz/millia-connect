@@ -6,29 +6,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 
-@Entity(
-    tableName = "attendance",
-    indices = [
-        Index("date"),
-        Index("lectureId"),
-        Index(value = ["lectureId", "date"], unique = true)
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = LectureSlotEntity::class,
-            parentColumns = ["lectureId"],
-            childColumns = ["lectureId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
-)
+@Entity(tableName = "attendance")
 data class AttendanceEntity(
     @PrimaryKey(autoGenerate = true)
     val attendanceId: Long = 0L,
-
     val lectureId: Long,
-
-    val date: Int,     // Store as epochDay (LocalDate.toEpochDay())
-
-    var status: AttendanceStatus
+    val date: Int,
+    var status: AttendanceStatus? = null
 )

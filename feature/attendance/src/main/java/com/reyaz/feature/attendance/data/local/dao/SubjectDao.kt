@@ -10,19 +10,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SubjectDao {
+    @Upsert
+    suspend fun upsertSubject(subject: SubjectEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSubject(subject: SubjectEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSubjects(subjects: List<SubjectEntity>)
-
-    @Query("SELECT * FROM subjects ORDER BY subjectName ASC")
+    @Query("SELECT * FROM subject ORDER BY subjectName ASC")
     fun observeSubjects(): Flow<List<SubjectEntity>>
 
-    @Query("SELECT * FROM subjects WHERE subjectId = :id")
-    suspend fun getSubjectById(id: Long): SubjectEntity?
-
     @Delete
-    suspend fun deleteSubject(subject: SubjectEntity)
+    suspend fun deleteSubject(subject: SubjectEntity) : Int
 }
