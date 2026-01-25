@@ -36,17 +36,17 @@ interface AttendanceDao {
 
     @Query("""
     SELECT 
-        subjects.subjectName AS subjectName,
+        subject.subjectName AS subjectName,
         attendance.date AS date,
         CASE 
             WHEN attendance.status = 'PRESENT' THEN 1 
             ELSE 0 
         END AS isPresent
     FROM attendance
-    INNER JOIN lecture_slots 
-        ON attendance.lectureId = lecture_slots.lectureId
-    INNER JOIN subjects 
-        ON lecture_slots.subjectId = subjects.subjectId
+    INNER JOIN lecture
+        ON attendance.lectureId = lecture.lectureId
+    INNER JOIN subject
+        ON lecture.subjectId = subject.subjectId
 """)
     suspend fun getAttendanceRecord(): List<AttendanceRecord>
 

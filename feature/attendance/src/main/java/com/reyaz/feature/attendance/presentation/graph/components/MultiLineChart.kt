@@ -3,11 +3,8 @@ package com.reyaz.feature.attendance.presentation.graph.components
 import android.graphics.Paint
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -27,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import com.reyaz.core.common.utils.extensions.StringUtils.getShortForm
 import com.reyaz.feature.attendance.presentation.graph.model.GraphData
-import com.reyaz.feature.attendance.presentation.graph.model.dummyGraphData1
 import com.reyaz.feature.attendance.presentation.graph.utils.ColorUtils
 import com.reyaz.feature.attendance.presentation.graph.utils.buildSmoothPath
 import java.time.format.TextStyle
@@ -124,7 +119,7 @@ fun MultiLineChart(
                 }
 
                 // ---------- DRAW LINES (one per month) ----------
-                dummyGraphData1.lineData.forEachIndexed { lineIndex, lineData ->
+                graphData.lineData.forEachIndexed { lineIndex, lineData ->
                     val points = lineData.percentages.mapIndexed { index, percentage ->
                         val p = pointFor(index, percentage)
 
@@ -156,6 +151,18 @@ fun MultiLineChart(
                                     typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                                 })
                         }
+                        if (index == 0 && lineData.percentages.size > 1) {
+                            drawContext.canvas.nativeCanvas.drawText(
+                                lineData.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                                p.x - 30f,
+                                p.y + 10f,
+                                Paint().apply {
+                                    textAlign = Paint.Align.RIGHT
+                                    textSize = 22f
+                                    color = onSurface.toArgb()
+                                    typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                                })
+                        }
 
                         p
                     }
@@ -172,7 +179,7 @@ fun MultiLineChart(
 
 
                 // ---------- X axis labels ----------
-                dummyGraphData1.subjects.forEachIndexed { index, subject ->
+                graphData.subjects.forEachIndexed { index, subject ->
                     val x = pointFor(index).x
                     drawLine(
                         color = outline,

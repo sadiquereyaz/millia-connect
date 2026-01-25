@@ -5,6 +5,7 @@ import com.reyaz.feature.attendance.data.local.dao.LocationDao
 import com.reyaz.feature.attendance.data.local.dao.ScheduleDao
 import com.reyaz.feature.attendance.data.local.dao.SubjectDao
 import com.reyaz.feature.attendance.data.local.model.AttendanceEntity
+import com.reyaz.feature.attendance.data.local.model.AttendanceRecord
 import com.reyaz.feature.attendance.data.local.model.LectureEntity
 import com.reyaz.feature.attendance.data.local.model.LocationEntity
 import com.reyaz.feature.attendance.data.local.model.SubjectEntity
@@ -47,5 +48,8 @@ class AttendanceRepositoryImpl(
                 status = status,
             )
         )
+    }
+    override suspend fun getAttendanceRecord(): List<AttendanceRecord> {
+        return attendanceDao.getAttendanceRecord()
     }
 }

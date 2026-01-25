@@ -30,7 +30,9 @@ class RecordsViewModel(
             val records = getAttendanceGraphUseCase.invoke()
             _uiState.update {
                 it.copy(
-                    multiLineData = records,
+                    multiLineData = records.first,
+                    donutChartData = records.second,
+                    isLoading = false,
                 )
             }
         }

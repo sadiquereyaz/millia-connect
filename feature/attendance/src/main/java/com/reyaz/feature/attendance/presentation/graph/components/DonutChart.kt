@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import com.reyaz.core.common.utils.extensions.StringUtils.getShortForm
 import com.reyaz.feature.attendance.presentation.graph.model.DonutChartItem
 import com.reyaz.feature.attendance.presentation.graph.utils.ColorUtils
 import kotlin.math.cos
@@ -25,9 +26,17 @@ fun DonutChart(
     modifier: Modifier = Modifier,
     strokeWidth: Float = 100f
 ) {
+    if (data.isEmpty()) return
+
     val isSystemInDarkMode: Boolean = isSystemInDarkTheme()
-    val total = data.sumOf { it.value.toDouble() }.toFloat()
-    val overallPercent = ((data[0].value / total) * 100).toInt()
+
+    // Calculate overall attendance across all subjects
+    val totalPresent = data.sumOf { it.presentCount }
+    val totalClasses = data.sumOf { it.totalCount }
+    val overallPercent = if (totalClasses == 0) 0 else ((totalPresent * 100f) / totalClasses).toInt()
+
+    // For arc sizing, use total classes per subject (proportional to number of classes)
+    val totalForArcSize = data.sumOf { it.totalCount }.toFloat()
 
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
 
@@ -37,7 +46,7 @@ fun DonutChart(
             .height(320.dp)
     ) {
         val canvasSize = size.minDimension
-        val radius = (canvasSize)/5 * 2
+        val radius = canvasSize/ 2.8f
         val (midX, midY) = size.width / 2 to size.height / 2
         val topLeft = Offset(midX-radius, midY-radius)
 
@@ -45,13 +54,15 @@ fun DonutChart(
 
         val labelPaint = Paint().apply {
             textSize = 28f
+            textAlign = Paint.Align.CENTER
             color = onSurfaceColor.toArgb()
             isAntiAlias = true
         }
         val canvas = drawContext.canvas.nativeCanvas
 
         data.forEachIndexed { index, item ->
-            val sweepAngle = (item.value / total) * 360f
+            // Arc size is proportional to number of classes for this subject
+            val sweepAngle = (item.totalCount / totalForArcSize) * 360f
 
             // Arc
             drawArc(
@@ -68,21 +79,22 @@ fun DonutChart(
             val midAngle = startAngle + sweepAngle / 2
             val angleRad = Math.toRadians(midAngle.toDouble())
 
-            val labelRadius = radius + (strokeWidth / 1.4f) + 24f
+            val labelRadius = radius + strokeWidth + 16f
 
             val labelX = midX + labelRadius * cos(angleRad).toFloat()
             val labelY = midY + labelRadius * sin(angleRad).toFloat()
 
             labelPaint.textAlign =
-                if (labelX < midX) Paint.Align.RIGHT else Paint.Align.LEFT
+                if (labelX < midX) Paint.Align.CENTER else Paint.Align.CENTER
 
-            val percent = ((item.value / total) * 100).toInt()
+            // Display the actual attendance percentage for this subject
+            val percent = item.percentage.toInt()
 
             val fm = labelPaint.fontMetrics
             val lineHeight = fm.descent - fm.ascent
 
             drawContext.canvas.nativeCanvas.drawText(
-                item.label,
+                item.label.getShortForm(5),
                 labelX,
                 labelY,
                 labelPaint

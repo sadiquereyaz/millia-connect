@@ -10,7 +10,6 @@ import com.reyaz.feature.attendance.presentation.add_schedule.UpdateScheduleView
 import com.reyaz.feature.attendance.presentation.schedule.ScheduleViewModel
 import com.reyaz.feature.attendance.domain.repo.LectureRepository
 import com.reyaz.feature.attendance.domain.repo.LocationRepository
-import com.reyaz.feature.attendance.domain.repo.ScheduleRepository
 import com.reyaz.feature.attendance.domain.usecase.GetAttendanceGraphUseCase
 import com.reyaz.feature.attendance.presentation.records.RecordsViewModel
 import org.koin.android.ext.koin.androidContext
