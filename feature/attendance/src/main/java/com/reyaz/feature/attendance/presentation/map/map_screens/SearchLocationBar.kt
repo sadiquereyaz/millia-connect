@@ -30,7 +30,7 @@ import com.mappls.sdk.maps.geometry.LatLng
 import com.mappls.sdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mappls.sdk.plugins.places.autocomplete.model.PlaceOptions
 import com.mappls.sdk.services.api.autosuggest.model.ELocation
-import com.reyaz.core.ui.components.SingleLineText
+import com.reyaz.core.ui.components.SingleLinePopText
 
 @Composable
 fun SearchLocationBar(
@@ -77,7 +77,7 @@ fun SearchLocationBar(
         ) {
             Icon(Icons.Default.Search, "search")
             Spacer(Modifier.width(16.dp))
-            SingleLineText(
+            SingleLinePopText(
                 text = selectedLocationName ?: "Search",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,

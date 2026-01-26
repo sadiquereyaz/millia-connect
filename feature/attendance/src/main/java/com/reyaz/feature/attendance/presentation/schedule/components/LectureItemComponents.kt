@@ -29,12 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.LinearGradient
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.reyaz.core.ui.components.SingleLineText
+import com.reyaz.core.ui.components.SingleLinePopText
 import com.reyaz.core.ui.helper.debounceClickable
 import com.reyaz.feature.attendance.domain.model.AttendanceStatus
 import com.reyaz.feature.attendance.domain.model.ScheduleLectureUiModel
@@ -157,9 +156,10 @@ fun LectureItemComponents(
                         Modifier.padding(horizontal = 8.dp)
                     ) {
                         lectureData?.subjectName?.let {
-                            SingleLineText(
+                            SingleLinePopText(
                                 text = it,
-                                fontSize = 18.sp
+                                fontSize = 18.sp,
+                                shouldShowPopup = true
                             )
                         }
                         // location name
@@ -175,11 +175,12 @@ fun LectureItemComponents(
                                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                                 )
                                 Spacer(Modifier.width(4.dp))
-                                SingleLineText(
+                                SingleLinePopText(
                                     text = it,
                                     fontSize = 12.sp,
                                     lineHeight = 12.sp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                                    shouldShowPopup = true
                                 )
                             }
                         }
@@ -196,7 +197,7 @@ fun LectureItemComponents(
                                 tint = warningColor,
                             )
                             Spacer(Modifier.width(2.dp))
-                            SingleLineText(
+                            SingleLinePopText(
                                 text = lectureData.attendanceWarning,
                                 color = warningColor,
                                 fontSize = 12.sp,
@@ -266,7 +267,7 @@ fun LectureItemComponents(
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                SingleLineText(
+                                Text(
                                     text = type.getDisplayText(selectedAttendanceType != type),
                                     color = if (type == selectedAttendanceType) MaterialTheme.colorScheme.onPrimary else type.getColor(
                                         isDarkMode

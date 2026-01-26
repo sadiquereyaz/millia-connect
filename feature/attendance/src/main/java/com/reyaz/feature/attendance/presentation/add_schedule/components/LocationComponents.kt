@@ -36,7 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.reyaz.core.ui.components.SingleLineText
+import com.reyaz.core.ui.components.SingleLinePopText
 import com.reyaz.feature.attendance.domain.model.LocationModel
 
 @Composable
@@ -80,7 +80,7 @@ fun LocationComponents(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-                    SingleLineText(
+                    SingleLinePopText(
                         modifier = Modifier.padding(end = 16.dp),
                         text = "Locate Classroom",
                         maxLines = 1,
@@ -88,7 +88,7 @@ fun LocationComponents(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
-                    SingleLineText(
+                    SingleLinePopText(
                         text = "powered by Mappls",
                         fontSize = 12.sp,
                         lineHeight = 14.sp,
@@ -140,7 +140,7 @@ fun LocationComponents(
                             onLocationSelect(location.locationId)
                         },
                         label = {
-                            SingleLineText(
+                            SingleLinePopText(
                                 text = location.locationName,
                                 maxLines = 2,
                                 modifier = Modifier.padding(2.dp),
