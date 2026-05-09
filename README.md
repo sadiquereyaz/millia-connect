@@ -51,8 +51,6 @@ suspend fun isJamiaWifi(): Boolean {
 **Benefits:**
 - 🛡️ No sensitive permissions required
 - ⚡ Reliable campus network detection
-  
----
 
 ## 📱 Screenshots
 
@@ -60,7 +58,6 @@ suspend fun isJamiaWifi(): Boolean {
 |-----------------|----------------------|--------------|
 | ![WiFi](https://github.com/user-attachments/assets/a2d63696-1d46-43a7-9f45-5a71b1f147d9) | ![Result](https://github.com/user-attachments/assets/5dd79fb2-73c2-417f-9c5b-85a0778724ce) | ![Notices](https://github.com/user-attachments/assets/a5ee29fa-f811-4ad7-9808-f176f31281f1) |
 
----
 ## Project Structure
 ```
 milia-connect/
@@ -122,8 +119,6 @@ milia-connect/
 - Independent testing
 - Scalable architecture
 
----
-
 ## 🚀 Tech Stack
 
 * **100% Kotlin** with Coroutines & Flow
@@ -136,17 +131,11 @@ milia-connect/
 * **Retrofit** (Network operations)
 * **Material 3** (Design system)
 * **firebase storage**
-* **google signin with credential manager** 
-
----
+* **google signin with credential manager**
 
 ## 📦 Play Store
 
 [![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=com.reyaz.milliaconnect1)
-
----
-
----
 
 ## 🏗️ Detailed Project Structure
 
@@ -561,19 +550,15 @@ millia-connect/
             └── gradle-wrapper.properties
 
 ```
+
 ## My Role
 #Integrated Firebase (Firestore, Storage) for backend services and real-time data sync.
 #integrated google signin with credential manager
 #implemented koin dependency injection
 #integrated rent listing
 
-
 ## ✉️ Contact
-**Md Arman**
-📧 [armanjmi2022@gmail.com]
 
 **Md Sadique**  
 📧 [mdsadique47@gmail.com](mailto:mdsadique47@gmail.com)  
-🔗 [LinkedIn Profile](https://linkedin.com/in/sadiquereyaz)  
-
----
+🔗 [LinkedIn Profile](https://linkedin.com/in/sadiquereyaz)
