@@ -63,7 +63,7 @@ fun MilliaConnectApp() {
 
     val actionIconItems = listOf<ActionIconItem>(
         ActionIconItem.IconButtonItem(
-            actionRoute = NavigationRoute.PropertyFeed.route,
+            actionRoute = NavigationRoute.RentFeed.route,
             icon = Icons.Default.Search,
             onClick = { showSearchComponents = !showSearchComponents },
             contentDescription = "Search Property"
@@ -102,7 +102,7 @@ fun MilliaConnectApp() {
                         NavigationRoute.Schedule.route -> "Class Schedule"
 //                        NavigationRoute.Notice.route -> "Millia Connect"
                         NavigationRoute.AttendanceHistory.route -> "Attendance Summary"
-                        NavigationRoute.PropertyFeed.route -> "Rent Property"
+                        NavigationRoute.RentFeed.route -> "Rent Property"
                         NavigationRoute.CreatePost.route -> "List Your Property"
                         else -> /*currentDestination?.titleTextId ?:*/ stringResource(R.string.app_name)
                     },

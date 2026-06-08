@@ -42,6 +42,8 @@ android {
 dependencies {
     //letting this module know about auth module
     implementation(project(":core:auth"))
+    implementation(project(":core:common"))
+    implementation(project(":core:ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

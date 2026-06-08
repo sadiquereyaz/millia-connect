@@ -2,30 +2,18 @@ package com.reyaz.milliaconnect1.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.reyaz.core.common.utils.openUrl
 import com.reyaz.core.config.AppViewModel
 import com.reyaz.core.config.ForceUpdateDialog
 import com.reyaz.core.config.UpdateState
@@ -37,7 +25,6 @@ import com.reyaz.feature.portal.presentation.PortalViewModel
 import com.reyaz.milliaconnect1.navigation.graph.attendanceNavGraph
 import com.reyaz.milliaconnect1.navigation.graph.propertyNavGraph
 import com.reyaz.milliaconnect1.navigation.graph.resultNavGraph
-import constants.NavigationRoute
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -63,9 +50,9 @@ fun MCNavHost(
             navController = navController,
             startDestination =
 //            NavigationRoute.AttendanceGraph.route,
-                NavigationRoute.Portal.route,
+//                NavigationRoute.Portal.route,
 //            constants.NavigationRoute.ResultGraph.route,
-//            constants.NavigationRoute.PropertyGraph.route,
+            constants.NavigationRoute.RentGraph.route,
 //        NavigationRoute.Notice.route,
             modifier = modifier.fillMaxSize()
         ) {
@@ -105,13 +92,13 @@ fun MCNavHost(
                 resultNavGraph(navController, snackbarHostState)
             }
 
-            // Property Graph
-            /*navigation(
-                route = constants.NavigationRoute.PropertyGraph.route,
-                startDestination = constants.NavigationRoute.PropertyFeed.route//changes mad by me
+            // Rent Graph
+            navigation(
+                route = constants.NavigationRoute.RentGraph.route,
+                startDestination = constants.NavigationRoute.RentFeed.route
             ) {
                 propertyNavGraph(navController, snackbarHostState, showSearchComponents)
-            }*/
+            }
 
             // Notice
             composable(

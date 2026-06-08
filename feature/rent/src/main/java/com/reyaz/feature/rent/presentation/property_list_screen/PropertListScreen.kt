@@ -22,8 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.reyaz.core.ui.theme.MilliaConnectTheme
 import com.reyaz.feature.rent.domain.model.Property
 import com.reyaz.feature.rent.presentation.property_list_screen.components.PropertyCard
 import com.reyaz.feature.rent.presentation.property_list_screen.components.SearchBar
@@ -31,12 +32,11 @@ import com.reyaz.feature.rent.presentation.property_list_screen.components.Searc
 @Composable
 fun PropertyListScreen(
     modifier: Modifier = Modifier,
-    viewModel: PropertyListViewModel,
+    uiState: PropertyListScreenData,
     onDetailClick: (property: Property) -> Unit,
     onAddClick: () -> Unit,
     showSearchComponents: Boolean
 ) {
-    val uiState by viewModel.screenData.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -59,6 +59,7 @@ fun PropertyListScreen(
                     ) {
                         Text(text = it, color = MaterialTheme.colorScheme.error)
                     }
+                } ?: run {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(
@@ -76,7 +77,7 @@ fun PropertyListScreen(
                                     searchText = searchQuery,
                                     onSearchChange = { it ->
                                         searchQuery = it
-                                        viewModel.onSearchChange(it)
+//                                        viewModel.onSearchChange(it)
                                     },
                                     onSearchTriggered = {
                                         // viewModel.search()
@@ -85,8 +86,10 @@ fun PropertyListScreen(
 
                             }
                         }
-                        items(uiState.filteredList) { it ->
-                            PropertyCard(property = it, onDetailClick = { onDetailClick(it) })
+                        uiState.feedListProperty?.let{
+                            items(it) { it ->
+                                PropertyCard(property = it, onDetailClick = { onDetailClick(it) })
+                            }
                         }
                     }
                 }
@@ -108,6 +111,40 @@ fun PropertyListScreen(
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PropertyListScreenPreview() {
+    val sampleProperties = listOf(
+        Property(
+            id = "1",
+            propertyTitle = "Modern Apartment",
+            propertyRent = "20000",
+            propertyLocation = "BTM Layout, Bangalore",
+            urlList = listOf("https://avatars.githubusercontent.com/u/118601913?s=400&u=752ca858776d252fabc6126797f6aaa3f5e9912a&v=4")
+        ),
+        Property(
+            id = "2",
+            propertyTitle = "Cozy Studio",
+            propertyRent = "15000",
+            propertyLocation = "HSR Layout, Bangalore",
+            urlList = listOf("https://avatars.githubusercontent.com/u/118601913?s=400&u=752ca858776d252fabc6126797f6aaa3f5e9912a&v=4")
+        )
+    )
+
+    MilliaConnectTheme {
+        PropertyListScreen(
+            uiState = PropertyListScreenData(
+                isLoading = false,
+                filteredList = sampleProperties,
+                propertyList = sampleProperties
+            ),
+            onDetailClick = {},
+            onAddClick = {},
+            showSearchComponents = true
+        )
     }
 }
 

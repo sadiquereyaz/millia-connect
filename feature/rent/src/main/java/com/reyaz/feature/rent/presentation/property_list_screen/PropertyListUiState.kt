@@ -1,12 +1,7 @@
 package com.reyaz.feature.rent.presentation.property_list_screen
 
+import com.reyaz.core.common.utils.orFalse
 import com.reyaz.feature.rent.domain.model.Property
-
-sealed class PropertyListUiState<out T> {
-    object Loading : PropertyListUiState<Nothing>()
-    data class Success<T>(val data: T) : PropertyListUiState<T>()
-    data class Error(val message: String) : PropertyListUiState<Nothing>()
-}
 
 data class PropertyListScreenData(
     val isLoading: Boolean = true,
@@ -14,11 +9,13 @@ data class PropertyListScreenData(
     val user: User = User(),  // todo: remove default
     val isAdmin: Boolean = true, // todo: make it false
     val searchText: String = "",
-    val filteredList: List<Property> = emptyList(),
-    val propertyList: List<Property> = emptyList(),
+    val filteredList: List<Property>? = null,
+    val propertyList: List<Property>? = null,
     val selectedTab: PropertyListScreenTab = PropertyListScreenTab.ALL
 ){
-    val showTabs: Boolean = searchText.isEmpty() && ( isAdmin || propertyList.any { it.ownerName == user.name } )
+    val feedListProperty: List<Property>? = filteredList ?: propertyList
+    val showTabs: Boolean = searchText.isEmpty() && ( isAdmin || propertyList?.any { it.ownerName == user.name }.orFalse() )
+
 }
 
 enum class PropertyListScreenTab (val value: String){

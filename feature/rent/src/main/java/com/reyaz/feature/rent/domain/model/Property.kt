@@ -5,18 +5,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.parcelize.Parcelize
 
-//currently i am creating this for testing purpose once it is done i will add other valures
-//related to property like flat,location,bhk...\
 @Parcelize
 data class Property(
   val id: String = "1",
-  val ownerName: String? = "Sadique Reyaz Android Inter",
+  val ownerName: String? = "Sadique Reyaz Android Intern",
   val ownerPicUrl: String? = "https://avatars.githubusercontent.com/u/118601913?s=400&u=752ca858776d252fabc6126797f6aaa3f5e9912a&v=4",
   val urlList: List<String> = emptyList(),
-  val propertyTitle: String = "Spacious 2BHK Apartment",
+  val propertyTitle: String = "Spacious 2BHK Apartment. Immediate move in only! Comes with all modern amenities.",
   val propertyType: String = "Apartment",
   val propertyBHK: String = "2 BHK",  // todo: remove
-  val propertyCount: Int? = 3,
+  val propertySizeCount: Int? = 3,
   val propertyLocation: String = "Koramangala, Bangalore",
   val propertyRent: String = "25000",
   val propertyFloorNumber: String = "3",
@@ -24,18 +22,14 @@ data class Property(
   val propertyDescription: String = "A beautiful and spacious apartment located in the heart of the city. Comes with all modern amenities.",
   val amenities: List<String> = listOf("Lift", "Security", "Parking", "Power Backup"),
   val securityAmount: Int? = 10000,
-  val securityDeposit: String = "50000",    // todo: remove
+  val brokerageAmount: Int? = 5000,
+  @Deprecated("use securityAmount") val securityDeposit: String = "50000",    // todo: remove
   val gender: Gender = Gender.MALE,
   val requiredHeadCount: Int = 5,
   val furnishType : FurnishType? = FurnishType.NOT_FURNISHED,
   val postDate: Long? = System.currentTimeMillis(),
   val reportCount: Int = 0,
 ) : Parcelable {
-  val postedDateText: String? = postDate?.let {
-    val date = java.util.Date(it)
-    val format = java.text.SimpleDateFormat("dd/MM/yyyy")
-    format.format(date)
-  }
 }
 
 enum class Gender{

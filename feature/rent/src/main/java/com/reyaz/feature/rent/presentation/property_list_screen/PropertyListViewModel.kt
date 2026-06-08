@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.reyaz.feature.rent.domain.model.Property
 import com.reyaz.feature.rent.domain.repository.PropertyRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -22,13 +23,20 @@ class PropertyListViewModel(
     val screenData = _screenData.asStateFlow()
 
     init {
-        getCurrentUser()
+//        getCurrentUser()
         getAllProperty()
     }
 
     private fun getAllProperty() {
         viewModelScope.launch(Dispatchers.IO) {
-            propertyRepository
+            delay(1000)
+            _screenData.update {
+                it.copy(
+                    isLoading = false,
+                    propertyList = listOf(Property(),Property(),),
+                )
+            }
+            /*propertyRepository
                 .getAllProperty()
                 .catch { e ->
                     Log.d("error", e.message.toString())
@@ -47,7 +55,7 @@ class PropertyListViewModel(
                             filteredList = properties
                         )
                     }
-                }
+                }*/
         }
     }
 
@@ -71,7 +79,7 @@ class PropertyListViewModel(
     }
 
     fun onSearchChange(query: String) {
-        viewModelScope.launch (Dispatchers.Default){
+        /*viewModelScope.launch (Dispatchers.Default){
             val filteredProperty = screenData.value.propertyList.filter { property ->
                 property.propertyTitle.contains(query, true) ||
                         property.propertyBHK.contains(query, true) ||
@@ -82,11 +90,11 @@ class PropertyListViewModel(
                     filteredList = filteredProperty
                 )
             }
-        }
+        }*/
     }
 
     fun onTabSelect(tab: PropertyListScreenTab){
-        viewModelScope.launch (Dispatchers.Default){
+        /*viewModelScope.launch (Dispatchers.Default){
             val filteredProperty = screenData.value.propertyList.filter { property ->
                 when(tab){
                     PropertyListScreenTab.ALL -> true
@@ -100,6 +108,6 @@ class PropertyListViewModel(
                     filteredList = filteredProperty
                 )
             }
-        }
+        }*/
     }
 }

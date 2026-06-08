@@ -1,7 +1,7 @@
 package com.reyaz.feature.result.data.mapper
 
 import com.reyaz.core.common.utils.longToDateString
-import com.reyaz.core.common.utils.toTimeAgoString
+import com.reyaz.core.common.utils.toFetchedTimeAgoString
 import com.reyaz.feature.result.data.local.dto.CourseWithList
 import com.reyaz.feature.result.domain.model.ResultHistory
 import com.reyaz.feature.result.domain.model.ResultItem
@@ -12,7 +12,7 @@ fun CourseWithList.toResultHistory(): ResultHistory {
         courseId = course.courseId,
         courseName = course.courseName,
         courseType = course.courseType,
-        syncDate = course.lastSync?.toTimeAgoString(),
+        syncDate = course.lastSync?.toFetchedTimeAgoString(),
         latestListDate = lists.maxByOrNull { it.releaseDate ?: 0L }?.releaseDate?.longToDateString(),
         resultList = lists.sortedWith(
             compareByDescending {

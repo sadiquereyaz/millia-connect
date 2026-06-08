@@ -64,7 +64,7 @@ object TopLevelDestinations {
         iconContentDescription = "Result tab"
     )
     val PROPERTY = AppTopLevelDestination(
-        route = constants.NavigationRoute.PropertyGraph,
+        route = constants.NavigationRoute.RentGraph,
         selectedIcon = Icons.Filled.HomeWork,
         unselectedIcon = Icons.Outlined.HomeWork,
         titleResourceId = "Property",

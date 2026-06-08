@@ -11,7 +11,7 @@ sealed class NavigationRoute(val route: String) {
     data object AttendanceGraph : NavigationRoute("attendance_graph")
     data object ResultGraph : NavigationRoute("result_graph")
     data object NoticeGraph : NavigationRoute("notice_graph")
-    data object PropertyGraph : NavigationRoute("property_graph")
+    data object RentGraph : NavigationRoute("property_graph")
 
 
     // Attendance Feature Routes
@@ -19,7 +19,7 @@ sealed class NavigationRoute(val route: String) {
     data object AttendanceHistory : NavigationRoute("attendance/history")
 
     // Property Feature Routes
-    data object PropertyFeed : NavigationRoute("property/feed")
+    data object RentFeed : NavigationRoute("property/feed")
     data class PropertyDetails(val propertyId: String) : NavigationRoute(route = "property/details"){
         fun createRoute(propertyId: String) = "property/details/$propertyId"
         fun getDeepLink() = "$DEEPLINK_DOMAIN_NETLIFY/post"

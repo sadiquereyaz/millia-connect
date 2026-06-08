@@ -3,14 +3,10 @@ package com.reyaz.milliaconnect1.navigation.graph
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.reyaz.feature.rent.domain.model.Property
@@ -28,23 +24,17 @@ fun NavGraphBuilder.propertyNavGraph(
     showSearchComponents: Boolean,
 ) {
     composable(
-        route = NavigationRoute.PropertyFeed.route,
+        route = NavigationRoute.RentFeed.route,
         deepLinks = listOf(
             navDeepLink { uriPattern = NavigationRoute.Result.getDeepLink() }
         )
     ) {
         val viewModel: PropertyListViewModel = koinViewModel()
-        LaunchedEffect(Unit) {
-            navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.set("property", Property())
-            navController.navigate(NavigationRoute.PropertyDetails("viewmodel.id  --> uistate se bhe le skte ho ya argument se").route)
 
-        }
-
+        val uiState by viewModel.screenData.collectAsStateWithLifecycle()
         PropertyListScreen(
             modifier = Modifier,
-            viewModel = viewModel,
+            uiState = uiState,
 //            onPostClick ={
 //                //on clicking it will take to the post screen where u are allowed to post
 //                navController.navigate("route i dont know because my mind is fucked in understanding naviagation")

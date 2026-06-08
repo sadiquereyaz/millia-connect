@@ -7,10 +7,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AlignHorizontalCenter
 import androidx.compose.material.icons.filled.Bed
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.LocationOn
@@ -37,11 +41,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.reyaz.core.common.utils.toTimeAgoString
 import com.reyaz.feature.rent.domain.model.Gender
 import com.reyaz.feature.rent.domain.model.GenderChip
 import com.reyaz.feature.rent.domain.model.Property
@@ -82,7 +91,7 @@ fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
                 }
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     // title
                     Text(
@@ -92,38 +101,79 @@ fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
-                    // Title, Price and author Row
                     Row(
+                        modifier = Modifier.height(IntrinsicSize.Min).padding(top = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        Text(
-                            text = "₹${property.propertyRent}",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = "/month",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                        Column() {
+                            // Title, Price and author Row
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Text(
+                                    text = "₹${property.propertyRent}",
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = "/month",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
 
-                        property.securityAmount?.let {
+                            // deposit and broker amount
                             Text(
-                                text = "+",
-                                maxLines = 1,
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
-                            Text(
-                                text = "₹${it} Security",
+                                text = buildAnnotatedString {
+                                    append("+ ")
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    ) {
+                                        val amount = property.securityAmount?.let { "₹$it" } ?: "No"
+                                        append(amount)
+                                    }
+
+                                    append(" Security")
+                                },
                                 maxLines = 1,
                                 fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.tertiary
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                            Text(
+                                text = buildAnnotatedString {
+                                    append("+ ")
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    ) {
+                                        val amount =
+                                            property.brokerageAmount?.let { "₹$it" } ?: "No"
+                                        append(amount)
+                                    }
+
+                                    append(" Brokerage")
+                                },
+                                maxLines = 1,
+                                fontSize = 13.sp,
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                         }
-
+                        Spacer(Modifier.width(72.dp))
+                        AsyncImage(
+                            model = "https://img.staticmb.com/mbcontent/images/crop/uploads/2025/6/house-vs-home_0_1200.jpg.webp",
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                     // Location Row
                     Row(
@@ -171,7 +221,7 @@ fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
                     )
 
                 }
-                property.propertyCount?.let {
+                property.propertySizeCount?.let {
                     item {
                         PropertyDetailChip(
                             iconDarkColor = Color(0xFF87B056),
@@ -190,6 +240,14 @@ fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
                             text = it.value
                         )
                     }
+                }
+                item {
+                    PropertyDetailChip(
+                        iconDarkColor = Color(0xFFC98A44),
+                        iconLightColor = Color(0xFF976733),
+                        icon = Icons.Default.AlignHorizontalCenter,
+                        text = "${property.propertyFloorNumber}/${property.totalFloor}"
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -217,7 +275,7 @@ fun PropertyCard(property: Property, onDetailClick: () -> Unit) {
                         modifier = Modifier.weight(3f)
                     )
                 }
-                property.postedDateText?.let {
+                property.postDate?.toTimeAgoString()?.let {
                     Spacer(Modifier.weight(1f))
                     Text(
                         it,
@@ -254,6 +312,19 @@ fun PropertyDetailChip(
             text = text,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PropertyCardPreview() {
+    val mockProperty = Property()
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        PropertyCard(
+            property = mockProperty,
+            onDetailClick = {}
         )
     }
 }
