@@ -13,10 +13,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.reyaz.core.auth.domain.repository.GoogleService
-import com.reyaz.feature.rent.di.ApiKey
 import com.reyaz.feature.rent.domain.model.Property
 import com.reyaz.feature.rent.domain.repository.ImageRepository
 import com.reyaz.feature.rent.domain.repository.PropertyRepository
+import com.reyaz.feature.rent.util.ImgBBApiKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -224,7 +224,7 @@ class CreatePostViewModel(
                 base64List.add(base64String)
             }
         }
-        getUrl(ApiKey.KEY, base64List)
+        getUrl(ImgBBApiKey.KEY, base64List)
     }
 
     fun getUrl(key: String, image: List<String>) {

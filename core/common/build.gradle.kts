@@ -33,8 +33,7 @@ android {
 }
 
 dependencies{
-//    implementation(libs.androidx.core.ktx)
-//    implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.annotation.jvm)
+    api(libs.timber)
 }

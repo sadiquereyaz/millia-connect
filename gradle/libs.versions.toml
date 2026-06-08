@@ -1,5 +1,6 @@
 [versions]
 
+coilCompose = "2.7.0"
 pdfViewer = "2.3.7"
 room = "2.7.1"
 ksp = "2.0.0-1.0.24"        # kotlin version of this project - kotlin compatible ksp version
@@ -129,9 +130,10 @@ credentials = "1.5.0-beta01"
 googleid = "1.1.1"
 firebaseStorageKtx = "22.0.1"
 
+timber = "5.0.1"
+
 
 [libraries]
-
 # splash
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
@@ -182,6 +184,7 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 # Headless web browser implementation for Android testing and automation
 # Useful for testing web-based components or automated form submissions, especially when JavaScript rendering is needed.
 #htmlunit-android = { module = "net.sourceforge.htmlunit:htmlunit-android", version.ref = "htmlunitAndroid" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 htmlunit-android = { group = "org.htmlunit", name = "htmlunit3-android", version.ref = "htmlunit" }
 
 
@@ -312,6 +315,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 pdf-viewer = { module = "io.github.afreakyelf:Pdf-Viewer", version.ref = "pdfViewer" }
 androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 
 #firebase authorisation
@@ -321,6 +325,8 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 
 [plugins]

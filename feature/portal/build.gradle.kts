@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":core:notification"))
     implementation(project(":core:common"))
     implementation(project(":core:analytics"))
+    implementation(project(":core:firebase"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -87,10 +88,11 @@ dependencies {
     // screen scraping
     implementation(libs.htmlunit.android)
 
-
-
     // worker
     implementation(libs.androidx.work.runtime.ktx)
     // koin-Jetpack WorkManager
     implementation(libs.koin.androidx.workmanager)
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
 }

@@ -15,6 +15,7 @@ import com.reyaz.core.common.utils.Resource
 import com.reyaz.feature.portal.domain.repository.PortalRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 private const val TAG = "AUTO_LOGIN_WORKER"
 class AutoLoginWorker(
@@ -26,7 +27,7 @@ class AutoLoginWorker(
 
     override suspend fun doWork(): Result {
         return try {
-            Log.d(TAG, "Performing auto login by worker")
+            Timber.d( "Performing auto login by worker")
             var result: Result = Result.success()
             portalRepository.connect(shouldNotify = true).collect {
                 when(it){
@@ -42,7 +43,7 @@ class AutoLoginWorker(
                     is Resource.Loading -> {}
                 }
             }
-            Log.d(TAG, "Auto login result: $result")
+            Timber.d( "Auto login result: $result")
             result
         } catch (e: Exception) {
             Log.e(TAG, "Error during auto login", e)
@@ -54,14 +55,14 @@ class AutoLoginWorker(
         private const val UNIQUE_WORK_NAME = "portal_login_work"
 
         fun scheduleOneTime(context: Context) {
-            Log.d(TAG, "Scheduling auto login work")
+            Timber.tag(TAG).d("Scheduling auto login work")
 
             val constraints = Constraints.Builder()
                 .build()
 
             val autoLoginTask = OneTimeWorkRequestBuilder<AutoLoginWorker>()
                 .setConstraints(constraints)
-                .setInitialDelay(100, TimeUnit.MINUTES)
+                .setInitialDelay(60, TimeUnit.MINUTES)
                 .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(
@@ -72,7 +73,7 @@ class AutoLoginWorker(
         }
 
         fun cancelOneTime(context: Context) {
-            Log.d(TAG, "Cancelling auto login work")
+            Timber.d( "Cancelling auto login work")
             WorkManager.getInstance(context).cancelUniqueWork(UNIQUE_WORK_NAME)
         }
     }

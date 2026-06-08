@@ -15,7 +15,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,14 +29,11 @@ import com.reyaz.core.ui.components.BottomNavItem
 import com.reyaz.core.ui.components.CustomBottomNavigationBar
 import com.reyaz.core.ui.components.CustomCenterAlignedTopAppBar
 import com.reyaz.core.ui.components.NavigationDrawerContent
-import com.reyaz.feature.portal.presentation.PortalViewModel
 import com.reyaz.milliaconnect1.navigation.MCNavHost
 import com.reyaz.milliaconnect1.navigation.TopLevelDestinations
 import com.reyaz.milliaconnect1.navigation.getIcon
-import com.reyaz.milliaconnect1.ui.components.WifiIconComposable
 import constants.NavigationRoute
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,9 +41,10 @@ fun MilliaConnectApp() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute: String? = navBackStackEntry?.destination?.route
-    val currentDestination = TopLevelDestinations.ALL.find { it.route.route == currentRoute }
+
     // Determine if current destination is a top-level destination
-    val isTopLevelDestination = TopLevelDestinations.ALL.any { it.route.route == currentRoute || currentRoute == NavigationRoute.Portal.route }
+    val isTopLevelDestination =
+        TopLevelDestinations.ALL.any { it.route.route == currentRoute || currentRoute == NavigationRoute.Portal.route }
 
     val bottomNavItems = TopLevelDestinations.ALL.map {
         BottomNavItem(
@@ -60,8 +57,6 @@ fun MilliaConnectApp() {
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val portalViewModel: PortalViewModel = koinViewModel()
-    val portalUiState by portalViewModel.uiState.collectAsState()
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -73,7 +68,7 @@ fun MilliaConnectApp() {
             onClick = { showSearchComponents = !showSearchComponents },
             contentDescription = "Search Property"
         ),
-        ActionIconItem.CustomComposableItem(
+        /*ActionIconItem.CustomComposableItem(
             actionRoute = NavigationRoute.Portal.route,
             content = {
                 WifiIconComposable(
@@ -83,9 +78,8 @@ fun MilliaConnectApp() {
                     }
                 )
             }
-        )
+        )*/
     )
-
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -103,6 +97,7 @@ fun MilliaConnectApp() {
             topBar = {
                 CustomCenterAlignedTopAppBar(
                     title = when (currentRoute) {
+                        NavigationRoute.Portal.route -> "Captive Portal"
                         NavigationRoute.Result.route -> "Entrance Result"
                         NavigationRoute.Schedule.route -> "Class Schedule"
 //                        NavigationRoute.Notice.route -> "Millia Connect"
@@ -122,36 +117,21 @@ fun MilliaConnectApp() {
                         }
                     },
                     actions = {
-                        val actionsForRoute = actionIconItems.filter { it.route == currentRoute }
-
-                        if (actionsForRoute.isEmpty()) {
-                            if (isTopLevelDestination) {
-                                WifiIconComposable(
-                                    portalUiState = portalUiState,
-                                    navigateToPortal = {
-                                        navController.navigate(NavigationRoute.Portal.route)
+                        val actionsForRoute =
+                            actionIconItems.filter { it.route == currentRoute }
+                        actionsForRoute.forEach { action ->
+                            when (action) {
+                                is ActionIconItem.IconButtonItem -> {
+                                    IconButton(onClick = action.onClick) {
+                                        Icon(
+                                            imageVector = action.icon,
+                                            contentDescription = action.contentDescription
+                                        )
                                     }
-                                )
-                            } else {
-                                IconButton(onClick = { /* default search or noop */ }) {
-                                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
                                 }
-                            }
-                        } else {
-                            actionsForRoute.forEach { action ->
-                                when (action) {
-                                    is ActionIconItem.IconButtonItem -> {
-                                        IconButton(onClick = action.onClick) {
-                                            Icon(
-                                                imageVector = action.icon,
-                                                contentDescription = action.contentDescription
-                                            )
-                                        }
-                                    }
 
-                                    is ActionIconItem.CustomComposableItem -> {
-                                        action.content()
-                                    }
+                                is ActionIconItem.CustomComposableItem -> {
+                                    action.content()
                                 }
                             }
                         }
@@ -186,7 +166,6 @@ fun MilliaConnectApp() {
             MCNavHost(
                 modifier = Modifier.padding(innerPadding),
                 navController = navController,
-                portalViewModel = portalViewModel,
                 snackbarHostState = snackbarHostState,
                 showSearchComponents = showSearchComponents,
             )

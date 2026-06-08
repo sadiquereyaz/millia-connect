@@ -64,6 +64,9 @@ dependencies {
     //pdf
     implementation(libs.pdf.viewer)
 
-//    implementation(libs.androidx)
+    //implementation(libs.androidx)
     implementation(libs.androidx.material.icons.extended)
+    //coil
+    implementation(libs.coil.compose)
+
 }

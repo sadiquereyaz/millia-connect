@@ -3,6 +3,8 @@ package com.reyaz.milliaconnect1
 import android.app.Application
 import com.reyaz.core.auth.di.authModule
 import com.reyaz.core.analytics.di.analyticsModule
+import com.reyaz.core.config.configModule
+import com.reyaz.core.firebase.di.firebaseModule
 import com.reyaz.core.network.networkModule
 import com.reyaz.core.notification.notificationModule
 import com.reyaz.feature.attendance.schedule.di.scheduleModule
@@ -16,6 +18,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import timber.log.Timber
 
 /**
  * The Application class is the first component of your app to be instantiated when the process starts.
@@ -30,16 +33,18 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         // Initialize Koin for dependency injection
         startKoin {
             androidLogger()
             androidContext(this@BaseApplication)
 //            workManagerFactory()
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule,rentModule,authModule)
-            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, analyticsModule)
+            modules(appModule, scheduleModule, portalModule, resultModule, networkModule, notificationModule, noticeModule, rentModule, authModule, analyticsModule, firebaseModule,
+                configModule)
         }
 
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
     }
 }
 
